@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:price_tracker/database_helper.dart';
 import 'package:price_tracker/productTile.dart';
 
 void main() {
@@ -12,7 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Price Tracker',
       theme: ThemeData(
-        primarySwatch: Colors.yellow,
+        brightness: Brightness.dark,
+        // primarySwatch: Colors.yellow,
+        primaryColor: Colors.yellow[400],
+        accentColor: Colors.yellowAccent[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
 
@@ -35,6 +39,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final dbHelper = DatabaseHelper.instance;
+
+
   List<Widget> productTiles = <Widget>[];
 
   @override

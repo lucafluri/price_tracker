@@ -14,7 +14,7 @@ class ProductTile extends StatelessWidget {
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,
           child: Container(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             child: ListTile(
               leading: Container( //Image Placeholder
                 color: Colors.indigoAccent,
