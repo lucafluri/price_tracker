@@ -48,10 +48,10 @@ class DatabaseHelper {
           CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY,
             $columnName TEXT NOT NULL,
-            $columnProductUrl TEXT NOT NULL
-            $columnPrices TEXT
-            $columnDates TEXT
-            $columnTargetPrice TEXT
+            $columnProductUrl TEXT,
+            $columnPrices TEXT,
+            $columnDates TEXT,
+            $columnTargetPrice TEXT,
             $columnImageUrl TEXT
           )
           ''');
@@ -71,7 +71,7 @@ class DatabaseHelper {
       return -1;
     } else {
       int answer = await db.insert(table, product.toMap());
-      print('Product ${product.id} inserted into db.');
+      print('Product ${answer} inserted into db.');
       return answer;
     }
   }

@@ -21,7 +21,6 @@ class Product {
   }
 
   int get id => _id;
-  String get title => name;
   String get description => productUrl;
   List<double> get prices => _prices;
   List<DateTime> get dates => _dates;
@@ -48,7 +47,7 @@ class Product {
     if (_id != null) {
       map['id'] = _id;
     }
-    map['title'] = name;
+    map['name'] = name;
     map['productUrl'] = productUrl;
     map['prices'] = _prices.toString();
     map['dates'] = _dates.toString();
@@ -60,7 +59,7 @@ class Product {
 
   Product.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];
-    this.name = map['title'];
+    this.name = map['name'];
     this.productUrl = map['productUrl'];
     this._prices = prices2List(map['prices']);
     this._dates = dates2List(map['dates']);
