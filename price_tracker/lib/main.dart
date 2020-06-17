@@ -7,6 +7,20 @@ void main() {
   runApp(MyApp());
 }
 
+
+// TODO pass Product to ProductTile
+// TODO Add Products and Tiles via button
+// TODO Product Image Handling (async loading)
+// TODO edit Product Details => Details (Settings) View (with future Graph)
+// TODO Webscraping Test
+// TODO Background Service check
+// TODO Notifications Test
+// TODO Chart from price data
+// TODO Trigger regular Scrapes of all Products in db
+// TODO Trigger Notifications after Price fall
+// TODO Show recent price change with icon in ListTile
+// TODO Enlarge ListTile (+ bigger Picture)
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -42,6 +56,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final dbHelper = DatabaseHelper.instance;
 
+  void initState(){
+    super.initState();
+  }
+
   // List<double> t = [232.4535, 45455.2342, 54536.342423];
  
 
@@ -50,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // debugPrint(t.toString().substring(1, t.toString().length-1));
-    // dbHelper.insert(new Product(name: "Test", productUrl: "http://www.google.com"));
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),

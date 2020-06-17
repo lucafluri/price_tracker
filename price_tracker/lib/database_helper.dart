@@ -71,7 +71,9 @@ class DatabaseHelper {
       return -1;
     } else {
       int answer = await db.insert(table, product.toMap());
-      print('Product ${answer} inserted into db.');
+      product.id = answer;
+      print('Product ${product.id} inserted into db.');
+      
       return answer;
     }
   }
@@ -91,7 +93,7 @@ class DatabaseHelper {
   }
 
   /// Returns the list of Products
-  Future<List<Product>> getAllMovies() async {
+  Future<List<Product>> getAllProducts() async {
     Database db = await instance.database;
     List<Map<String, dynamic>> list = await db.query(table);
     List<Product> products =

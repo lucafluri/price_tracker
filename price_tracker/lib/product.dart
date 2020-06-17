@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Product {
   int _id;
   String name;
@@ -21,6 +23,7 @@ class Product {
   }
 
   int get id => _id;
+  set id(int idNew) => {this._id = idNew};
   String get description => productUrl;
   List<double> get prices => _prices;
   List<DateTime> get dates => _dates;
@@ -34,10 +37,12 @@ class Product {
   // }
 
   List<double> prices2List(String prices){
+    if(prices == "null") return [];
     return prices.substring(1, prices.length-1).split(",").map(double.parse).toList();
   }
 
     List<DateTime> dates2List(String dates){
+    if(dates == "null") return [];
     return dates.substring(1, dates.length-1).split(",").map(DateTime.parse).toList();
   }
 
@@ -63,7 +68,7 @@ class Product {
     this.productUrl = map['productUrl'];
     this._prices = prices2List(map['prices']);
     this._dates = dates2List(map['dates']);
-    this.targetPrice= double.parse(map['targetPrice']);
+    this.targetPrice= double.parse(map['targetPrice'] != "null" ? map['targetPrice'] : "0");
     this.imageUrl= map['imageUrl'];
   }
 }
