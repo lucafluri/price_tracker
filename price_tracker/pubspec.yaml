@@ -33,6 +33,14 @@ dependencies:
   flutter_clipboard_manager: ^0.0.2
   flushbar: ^1.10.4
   cached_network_image: ^2.2.0+1
+  basic_utils: ^2.5.4
+  html: ^0.14.0+3
+  http: ^0.12.1
+  xpath_parse: ^1.0.2
+
+
+
+
 
 
 

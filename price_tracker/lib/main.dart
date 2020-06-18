@@ -1,7 +1,13 @@
+
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
+import 'package:http/http.dart';
 import 'package:price_tracker/database_helper.dart';
 import 'package:price_tracker/product.dart';
 import 'package:price_tracker/productTile.dart';
+import 'package:price_tracker/price_parser.dart';
+import 'package:basic_utils/basic_utils.dart';
+import 'package:xpath_parse/xpath_selector.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +17,7 @@ void main() {
 // TODO Add Products and Tiles via button
 // --TODO Product Image Handling (async loading)
 // TODO edit Product Details => Details (Settings) View (with future Graph)
-// TODO Webscraping Test
+// --TODO Webscraping Test
 // TODO Background Service check
 // TODO Notifications Test
 // TODO Chart from price data
@@ -63,9 +69,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> productTiles = <Widget>[];
 
+  void test() async {
+
+    debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/icy-box-ib-ms303-t-table-27-monitor-mounts-10332070"));
+    debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095"));
+    // debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/digitec-connect-mobile-subscription-with-a-12-month-data-flat-rate-unlimited-sim-card-12409780"));
+  }                       
+
   @override
   Widget build(BuildContext context) {
     // debugPrint(t.toString().substring(1, t.toString().length-1));
+
+    test();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -74,7 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(children: productTiles),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => { // TODO Open Detail Dialogue to edit Product Details
+        onPressed: () => {
+          // TODO Open Detail Dialogue to edit Product Details
           setState(() {
             productTiles = [
               ...productTiles,

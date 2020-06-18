@@ -10,7 +10,7 @@ class Product {
   String imageUrl = "https://static.digitecgalaxus.ch/Files/3/3/4/7/5/8/1/5/gata-1301_gata_1301_02.jpeg?impolicy=PictureComponent&resizeWidth=708&resizeHeight=288&resizeType=downsize";
 
 
-  Product({this.name = "Product Name", this.productUrl = "http://www.google.com", this.targetPrice});
+  Product({this.name = "Ducky One 2 SF", this.productUrl = "https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095", this.targetPrice});
 
   Product.map(dynamic obj) {
     this._id = obj['id'];

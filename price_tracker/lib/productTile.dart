@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:price_tracker/product.dart';
+import 'package:price_tracker/product_details.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
@@ -17,7 +18,7 @@ class ProductTile extends StatelessWidget {
         child: Container(
           color: Theme.of(context).cardColor,
           child: ListTile(
-            onTap: () {}, // TODO Open Detail View
+            onTap: () {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => ProductDetails(product: product)));}, // TODO Open Detail View
             onLongPress: () {}, // TODO Open Link
             dense: false,
             leading: Container(
