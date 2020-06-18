@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 
 class Product {
@@ -36,6 +37,10 @@ class Product {
   //   return listString;
   // }
 
+  String getDomain(){
+    var domain = DomainUtils.getDomainFromUrl(productUrl);
+    return domain.sld + "." + domain.tld;
+  }
   List<double> prices2List(String prices){
     if(prices == "null") return [];
     return prices.substring(1, prices.length-1).split(",").map(double.parse).toList();

@@ -43,7 +43,7 @@ class ProductTile extends StatelessWidget {
               height: 50,
             ),
             title: Text(product.name),
-            subtitle: Text(product.productUrl, overflow: TextOverflow.ellipsis),
+            subtitle: Text(product.getDomain(), overflow: TextOverflow.ellipsis),
           ),
         ),
         actions: <Widget>[

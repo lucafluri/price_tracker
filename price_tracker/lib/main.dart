@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
@@ -70,11 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> productTiles = <Widget>[];
 
   void test() async {
-
-    debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/icy-box-ib-ms303-t-table-27-monitor-mounts-10332070"));
-    debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095"));
+    // debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/icy-box-ib-ms303-t-table-27-monitor-mounts-10332070"));
+    // debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095"));
     // debugPrint(await PriceParser.test("https://www.digitec.ch/en/s1/product/digitec-connect-mobile-subscription-with-a-12-month-data-flat-rate-unlimited-sim-card-12409780"));
-  }                       
+    // debugPrint(await PriceParser.test("https://www.galaxus.ch/de/s3/product/uvex-sportstyle-706-vario-sportbrille-7587273"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,19 +86,26 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: ListView(children: productTiles),
+        child: FutureBuilder(
+            future: dbHelper.getAllProducts(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Widget> productTiles = <Widget>[];
+                snapshot.data
+                    .forEach((e) => productTiles.add(ProductTile(product: e)));
+
+                return ListView(children: productTiles);
+              }else{
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
           // TODO Open Detail Dialogue to edit Product Details
+
           setState(() {
-            productTiles = [
-              ...productTiles,
-              ProductTile(
-                product: new Product(),
-              )
-            ];
-            debugPrint(productTiles.toString());
+            dbHelper.insert(Product());
           })
         },
         tooltip: 'Add Product',

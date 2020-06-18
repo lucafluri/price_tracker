@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:price_tracker/product.dart';
 import 'package:sqflite/sqflite.dart';
@@ -132,6 +133,6 @@ class DatabaseHelper {
   //Clears db
   Future<int> deleteAll() async {
     Database db = await instance.database;
-    return await db.delete(table);
+    return await db.delete(table, );
   }
 }

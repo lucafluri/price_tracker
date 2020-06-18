@@ -6,6 +6,7 @@ import 'package:xpath_parse/xpath_selector.dart';
 
 class PriceParser{
 
+  //returns parsed double price or -1 if not present
   static Future<double> parsePrice(String url) async{
     var client = Client();
     Response response = await client.get(url);
@@ -20,10 +21,11 @@ class PriceParser{
 
     switch(d){
       case "digitec.ch":
+      case "galaxus.ch":
         String priceString = XPath.source(response.body).query("//*[@id='pageContent']/div/div[2]/div/div[2]/div/div[1]").get().toString();
         final regexp = RegExp(r'\s{1}(\d+)[.]{0,1}(\d*)'); //Find first double
         final match = regexp.firstMatch(priceString);
-        return double.parse(match.group(0));
+        return match != null ? double.parse(match.group(0)) : -1;
         break;
     }
     
@@ -31,6 +33,7 @@ class PriceParser{
 
   }
 
+  // returns image url string
   static Future<String> parseImageUrl(String url) async{
     var client = Client();
     Response response = await client.get(url);
@@ -40,6 +43,7 @@ class PriceParser{
 
     switch(d){
       case "digitec.ch":
+      case "galaxus.ch":
         String image = XPath.source(response.body).query("//*[@id='slide-0']/div/div/picture/img").get();
         final regexp2 = RegExp(r'"(\S*)"'); //Find first double
         final match2 = regexp2.firstMatch(image);
