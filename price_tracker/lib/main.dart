@@ -172,7 +172,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     shrinkWrap: true,
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ProductTile(id: snapshot.data[index].id);
+                      return ProductTile(id: snapshot.data[index].id, onDelete: () {
+                      dbHelper.delete(snapshot.data[index].id);
+                      debugPrint('Deleted Product ${snapshot.data[index].name}');
+                      setState(() {
+                        
+                      });
+                      },);
                     },
                   );
                 } else {

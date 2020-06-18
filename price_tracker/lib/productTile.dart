@@ -7,7 +7,8 @@ import 'package:price_tracker/product_details.dart';
 
 class ProductTile extends StatefulWidget {
   final int id;
-  const ProductTile({Key key, this.id}) : super(key: key);
+  final Function onDelete;
+  const ProductTile({Key key, this.id, this.onDelete}) : super(key: key);
 
   @override
   _ProductTileState createState() => _ProductTileState();
@@ -82,12 +83,7 @@ class _ProductTileState extends State<ProductTile> {
                     caption: 'Delete',
                     color: Colors.red,
                     icon: Icons.delete,
-                    onTap: () {
-                      dbHelper.delete(product.id);
-                      debugPrint('Deleted Product ${product.name}');
-                      //TODO Fix Ugly workaround
-                      Navigator.pushNamedAndRemoveUntil(context, "/", (route) => true);
-                      },
+                    onTap: widget.onDelete
                   ),
                 ],
               ),
