@@ -47,7 +47,7 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
           CREATE TABLE $table (
-            $columnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY NOT NULL,
             $columnName TEXT NOT NULL,
             $columnProductUrl TEXT,
             $columnPrices TEXT,
@@ -73,6 +73,7 @@ class DatabaseHelper {
     } else {
       int answer = await db.insert(table, product.toMap());
       product.id = answer;
+
       print('Product ${product.id} inserted into db.');
       
       return answer;
@@ -123,6 +124,14 @@ class DatabaseHelper {
     return await db.update(table, prod.toMap(), where: '$columnId = ?', whereArgs: [prod.id]);
   }
 
+    // We are assuming here that the id column in the map is set. The other 
+  // column values will be used to update the row.
+  Future<int> updateId(int id) async {
+    Database db = await instance.database;
+    await db.rawQuery('UPDATE $table SET $columnId = $id WHERE $columnId = $id');
+  }
+
+
   // Deletes the row specified by the id. The number of affected rows is 
   // returned. This should be 1 as long as the row exists.
   Future<int> delete(int id) async {
@@ -133,6 +142,6 @@ class DatabaseHelper {
   //Clears db
   Future<int> deleteAll() async {
     Database db = await instance.database;
-    return await db.delete(table, );
+    return await db.delete(table);
   }
 }
