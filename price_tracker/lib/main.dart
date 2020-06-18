@@ -7,10 +7,9 @@ void main() {
   runApp(MyApp());
 }
 
-
-// TODO pass Product to ProductTile
+// --TODO pass Product to ProductTile
 // TODO Add Products and Tiles via button
-// TODO Product Image Handling (async loading)
+// --TODO Product Image Handling (async loading)
 // TODO edit Product Details => Details (Settings) View (with future Graph)
 // TODO Webscraping Test
 // TODO Background Service check
@@ -56,32 +55,33 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final dbHelper = DatabaseHelper.instance;
 
-  void initState(){
+  void initState() {
     super.initState();
   }
 
   // List<double> t = [232.4535, 45455.2342, 54536.342423];
- 
 
   List<Widget> productTiles = <Widget>[];
 
   @override
   Widget build(BuildContext context) {
     // debugPrint(t.toString().substring(1, t.toString().length-1));
-    
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: ListView(
-          children: productTiles
-        ),
+        child: ListView(children: productTiles),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {
+        onPressed: () => { // TODO Open Detail Dialogue to edit Product Details
           setState(() {
-            productTiles = [...productTiles, ProductTile()];
+            productTiles = [
+              ...productTiles,
+              ProductTile(
+                product: new Product(),
+              )
+            ];
             debugPrint(productTiles.toString());
           })
         },
@@ -91,4 +91,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-

@@ -6,8 +6,8 @@ class Product {
   String productUrl;
   List<double> _prices;
   List<DateTime> _dates;
-  double targetPrice;
-  String imageUrl;
+  double targetPrice = 100;
+  String imageUrl = "https://static.digitecgalaxus.ch/Files/3/3/4/7/5/8/1/5/gata-1301_gata_1301_02.jpeg?impolicy=PictureComponent&resizeWidth=708&resizeHeight=288&resizeType=downsize";
 
 
   Product({this.name = "Product Name", this.productUrl = "http://www.google.com", this.targetPrice});
