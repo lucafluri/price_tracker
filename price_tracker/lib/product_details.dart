@@ -1,4 +1,5 @@
 import 'package:bezier_chart/bezier_chart.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/product.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,6 +38,20 @@ class _ProductDetailsState extends State<ProductDetails> {
                 return Center(
                     child: Column(
                   children: <Widget>[
+                    Container(
+                      height: 250,
+                      child: product.imageUrl != null
+                          ? CachedNetworkImage(
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(
+                                valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Colors.black54),
+                                strokeWidth: 4,
+                              ),
+                              imageUrl: product.imageUrl,
+                            )
+                          : Container(),
+                    ),
                     RaisedButton(
                       //Launch URL Button
                       onPressed: () async {
@@ -64,7 +79,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           ],
                           config: BezierChartConfig(
                             verticalIndicatorStrokeWidth: 3.0,
-                            verticalIndicatorColor: Theme.of(context).primaryColor,
+                            verticalIndicatorColor:
+                                Theme.of(context).primaryColor,
                             showVerticalIndicator: true,
                             verticalIndicatorFixedPosition: false,
                             backgroundColor: Colors.transparent,
