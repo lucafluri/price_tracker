@@ -44,8 +44,16 @@ class Product {
     // final dbHelper = DatabaseHelper.instance;
 
     this.name = await ProductParser.parseName(this.productUrl);
-    this._prices.add(await ProductParser.parsePrice(this.productUrl));
-    this._dates.add(DateTime.now());
+
+    // Save only 1 Entry per day
+    if(this._dates.length > 0 && this._dates[this._dates.length-1].difference(DateTime.now()).inHours < 24){
+      this._prices[this._prices.length-1] = (await ProductParser.parsePrice(this.productUrl));
+      this._dates[this._dates.length-1] = (DateTime.now());
+    }else{
+      this._prices.add(await ProductParser.parsePrice(this.productUrl));
+      this._dates.add(DateTime.now());
+    }
+    
     this.imageUrl = await ProductParser.parseImageUrl(this.productUrl);
 
     // dbHelper.update(this);

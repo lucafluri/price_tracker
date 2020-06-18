@@ -17,7 +17,7 @@ void main() {
 }
 
 // --TODO pass Product to ProductTile
-// TODO Add Products and Tiles via button
+// --TODO Add Products and Tiles via button
 // --TODO Product Image Handling (async loading)
 // TODO edit Product Details => Details (Settings) View (with future Graph)
 // --TODO Webscraping Test
