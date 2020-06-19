@@ -64,7 +64,6 @@ Future<int> checkPriceUnderTarget() async {
 
   for (int i = 0; i < products.length; i++) {
     //Target Price
-    //TODO edit in Details!
     if (products[i].prices[products[i].prices.length - 1] <
         products[i].targetPrice) {
       // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
@@ -158,8 +157,9 @@ Future<void> updatePrices() async {
 // --TODO Trigger Notifications after Price fall
 // TODO Show recent price change with icon in ListTile
 // TODO Enlarge ListTile (+ bigger Picture)
-// TODO Show onboarding help screens
-// TODO show fail toast if pasted link didn't work, or scraping failed
+// TODO Styling
+// --TODO Show onboarding help screens
+// --TODO show fail toast if pasted link didn't work, or scraping failed
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
