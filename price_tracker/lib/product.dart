@@ -1,9 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/product_parser.dart';
-import 'package:string_validator/string_validator.dart';
 
-import 'database_helper.dart';
 
 class Product {
   int _id;

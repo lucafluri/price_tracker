@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:price_tracker/database_helper.dart';
-import 'package:price_tracker/product.dart';
 import 'package:price_tracker/product_details.dart';
 import 'package:url_launcher/url_launcher.dart';
 

@@ -54,6 +54,7 @@ class ProductParser {
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   // returns image url string
@@ -79,6 +80,7 @@ class ProductParser {
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   // returns name string
@@ -110,6 +112,7 @@ class ProductParser {
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   static void test(String url) async {

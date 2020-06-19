@@ -142,20 +142,20 @@ Future<void> updatePrices({test: false}) async {
 
   if (countFall > 0) {
     if (countFall == 1) {
-      pushNotification(0, '${countFall} Product is cheaper',
-          'We detected that ${countFall} is cheaper today!'); //Display Notification
+      pushNotification(0, '$countFall Product is cheaper',
+          'We detected that $countFall is cheaper today!'); //Display Notification
     } else {
-      pushNotification(0, '${countFall} Products are cheaper',
-          'We detected that ${countFall} are cheaper today!'); //Display Notification
+      pushNotification(0, '$countFall Products are cheaper',
+          'We detected that $countFall are cheaper today!'); //Display Notification
     }
   }
   if (countTarget > 0) {
     if (countTarget == 1) {
-      pushNotification(1, '${countTarget} Product is under their target!',
-          'We detected that ${countTarget} Product is under the set target today!'); //Display Notification
+      pushNotification(1, '$countTarget Product is under their target!',
+          'We detected that $countTarget Product is under the set target today!'); //Display Notification
     } else {
-      pushNotification(1, '${countTarget} Products are under their target!',
-          'We detected that ${countTarget} Products are under the set targets today!'); //Display Notification
+      pushNotification(1, '$countTarget Products are under their target!',
+          'We detected that $countTarget Products are under the set targets today!'); //Display Notification
     }
   }
 }
@@ -233,6 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
   FRefreshController controller = FRefreshController();
 
   void initState() {
+    //TODO CHANGE TO 12-24 Hours
     Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
         frequency: Duration(hours: 1));
 

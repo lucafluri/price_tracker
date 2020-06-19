@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:price_tracker/product.dart';
 import 'package:sqflite/sqflite.dart';
@@ -126,7 +125,7 @@ class DatabaseHelper {
 
     // We are assuming here that the id column in the map is set. The other 
   // column values will be used to update the row.
-  Future<int> updateId(int id) async {
+  Future<void> updateId(int id) async {
     Database db = await instance.database;
     await db.rawQuery('UPDATE $table SET $columnId = $id WHERE $columnId = $id');
   }
