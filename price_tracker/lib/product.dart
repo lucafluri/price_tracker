@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/product_parser.dart';
+import 'package:string_validator/string_validator.dart';
 
 import 'database_helper.dart';
 
@@ -10,11 +11,15 @@ class Product {
   String productUrl;
   List<double> _prices = [];
   List<DateTime> _dates = [];
-  double targetPrice = 100;
-  String imageUrl = "https://static.digitecgalaxus.ch/Files/3/3/4/7/5/8/1/5/gata-1301_gata_1301_02.jpeg?impolicy=PictureComponent&resizeWidth=708&resizeHeight=288&resizeType=downsize";
+  double targetPrice = 0;
+  String imageUrl =
+      "https://static.digitecgalaxus.ch/Files/3/3/4/7/5/8/1/5/gata-1301_gata_1301_02.jpeg?impolicy=PictureComponent&resizeWidth=708&resizeHeight=288&resizeType=downsize";
 
-
-  Product({this.name = "Ducky One 2 SF", this.productUrl = "https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095", this.targetPrice});
+  Product(
+      {this.name = "Ducky One 2 SF",
+      this.productUrl =
+          "https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095",
+      this.targetPrice = 0});
 
   Product.map(dynamic obj) {
     this._id = obj['_id'];
@@ -34,47 +39,73 @@ class Product {
 
   // String prices2String(List<double> prices){
   //   String listString = prices.toString();
-  //   // for(int i = 1; i < prices.length; i++) { 
+  //   // for(int i = 1; i < prices.length; i++) {
   //   //   listString += "," + prices[i].toString();
   //   // }
   //   return listString;
   // }
 
-  Future<void> update() async{
+  Future<bool> update() async {
     // final dbHelper = DatabaseHelper.instance;
+    String parsedName = await ProductParser.parseName(this.productUrl);
+    double parsedPrice = await ProductParser.parsePrice(this.productUrl);
+    String parsedImageUrl = await ProductParser.parseImageUrl(this.productUrl);
 
-    this.name = await ProductParser.parseName(this.productUrl);
+    //Check if parsing successful, else return false
+    if (parsedName == null || parsedPrice == null || parsedImageUrl == null) {
+      debugPrint("Failed Parsing");
 
-    // Save only 1 Entry per day
-    if(this._dates.length > 0 && this._dates[this._dates.length-1].difference(DateTime.now()).inHours < 24){
-      this._prices[this._prices.length-1] = (await ProductParser.parsePrice(this.productUrl));
-      this._dates[this._dates.length-1] = (DateTime.now());
-    }else{
-      this._prices.add(await ProductParser.parsePrice(this.productUrl));
-      this._dates.add(DateTime.now());
+      return false;
+    } else {
+      this.name = parsedName;
+
+      // Save only 1 Entry per day
+      if (this._dates.length > 0 &&
+          this
+                  ._dates[this._dates.length - 1]
+                  .difference(DateTime.now())
+                  .inHours <
+              24) {
+        this._prices[this._prices.length - 1] = (parsedPrice);
+        // this._prices[this._prices.length-1] = (99);
+        this._dates[this._dates.length - 1] = (DateTime.now());
+      } else {
+        this._prices.add(parsedPrice);
+        this._dates.add(DateTime.now());
+      }
+
+      this.imageUrl = parsedImageUrl;
+
+      this.targetPrice = this.prices[this.prices.length - 1];
+      // dbHelper.update(this);
+      debugPrint(this._id.toString() + " " + this._prices.toString());
+      return true;
     }
-    
-    this.imageUrl = await ProductParser.parseImageUrl(this.productUrl);
-
-    // dbHelper.update(this);
-    debugPrint(this._id.toString() + " " + this._prices.toString());
   }
 
-  String getDomain(){
+  String getDomain() {
     var domain = DomainUtils.getDomainFromUrl(productUrl);
     return domain.sld + "." + domain.tld;
   }
-  List<double> prices2List(String prices){
-    if(prices == "null") return [];
-    return prices.substring(1, prices.length-1).split(",").map(double.parse).toList();
+
+  List<double> prices2List(String prices) {
+    if (prices == "null") return [];
+    return prices
+        .substring(1, prices.length - 1)
+        .split(",")
+        .map(double.parse)
+        .toList();
   }
 
-    List<DateTime> dates2List(String dates){
-    if(dates == "null") return [];
+  List<DateTime> dates2List(String dates) {
+    if (dates == "null") return [];
     // debugPrint(dates);
-    return dates.substring(1, dates.length-1).split(",").map((date) => DateTime.parse(date.trim())).toList();
+    return dates
+        .substring(1, dates.length - 1)
+        .split(",")
+        .map((date) => DateTime.parse(date.trim()))
+        .toList();
   }
-
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
@@ -97,7 +128,8 @@ class Product {
     this.productUrl = map['productUrl'];
     this._prices = prices2List(map['prices']);
     this._dates = dates2List(map['dates']);
-    this.targetPrice= double.parse(map['targetPrice'] != "null" ? map['targetPrice'] : "0");
-    this.imageUrl= map['imageUrl'];
+    this.targetPrice =
+        double.parse(map['targetPrice'] != "null" ? map['targetPrice'] : "0");
+    this.imageUrl = map['imageUrl'];
   }
 }

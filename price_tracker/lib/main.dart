@@ -18,7 +18,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+  Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
   print('init work manager');
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -34,32 +34,75 @@ void main() async {
   runApp(MyApp());
 }
 
-void callbackDispatcher() {
+Future<int> checkPriceFall() async {
   final dbHelper = DatabaseHelper.instance;
+
+  List<Product> products = await dbHelper.getAllProducts();
+
+  int count = 0;
+
+  for (int i = 0; i < products.length; i++) {
+    //Check difference to yesterday
+    if (products[i].prices.length > 1) {
+      if (products[i].prices[products[i].prices.length - 1] <
+          products[i].prices[products[i].prices.length - 2]) {
+        if (products[i].prices[products[i].prices.length - 1] != -1) count++;
+      }
+    }
+  }
+  return count;
+}
+
+Future<int> checkPriceUnderTarget() async {
+  final dbHelper = DatabaseHelper.instance;
+
+  List<Product> products = await dbHelper.getAllProducts();
+
+  int count = 0;
+
+  for (int i = 0; i < products.length; i++) {
+    //Target Price
+    //TODO edit in Details!
+    if (products[i].prices[products[i].prices.length - 1] <
+        products[i].targetPrice) {
+      // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
+      if (products[i].prices[products[i].prices.length - 1] != -1) count++;
+    }
+  }
+  return count;
+}
+
+void pushNotification(int id, String title, String body) async {
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'your channel id', 'your channel name', 'your channel description',
+      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin
+      .show(id, title, body, platformChannelSpecifics, payload: 'item x');
+}
+
+void callbackDispatcher() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //Init Notifications Plugin
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+  var initializationSettingsIOS = IOSInitializationSettings();
+  var initializationSettings = InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
 
   Workmanager.executeTask((taskName, inputData) async {
     switch (taskName) {
       case "Price Tracker Scraper":
         try {
-          List<Product> products = await dbHelper.getAllProducts();
-          for (int i = 0; i < products.length; i++) {
-            await products[i].update();
-            await dbHelper.update(products[i]);
-          }
+          updatePrices();
           print("Executed Task");
-          var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-              'your channel id',
-              'your channel name',
-              'your channel description',
-              importance: Importance.Max,
-              priority: Priority.High,
-              ticker: 'ticker');
-          var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-          var platformChannelSpecifics = NotificationDetails(
-              androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-          await flutterLocalNotificationsPlugin.show(
-              0, 'Task fired', 'plain body', platformChannelSpecifics,
-              payload: 'item x');
         } catch (e) {}
 
         break;
@@ -68,18 +111,53 @@ void callbackDispatcher() {
   });
 }
 
+Future<void> updatePrices() async {
+  final dbHelper = DatabaseHelper.instance;
+
+  List<Product> products = await dbHelper.getAllProducts();
+  for (int i = 0; i < products.length; i++) {
+    await products[i].update();
+    await dbHelper.update(products[i]);
+  }
+
+  products = await dbHelper.getAllProducts();
+  int countFall = await checkPriceFall();
+  int countTarget = await checkPriceUnderTarget();
+
+  if (countFall > 0) {
+    if (countFall == 1) {
+      pushNotification(0, '${countFall} Product is cheaper',
+          'We detected that ${countFall} is cheaper today!'); //Display Notification
+    } else {
+      pushNotification(0, '${countFall} Products are cheaper',
+          'We detected that ${countFall} are cheaper today!'); //Display Notification
+    }
+  }
+  if (countTarget > 0) {
+    if (countTarget == 1) {
+      pushNotification(1, '${countTarget} Product is under their target!',
+          'We detected that ${countTarget} is under the set target today!'); //Display Notification
+    } else {
+      pushNotification(1, '${countTarget} Products are under their target!',
+          'We detected that ${countTarget} are under the set target today!'); //Display Notification
+    }
+  }
+}
+
 // --TODO pass Product to ProductTile
 // --TODO Add Products and Tiles via button
 // --TODO Product Image Handling (async loading)
-// TODO edit Product Details => Details (Settings) View (with future Graph)
+// --TODO edit Product Details => Details (Settings) View (with future Graph)
 // --TODO Webscraping Test
-// TODO Background Service check
-// TODO Notifications Test
-// TODO Chart from price data
-// TODO Trigger regular Scrapes of all Products in db
-// TODO Trigger Notifications after Price fall
+// --TODO Background Service check
+// --TODO Notifications Test
+// --TODO Chart from price data
+// --TODO Trigger regular Scrapes of all Products in db
+// --TODO Trigger Notifications after Price fall
 // TODO Show recent price change with icon in ListTile
 // TODO Enlarge ListTile (+ bigger Picture)
+// TODO Show onboarding help screens
+// TODO show fail toast if pasted link didn't work, or scraping failed
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -138,14 +216,36 @@ class _MyHomePageState extends State<MyHomePage> {
     // debugPrint((await dbHelper.getProduct(id)).id.toString());
   }
 
-  Future<void> updatePrices() async {
-    List<Product> products = await dbHelper.getAllProducts();
-    for (int i = 0; i < products.length; i++) {
-      await products[i].update();
-      await dbHelper.update(products[i]);
-      setState(() {
-        controller.refreshState = RefreshState.REFRESHING;
-      });
+  void addProduct() async {
+    String input = await FlutterClipboardManager.copyFromClipBoard();
+    // debugPrint(ProductParser.validUrl(input).toString());
+
+    List<String> inputs = (await showTextInputDialog(
+      context: context,
+      textFields: [DialogTextField(initialText: ProductParser.validUrl(input) ? input : "", hintText: ProductParser.validUrl(input) ? "Paste from Clipboard" : "" )],
+      title: "Add new Product",
+      message:
+          "Paste Link to Product. \n\nSupported Stores:\nDigitec.ch, Galaxus.ch",
+    ));
+    input = inputs != null ? inputs[0] : inputs;
+
+    if (input != null && ProductParser.validUrl(input)) {
+      Toast.show("Product details are being parsed", context,
+          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      Product p = Product(productUrl: input);
+      if (await p.update()) {
+        await dbHelper.insert(p);
+      } else {
+        Toast.show("Parsing error, invalid store URL?", context,
+            duration: 4, gravity: Toast.BOTTOM);
+        // await FlutterClipboardManager.copyToClipBoard("");
+      }
+
+      setState(() {});
+    } else {
+      if (input != null)
+        Toast.show("Invalid URL or unsupported store", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     }
   }
 
@@ -162,10 +262,8 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.delete_forever),
+            icon: Icon(Icons.help_outline),
             onPressed: () {
-              debugPrint("Deleted all products");
-              dbHelper.deleteAll();
               setState(() {});
             },
           )
@@ -216,7 +314,8 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           headerHeight: 50,
           onRefresh: () async {
-            updatePrices().then((e) => controller.finishRefresh());
+            updatePrices()
+                .then((e) => {controller.finishRefresh(), setState(() {})});
           },
           child: FutureBuilder(
               future: dbHelper.getAllProducts(),
@@ -233,25 +332,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           dbHelper.delete(snapshot.data[index].id);
                           debugPrint(
                               'Deleted Product ${snapshot.data[index].name}');
-                          var androidPlatformChannelSpecifics =
-                              AndroidNotificationDetails(
-                                  'your channel id',
-                                  'your channel name',
-                                  'your channel description',
-                                  importance: Importance.Max,
-                                  priority: Priority.High,
-                                  ticker: 'ticker');
-                          var iOSPlatformChannelSpecifics =
-                              IOSNotificationDetails();
-                          var platformChannelSpecifics = NotificationDetails(
-                              androidPlatformChannelSpecifics,
-                              iOSPlatformChannelSpecifics);
-                          await flutterLocalNotificationsPlugin.show(
-                              0,
-                              'Task fired',
-                              'plain body',
-                              platformChannelSpecifics,
-                              payload: 'item x');
                           setState(() {});
                         },
                       );
@@ -264,31 +344,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          String input = await FlutterClipboardManager.copyFromClipBoard();
-          // debugPrint(ProductParser.validUrl(input).toString());
-          if (!ProductParser.validUrl(input)) {
-            input = (await showTextInputDialog(
-              context: context,
-              textFields: [DialogTextField()],
-              title: "Add new Product",
-              message:
-                  "Paste Link to Product. \n\nSupported Stores:\nDigitec.ch, Galaxus.ch",
-            ))[0];
-          }
-          if (input != null && ProductParser.validUrl(input)) {
-            Toast.show("Product Details are being parsed", context,
-                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-            Product p = Product(productUrl: input);
-            await p.update();
-            await dbHelper.insert(p);
-            setState(() {});
-          } else {
-            if (input != null)
-              Toast.show("Invalid URL or unsupported store", context,
-                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-          }
-        },
+        onPressed: addProduct,
         tooltip: 'Add Product',
         child: Icon(Icons.add),
       ),

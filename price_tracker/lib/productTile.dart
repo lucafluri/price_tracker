@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:price_tracker/database_helper.dart';
 import 'package:price_tracker/product.dart';
 import 'package:price_tracker/product_details.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductTile extends StatefulWidget {
   final int id;
@@ -36,8 +37,11 @@ class _ProductTileState extends State<ProductTile> {
                       Navigator.of(context).push(new MaterialPageRoute(
                           builder: (context) =>
                               ProductDetails(product: product)));
-                    }, // TODO Open Detail View
-                    onLongPress: () {}, // TODO Open Link
+                    }, 
+                    onLongPress: () async{if (await canLaunch(product.productUrl))
+                            await launch(product.productUrl);
+                          else
+                            throw "Could not launch URL";}, // TODO Open Link
                     dense: false,
                     leading: Container(
                       //Image Placeholder
@@ -61,10 +65,16 @@ class _ProductTileState extends State<ProductTile> {
                         width: 50,
                         height: 50,
                         child: Center(
-                            child: Text(product.prices.length > 0
-                                ? product.prices[product.prices.length - 1]
-                                    .toString()
-                                : "--"))),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(product.prices.length > 0
+                                    ? product.prices[product.prices.length - 1]
+                                        .toString()
+                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                Text(product.targetPrice.toString(), style: TextStyle(color: Colors.grey, fontSize: 12 ))
+                              ],
+                            ))),
                     title: Text(product.name),
                     subtitle: Text(product.getDomain(),
                         overflow: TextOverflow.ellipsis),
