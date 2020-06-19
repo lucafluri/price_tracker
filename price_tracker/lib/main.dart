@@ -30,6 +30,7 @@ String appName = "Price Tracker v0.1.0";
 // TODO Styling
 // --TODO Show onboarding help screens
 // --TODO show fail toast if pasted link didn't work, or scraping failed
+// TODO Offline Functionality => Detect Internet State and Placeholder Images
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -327,6 +328,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         child: FRefresh(
           controller: controller,
+          headerTrigger: 75,
           headerBuilder: (setter, constraints) {
             controller.setOnStateChangedCallback((state) {
               setter(() {
@@ -371,29 +373,36 @@ class _MyHomePageState extends State<MyHomePage> {
           onRefresh: () async {
             await updatePrices();
 
-            setState(() {
-              controller.finishRefresh();
-            });
+            // Check if MyHomePage is still mounted otherwise setState gets called on a unmounted widget => crash
+            if (this.mounted)
+              setState(() {
+                controller.finishRefresh();
+              });
           },
           child: FutureBuilder(
               future: dbHelper.getAllProducts(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ProductTile(
-                        id: snapshot.data[index].id,
-                        onDelete: () async {
-                          dbHelper.delete(snapshot.data[index].id);
-                          debugPrint(
-                              'Deleted Product ${snapshot.data[index].name}');
-                          setState(() {});
+                  return Column(
+                    children: <Widget>[
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ProductTile(
+                            id: snapshot.data[index].id,
+                            onDelete: () async {
+                              dbHelper.delete(snapshot.data[index].id);
+                              debugPrint(
+                                  'Deleted Product ${snapshot.data[index].name}');
+                              setState(() {});
+                            },
+                          );
                         },
-                      );
-                    },
+                      ),
+                      Container(height: 70)
+                    ],
                   );
                 } else {
                   return Center(child: CircularProgressIndicator());

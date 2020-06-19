@@ -31,16 +31,22 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.product.name),
-          leading: BackButton(onPressed: () {Navigator.of(context).pushNamedAndRemoveUntil("/", (route) => false);},),
+          leading: BackButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil("/", (route) => false);
+            },
+          ),
         ),
-
         body: FutureBuilder(
             future: dbHelper.getProduct(widget.product.id),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 Product product = snapshot.data;
                 sliderValue = product.targetPrice;
-                if(sliderValue > product.prices[product.prices.length - 1] || sliderValue < 0) sliderValue = product.prices[product.prices.length - 1]; 
+                if (sliderValue > product.prices[product.prices.length - 1] ||
+                    sliderValue < 0)
+                  sliderValue = product.prices[product.prices.length - 1];
                 List<DataPoint<DateTime>> chartData = [];
                 for (int i = 0; i < product.prices.length; i++) {
                   chartData.add(DataPoint(
@@ -51,19 +57,25 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: Center(
                       child: Column(
                     children: <Widget>[
-                      Container(
-                        height: 250,
-                        child: product.imageUrl != null
-                            ? CachedNetworkImage(
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                      Colors.black54),
-                                  strokeWidth: 4,
-                                ),
-                                imageUrl: product.imageUrl,
-                              )
-                            : Container(),
+                      Text(
+                          "Last Update: ${formatter.format(product.dates[product.dates.length - 1].toLocal())}"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 250,
+                          child: product.imageUrl != null
+                              ? CachedNetworkImage(
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(
+                                    valueColor: new AlwaysStoppedAnimation<Color>(
+                                        Colors.black54),
+                                    strokeWidth: 4,
+                                  ),
+                                  imageUrl: product.imageUrl,
+                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                )
+                              : Container(),
+                        ),
                       ),
                       RaisedButton(
                         //Launch URL Button
@@ -75,8 +87,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                         },
                         child: Text("Open Product Site"),
                       ),
-                      Text(
-                          "Last Update: ${formatter.format(product.dates[product.dates.length - 1].toLocal())}"),
                       Text("Target Price: " + (sliderValue).toString()),
                       Slider(
                         value: sliderValue ??
@@ -89,7 +99,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                             dbHelper.update(product);
                           });
                         },
-                        max: max(product.prices[product.prices.length - 1], product.prices.length > 1 ? product.prices[product.prices.length - 2] : product.prices[product.prices.length - 1]),
+                        max: max(
+                            product.prices[product.prices.length - 1],
+                            product.prices.length > 1
+                                ? product.prices[product.prices.length - 2]
+                                : product.prices[product.prices.length - 1]),
                         min: 0,
                         // label: "Target Price",
                         activeColor: Theme.of(context).primaryColor,

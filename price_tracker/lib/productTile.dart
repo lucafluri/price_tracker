@@ -16,6 +16,7 @@ class ProductTile extends StatefulWidget {
 
 class _ProductTileState extends State<ProductTile> {
   final dbHelper = DatabaseHelper.instance;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,10 @@ class _ProductTileState extends State<ProductTile> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var product = snapshot.data;
+
+            //Price Difference since last day => used for coloring
+            int priceDifference = product.prices.length > 1 ? product.prices[product.prices.length - 1] - product.prices[product.prices.length - 1] : 0;
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Slidable(
@@ -46,15 +51,13 @@ class _ProductTileState extends State<ProductTile> {
                       //Image Placeholder
                       // color: Colors.indigoAccent,
                       width: 80,
+                      height: 80,
                       child: product.imageUrl != null
                           ? CachedNetworkImage(
                               placeholder: (context, url) =>
-                                  CircularProgressIndicator(
-                                valueColor: new AlwaysStoppedAnimation<Color>(
-                                    Colors.black54),
-                                strokeWidth: 4,
-                              ),
+                                  Center(child: Text("..."),),
                               imageUrl: product.imageUrl,
+                              errorWidget: (context, url, error) => Icon(Icons.error),
                             )
                           : Container(),
                     ),
@@ -70,7 +73,7 @@ class _ProductTileState extends State<ProductTile> {
                                 Text(product.prices.length > 0
                                     ? product.prices[product.prices.length - 1]
                                         .toString()
-                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: priceDifference == 0 ? Colors.white : priceDifference > 0 ? Colors.green : Colors.red)),
                                 Text(product.targetPrice.toString(), style: TextStyle(color: Colors.grey, fontSize: 12 ))
                               ],
                             ))),

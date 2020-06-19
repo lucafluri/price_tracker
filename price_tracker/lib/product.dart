@@ -2,7 +2,6 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/product_parser.dart';
 
-
 class Product {
   int _id;
   String name;
@@ -64,12 +63,24 @@ class Product {
                   .difference(DateTime.now())
                   .inHours <
               24) {
-        if(!test) this._prices[this._prices.length - 1] = (parsedPrice);
-        if(test) this._prices[this._prices.length-1] = (1);
-        this._dates[this._dates.length - 1] = (DateTime.now());
+        if (!test) {
+          this._prices[this._prices.length - 1] = (parsedPrice);
+          this._dates[this._dates.length - 1] = (DateTime.now());
+        }
+        if (test) {
+          this._prices[this._prices.length - 1] = (1);
+          this._dates[this._dates.length - 1] =
+              (DateTime.now().subtract(Duration(days: 1)));
+        }
       } else {
-        this._prices.add(parsedPrice);
-        this._dates.add(DateTime.now());
+        if (!test) {
+          this._prices.add(parsedPrice);
+          this._dates.add(DateTime.now());
+        }
+        if (test) {
+          this._prices.add(1);
+          this._dates.add(DateTime.now().subtract(Duration(days: 1)));
+        }
       }
 
       this.imageUrl = parsedImageUrl;
