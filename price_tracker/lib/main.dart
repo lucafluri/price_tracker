@@ -25,12 +25,12 @@ String appName = "Price Tracker v0.1.0";
 // --TODO Chart from price data
 // --TODO Trigger regular Scrapes of all Products in db
 // --TODO Trigger Notifications after Price fall
-// TODO Show recent price change with icon in ListTile
+// --TODO Show recent price change with icon in ListTile
 // TODO Enlarge ListTile (+ bigger Picture)
 // TODO Styling
 // --TODO Show onboarding help screens
 // --TODO show fail toast if pasted link didn't work, or scraping failed
-// TODO Offline Functionality => Detect Internet State and Placeholder Images
+// TODO Offline Functionality => Detect Internet State and (Placeholder Images) disable adding
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
