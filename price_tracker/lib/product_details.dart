@@ -3,6 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/product.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
+
 
 import 'database_helper.dart';
 
@@ -16,6 +18,7 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   final dbHelper = DatabaseHelper.instance;
+  var formatter = new DateFormat('yyyy-MM-dd--HH:mm:ss');
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +65,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       },
                       child: Text("Open Product Site"),
                     ),
+                    Text("Last Update: ${formatter.format(product.dates[product.dates.length-1].toLocal())}"),
                     Container(
                         //Bezier Chart Container
                         height: MediaQuery.of(context).size.height / 2,

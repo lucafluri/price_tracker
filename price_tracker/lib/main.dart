@@ -1,6 +1,7 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frefresh/frefresh.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
@@ -11,9 +12,60 @@ import 'package:price_tracker/product_parser.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:toast/toast.dart';
 import 'package:xpath_parse/xpath_selector.dart';
+import 'package:workmanager/workmanager.dart';
 
-void main() {
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+  print('init work manager');
+
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+  var initializationSettingsIOS = IOSInitializationSettings();
+  var initializationSettings = InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+
   runApp(MyApp());
+}
+
+void callbackDispatcher() {
+  final dbHelper = DatabaseHelper.instance;
+
+  Workmanager.executeTask((taskName, inputData) async {
+    switch (taskName) {
+      case "Price Tracker Scraper":
+        try {
+          List<Product> products = await dbHelper.getAllProducts();
+          for (int i = 0; i < products.length; i++) {
+            await products[i].update();
+            await dbHelper.update(products[i]);
+          }
+          print("Executed Task");
+          var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+              'your channel id',
+              'your channel name',
+              'your channel description',
+              importance: Importance.Max,
+              priority: Priority.High,
+              ticker: 'ticker');
+          var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+          var platformChannelSpecifics = NotificationDetails(
+              androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+              0, 'Task fired', 'plain body', platformChannelSpecifics,
+              payload: 'item x');
+        } catch (e) {}
+
+        break;
+    }
+    return Future.value(true);
+  });
 }
 
 // --TODO pass Product to ProductTile
@@ -66,6 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
   FRefreshController controller = FRefreshController();
 
   void initState() {
+    Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
+        frequency: Duration(hours: 1));
+
     super.initState();
   }
 
@@ -172,13 +227,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     shrinkWrap: true,
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ProductTile(id: snapshot.data[index].id, onDelete: () {
-                      dbHelper.delete(snapshot.data[index].id);
-                      debugPrint('Deleted Product ${snapshot.data[index].name}');
-                      setState(() {
-                        
-                      });
-                      },);
+                      return ProductTile(
+                        id: snapshot.data[index].id,
+                        onDelete: () async {
+                          dbHelper.delete(snapshot.data[index].id);
+                          debugPrint(
+                              'Deleted Product ${snapshot.data[index].name}');
+                          var androidPlatformChannelSpecifics =
+                              AndroidNotificationDetails(
+                                  'your channel id',
+                                  'your channel name',
+                                  'your channel description',
+                                  importance: Importance.Max,
+                                  priority: Priority.High,
+                                  ticker: 'ticker');
+                          var iOSPlatformChannelSpecifics =
+                              IOSNotificationDetails();
+                          var platformChannelSpecifics = NotificationDetails(
+                              androidPlatformChannelSpecifics,
+                              iOSPlatformChannelSpecifics);
+                          await flutterLocalNotificationsPlugin.show(
+                              0,
+                              'Task fired',
+                              'plain body',
+                              platformChannelSpecifics,
+                              payload: 'item x');
+                          setState(() {});
+                        },
+                      );
                     },
                   );
                 } else {
@@ -191,7 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           String input = await FlutterClipboardManager.copyFromClipBoard();
           // debugPrint(ProductParser.validUrl(input).toString());
-          if(!ProductParser.validUrl(input)){
+          if (!ProductParser.validUrl(input)) {
             input = (await showTextInputDialog(
               context: context,
               textFields: [DialogTextField()],
@@ -201,14 +277,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ))[0];
           }
           if (input != null && ProductParser.validUrl(input)) {
-            Toast.show("Product Details are being parsed", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+            Toast.show("Product Details are being parsed", context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
             Product p = Product(productUrl: input);
             await p.update();
             await dbHelper.insert(p);
-            setState(() {
-            });
-          }else{
-            if(input != null) Toast.show("Invalid URL or unsupported store", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+            setState(() {});
+          } else {
+            if (input != null)
+              Toast.show("Invalid URL or unsupported store", context,
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
           }
         },
         tooltip: 'Add Product',
