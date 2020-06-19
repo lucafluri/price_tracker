@@ -76,7 +76,6 @@ class Product {
 
       this.imageUrl = parsedImageUrl;
 
-      this.targetPrice = this.prices[this.prices.length - 1];
       // dbHelper.update(this);
       debugPrint(this._id.toString() + " " + this._prices.toString());
       return true;

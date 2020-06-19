@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frefresh/frefresh.dart';
-import 'package:html/parser.dart';
-import 'package:http/http.dart';
 import 'package:price_tracker/database_helper.dart';
 import 'package:price_tracker/product.dart';
 import 'package:price_tracker/productTile.dart';
 import 'package:price_tracker/product_parser.dart';
-import 'package:basic_utils/basic_utils.dart';
+import 'package:price_tracker/intro.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
-import 'package:xpath_parse/xpath_selector.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:after_layout/after_layout.dart';
+
+String appName = "Price Tracker v0.1.0";
+
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -164,7 +166,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Price Tracker',
+      title: appName,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         // primarySwatch: Colors.yellow,
@@ -174,10 +177,43 @@ class MyApp extends StatelessWidget {
       ),
 
       //Routes
-      initialRoute: "/",
+      initialRoute: "/splash",
       routes: {
-        "/": (context) => MyHomePage(title: 'Price Tracker'),
+        "/splash": (context) => Splash(),
+        "/": (context) => MyHomePage(title: appName),
+        "/intro": (context) => Intro(),
       },
+    );
+  }
+}
+
+class Splash extends StatefulWidget {
+  @override
+  SplashState createState() => new SplashState();
+}
+
+class SplashState extends State<Splash> with AfterLayoutMixin<Splash>{
+  Future checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool _seen = (prefs.getBool('seen') ?? false);
+
+    if (_seen) {
+      Navigator.of(context).pushNamedAndRemoveUntil("/", (route) => false);
+    } else {
+      await prefs.setBool('seen', true);
+      Navigator.of(context).pushNamedAndRemoveUntil("/intro", (route) => false);
+    }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) => checkFirstSeen();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: new Center(
+        child: new CircularProgressIndicator(),
+      ),
     );
   }
 }
@@ -222,7 +258,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     List<String> inputs = (await showTextInputDialog(
       context: context,
-      textFields: [DialogTextField(initialText: ProductParser.validUrl(input) ? input : "", hintText: ProductParser.validUrl(input) ? "Paste from Clipboard" : "" )],
+      textFields: [
+        DialogTextField(
+            initialText: ProductParser.validUrl(input) ? input : "",
+            hintText:
+                ProductParser.validUrl(input) ? "Paste from Clipboard" : "")
+      ],
       title: "Add new Product",
       message:
           "Paste Link to Product. \n\nSupported Stores:\nDigitec.ch, Galaxus.ch",
@@ -264,6 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(Icons.help_outline),
             onPressed: () {
+              Navigator.of(context).pushNamed("/intro");
               setState(() {});
             },
           )

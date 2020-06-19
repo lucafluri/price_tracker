@@ -41,6 +41,12 @@ dependencies:
   toast: ^0.1.5
   url_launcher: ^5.4.11
   bezier_chart: ^1.0.17+1
+  intro_slider: ^2.3.1
+  shared_preferences: ^0.5.7+3
+  after_layout: ^1.0.7+2
+
+
+
 
 
 
