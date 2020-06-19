@@ -73,7 +73,7 @@ class _ProductTileState extends State<ProductTile> {
                                 Text(product.prices.length > 0
                                     ? product.prices[product.prices.length - 1]
                                         .toString()
-                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: priceDifference == 0 ? Colors.white : priceDifference > 0 ? Colors.green : Colors.red)),
+                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: priceDifference == 0 ? Colors.white : priceDifference > 0 ? Colors.green : Colors.red)),
                                 Text(product.targetPrice.toString(), style: TextStyle(color: Colors.grey, fontSize: 12 ))
                               ],
                             ))),

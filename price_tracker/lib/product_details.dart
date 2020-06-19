@@ -57,8 +57,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: Center(
                       child: Column(
                     children: <Widget>[
-                      Text(
-                          "Last Update: ${formatter.format(product.dates[product.dates.length - 1].toLocal())}"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                            "Last Update: ${formatter.format(product.dates[product.dates.length - 1].toLocal())}"),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -77,68 +80,93 @@ class _ProductDetailsState extends State<ProductDetails> {
                               : Container(),
                         ),
                       ),
-                      RaisedButton(
-                        //Launch URL Button
-                        onPressed: () async {
-                          if (await canLaunch(product.productUrl))
-                            await launch(product.productUrl);
-                          else
-                            throw "Could not launch URL";
-                        },
-                        child: Text("Open Product Site"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RaisedButton(
+                          //Launch URL Button
+                          onPressed: () async {
+                            if (await canLaunch(product.productUrl))
+                              await launch(product.productUrl);
+                            else
+                              throw "Could not launch URL";
+                          },
+                          child: Text("Open Product Site"),
+                        ),
                       ),
-                      Text("Target Price: " + (sliderValue).toString()),
-                      Slider(
-                        value: sliderValue ??
-                            product.prices[product.prices.length - 1] - 1,
-                        onChanged: (e) {
-                          setState(() {
-                            e = roundDouble(e, 0);
-                            sliderValue = e;
-                            product.targetPrice = e;
-                            dbHelper.update(product);
-                          });
-                        },
-                        max: max(
-                            product.prices[product.prices.length - 1],
-                            product.prices.length > 1
-                                ? product.prices[product.prices.length - 2]
-                                : product.prices[product.prices.length - 1]),
-                        min: 0,
-                        // label: "Target Price",
-                        activeColor: Theme.of(context).primaryColor,
-                        // divisions: 10,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Current Price: ${product.prices[product.prices.length-1]}.-", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       ),
-                      Container(
-                          //Bezier Chart Container
-                          height: MediaQuery.of(context).size.height / 2,
-                          width: MediaQuery.of(context).size.width,
-                          child: BezierChart(
-                            fromDate: product.dates[0],
-                            toDate: DateTime.now(),
-                            selectedDate:
-                                product.dates[product.dates.length - 1],
-                            bezierChartScale: BezierChartScale.WEEKLY,
-                            series: [
-                              BezierLine(
-                                label: "Price",
-                                data: chartData,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Divider(color: Colors.grey,),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(child: Column(
+                          children: <Widget>[
+                            Text("Target Price: " + (sliderValue).toString() + ".-", style: TextStyle(fontSize: 17)),
+                            Slider(
+                          value: sliderValue ??
+                              product.prices[product.prices.length - 1] - 1,
+                          onChanged: (e) {
+                            setState(() {
+                              e = roundDouble(e, 0);
+                              sliderValue = e;
+                              product.targetPrice = e;
+                              dbHelper.update(product);
+                            });
+                          },
+                          max: max(
+                              product.prices[product.prices.length - 1],
+                              product.prices.length > 1
+                                  ? product.prices[product.prices.length - 2]
+                                  : product.prices[product.prices.length - 1]),
+                          min: 0,
+                          // label: "Target Price",
+                          activeColor: Theme.of(context).primaryColor,
+                          // divisions: 10,
+                        ),
+                          ],
+                        )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Divider(color: Colors.grey,),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 30, left: 20, right: 20),
+                        child: Container(
+                            //Bezier Chart Container
+                            height: MediaQuery.of(context).size.height / 2,
+                            width: MediaQuery.of(context).size.width,
+                            child: BezierChart(
+                              fromDate: product.dates[0],
+                              toDate: DateTime.now(),
+                              selectedDate:
+                                  product.dates[product.dates.length - 1],
+                              bezierChartScale: BezierChartScale.WEEKLY,
+                              series: [
+                                BezierLine(
+                                  label: "Price",
+                                  data: chartData,
+                                ),
+                              ],
+                              config: BezierChartConfig(
+                                verticalIndicatorStrokeWidth: 3.0,
+                                verticalIndicatorColor:
+                                    Theme.of(context).primaryColor,
+                                showVerticalIndicator: true,
+                                verticalIndicatorFixedPosition: false,
+                                backgroundColor: Colors.transparent,
+                                footerHeight: 30.0,
+                                displayYAxis: true,
+                                displayLinesXAxis: true,
+                                updatePositionOnTap: false,
+                                pinchZoom: true,
                               ),
-                            ],
-                            config: BezierChartConfig(
-                              verticalIndicatorStrokeWidth: 3.0,
-                              verticalIndicatorColor:
-                                  Theme.of(context).primaryColor,
-                              showVerticalIndicator: true,
-                              verticalIndicatorFixedPosition: false,
-                              backgroundColor: Colors.transparent,
-                              footerHeight: 30.0,
-                              displayYAxis: true,
-                              displayLinesXAxis: true,
-                              updatePositionOnTap: false,
-                              pinchZoom: true,
-                            ),
-                          )),
+                            )),
+                      ),
 
                       // Text(product.imageUrl.toString()),
                       // Text(product.prices.toString()),
