@@ -160,8 +160,6 @@ Future<void> updatePrices({test: false}) async {
   }
 }
 
-
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -267,8 +265,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ProductParser.validUrl(input) ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
-      message:
-          "Paste Link to Product. \n\nSupported Stores:\nDigitec.ch, Galaxus.ch",
+      message: "Paste Link to Product. \n\nSupported Stores:\n" +
+          ProductParser.possibleDomains
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", ""),
     ));
     input = inputs != null ? inputs[0] : inputs;
 
@@ -312,15 +313,15 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           FlatButton(
-            child: Text("TEST", style: TextStyle(color: Colors.black),),
-            
-            onPressed: () async{
+            child: Text(
+              "TEST",
+              style: TextStyle(color: Colors.black),
+            ),
+            onPressed: () async {
               await updatePrices(test: true);
-              setState(() {
-                
-              });
+              setState(() {});
             },
-          )
+          ),
         ],
       ),
       body: Container(
@@ -336,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 } else if (controller.refreshState == RefreshState.FINISHING) {
                   textRefresh = "Refresh completed";
                 } else {
-                  textRefresh = "Loading...";
+                  textRefresh = "Pull to Refresh";
                 }
               });
             });
@@ -369,8 +370,10 @@ class _MyHomePageState extends State<MyHomePage> {
           headerHeight: 50,
           onRefresh: () async {
             await updatePrices();
-            
-            setState(() {controller.finishRefresh();});
+
+            setState(() {
+              controller.finishRefresh();
+            });
           },
           child: FutureBuilder(
               future: dbHelper.getAllProducts(),
