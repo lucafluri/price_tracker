@@ -40,6 +40,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               if (snapshot.hasData) {
                 Product product = snapshot.data;
                 sliderValue = product.targetPrice;
+                if(sliderValue > product.prices[product.prices.length - 1] || sliderValue < 0) sliderValue = product.prices[product.prices.length - 1]; 
                 List<DataPoint<DateTime>> chartData = [];
                 for (int i = 0; i < product.prices.length; i++) {
                   chartData.add(DataPoint(
@@ -88,7 +89,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             dbHelper.update(product);
                           });
                         },
-                        max: product.prices[product.prices.length - 1],
+                        max: max(product.prices[product.prices.length - 1], product.prices.length > 1 ? product.prices[product.prices.length - 2] : product.prices[product.prices.length - 1]),
                         min: 0,
                         // label: "Target Price",
                         activeColor: Theme.of(context).primaryColor,

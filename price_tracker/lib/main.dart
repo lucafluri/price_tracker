@@ -15,6 +15,21 @@ import 'package:after_layout/after_layout.dart';
 
 String appName = "Price Tracker v0.1.0";
 
+// --TODO pass Product to ProductTile
+// --TODO Add Products and Tiles via button
+// --TODO Product Image Handling (async loading)
+// --TODO edit Product Details => Details (Settings) View (with future Graph)
+// --TODO Webscraping Test
+// --TODO Background Service check
+// --TODO Notifications Test
+// --TODO Chart from price data
+// --TODO Trigger regular Scrapes of all Products in db
+// --TODO Trigger Notifications after Price fall
+// TODO Show recent price change with icon in ListTile
+// TODO Enlarge ListTile (+ bigger Picture)
+// TODO Styling
+// --TODO Show onboarding help screens
+// --TODO show fail toast if pasted link didn't work, or scraping failed
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -112,12 +127,12 @@ void callbackDispatcher() async {
   });
 }
 
-Future<void> updatePrices() async {
+Future<void> updatePrices({test: false}) async {
   final dbHelper = DatabaseHelper.instance;
 
   List<Product> products = await dbHelper.getAllProducts();
   for (int i = 0; i < products.length; i++) {
-    await products[i].update();
+    await products[i].update(test: test);
     await dbHelper.update(products[i]);
   }
 
@@ -137,29 +152,15 @@ Future<void> updatePrices() async {
   if (countTarget > 0) {
     if (countTarget == 1) {
       pushNotification(1, '${countTarget} Product is under their target!',
-          'We detected that ${countTarget} is under the set target today!'); //Display Notification
+          'We detected that ${countTarget} Product is under the set target today!'); //Display Notification
     } else {
       pushNotification(1, '${countTarget} Products are under their target!',
-          'We detected that ${countTarget} are under the set target today!'); //Display Notification
+          'We detected that ${countTarget} Products are under the set targets today!'); //Display Notification
     }
   }
 }
 
-// --TODO pass Product to ProductTile
-// --TODO Add Products and Tiles via button
-// --TODO Product Image Handling (async loading)
-// --TODO edit Product Details => Details (Settings) View (with future Graph)
-// --TODO Webscraping Test
-// --TODO Background Service check
-// --TODO Notifications Test
-// --TODO Chart from price data
-// --TODO Trigger regular Scrapes of all Products in db
-// --TODO Trigger Notifications after Price fall
-// TODO Show recent price change with icon in ListTile
-// TODO Enlarge ListTile (+ bigger Picture)
-// TODO Styling
-// --TODO Show onboarding help screens
-// --TODO show fail toast if pasted link didn't work, or scraping failed
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -192,7 +193,7 @@ class Splash extends StatefulWidget {
   SplashState createState() => new SplashState();
 }
 
-class SplashState extends State<Splash> with AfterLayoutMixin<Splash>{
+class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   Future checkFirstSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
@@ -308,6 +309,16 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed("/intro");
               setState(() {});
             },
+          ),
+          FlatButton(
+            child: Text("TEST", style: TextStyle(color: Colors.black),),
+            
+            onPressed: () async{
+              await updatePrices(test: true);
+              setState(() {
+                
+              });
+            },
           )
         ],
       ),
@@ -356,8 +367,9 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           headerHeight: 50,
           onRefresh: () async {
-            updatePrices()
-                .then((e) => {controller.finishRefresh(), setState(() {})});
+            await updatePrices();
+            
+            setState(() {controller.finishRefresh();});
           },
           child: FutureBuilder(
               future: dbHelper.getAllProducts(),

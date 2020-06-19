@@ -45,7 +45,7 @@ class Product {
   //   return listString;
   // }
 
-  Future<bool> update() async {
+  Future<bool> update({bool test = false}) async {
     // final dbHelper = DatabaseHelper.instance;
     String parsedName = await ProductParser.parseName(this.productUrl);
     double parsedPrice = await ProductParser.parsePrice(this.productUrl);
@@ -66,8 +66,8 @@ class Product {
                   .difference(DateTime.now())
                   .inHours <
               24) {
-        this._prices[this._prices.length - 1] = (parsedPrice);
-        // this._prices[this._prices.length-1] = (99);
+        if(!test) this._prices[this._prices.length - 1] = (parsedPrice);
+        if(test) this._prices[this._prices.length-1] = (1);
         this._dates[this._dates.length - 1] = (DateTime.now());
       } else {
         this._prices.add(parsedPrice);
