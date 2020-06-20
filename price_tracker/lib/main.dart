@@ -194,6 +194,10 @@ class Splash extends StatefulWidget {
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   Future checkFirstSeen() async {
+    //TODO CHANGE TO 12-24 Hours
+    Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
+        frequency: Duration(hours: 1));
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
 
@@ -232,10 +236,6 @@ class _MyHomePageState extends State<MyHomePage> {
   FRefreshController controller = FRefreshController();
 
   void initState() {
-    //TODO CHANGE TO 12-24 Hours
-    Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
-        frequency: Duration(hours: 1));
-
     super.initState();
   }
 

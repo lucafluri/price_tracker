@@ -101,6 +101,7 @@ class ProductParser {
           final regexp = RegExp(
               r'[<]strong[>](.*)[<][\/]strong[>]\s*[<]span[>](.*)[<][\/]span[>]'); //Find first double
           final match = regexp.firstMatch(name);
+          // TODO doesn't match => brand name missing
           return match.group(1).replaceAllMapped(RegExp(r"<!--.*?-->"),
                   (match) {
                 return "";
