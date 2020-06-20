@@ -1,12 +1,12 @@
+import 'package:price_tracker/utils/database_helper.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frefresh/frefresh.dart';
-import 'package:price_tracker/database_helper.dart';
-import 'package:price_tracker/product.dart';
+import 'package:price_tracker/classes/product.dart';
 import 'package:price_tracker/productTile.dart';
-import 'package:price_tracker/product_parser.dart';
+import 'package:price_tracker/utils/product_parser.dart';
 import 'package:price_tracker/intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';

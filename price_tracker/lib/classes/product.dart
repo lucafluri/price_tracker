@@ -1,6 +1,6 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:price_tracker/product_parser.dart';
+import 'package:price_tracker/utils/product_parser.dart';
 import 'package:intl/intl.dart';
 
 class Product {

@@ -1,12 +1,12 @@
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:price_tracker/product.dart';
+import 'package:price_tracker/classes/product.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 
-import 'database_helper.dart';
+import 'package:price_tracker/utils/database_helper.dart';
 
 double roundDouble(double value, int places) {
   double mod = pow(10.0, places);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'package:price_tracker/product_parser.dart';
+import 'package:price_tracker/utils/product_parser.dart';
 
 class Intro extends StatefulWidget {
   Intro({Key key}) : super(key: key);

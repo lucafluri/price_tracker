@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:price_tracker/product.dart';
+import 'package:price_tracker/classes/product.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
