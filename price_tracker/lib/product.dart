@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/product_parser.dart';
+import 'package:intl/intl.dart';
 
 class Product {
   int _id;
@@ -55,31 +56,28 @@ class Product {
       return false;
     } else {
       this.name = parsedName;
+      var formatter = new DateFormat('yyyy-MM-dd');
 
-      // Save only 1 Entry per day
-      if (this._dates.length > 0 &&
-          this
-                  ._dates[this._dates.length - 1]
-                  .difference(DateTime.now())
-                  .inHours <
-              24) {
-        if (!test) {
-          this._prices[this._prices.length - 1] = (parsedPrice);
-          this._dates[this._dates.length - 1] = (DateTime.now());
-        }
-        if (test) {
-          this._prices[this._prices.length - 1] = (1);
-          this._dates[this._dates.length - 1] =
-              (DateTime.now().subtract(Duration(days: 1)));
-        }
-      } else {
-        if (!test) {
+      if (!test) {
+        // Save only 1 Entry per day
+        if (this._dates.length > 0) {
+          if (formatter.format(this._dates[this._dates.length - 1]) !=
+              formatter.format(DateTime.now())) {
+            this._prices.add(parsedPrice);
+            this._dates.add(DateTime.now());
+          } else {
+            this._prices[this._prices.length - 1] = (parsedPrice);
+            this._dates[this._dates.length - 1] = (DateTime.now());
+          }
+        } else {
           this._prices.add(parsedPrice);
           this._dates.add(DateTime.now());
         }
-        if (test) {
-          this._prices.add(1);
-          this._dates.add(DateTime.now().subtract(Duration(days: 1)));
+      } else {
+        //TEST
+        if (this._dates.length > 0) {
+          this._prices[this._prices.length - 1] = 1;
+          this._dates[this._dates.length - 1] = (DateTime.now());
         }
       }
 

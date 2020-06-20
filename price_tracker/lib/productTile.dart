@@ -27,7 +27,10 @@ class _ProductTileState extends State<ProductTile> {
             var product = snapshot.data;
 
             //Price Difference since last day => used for coloring
-            int priceDifference = product.prices.length > 1 ? product.prices[product.prices.length - 1] - product.prices[product.prices.length - 1] : 0;
+            double priceDifference = product.prices.length > 1 ? product.prices[product.prices.length - 1] - product.prices[product.prices.length - 2] : 0.0;
+            Color chosenColor = priceDifference == 0 ? Colors.white : priceDifference < 0 ? Colors.green : Colors.red;
+
+
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -73,7 +76,7 @@ class _ProductTileState extends State<ProductTile> {
                                 Text(product.prices.length > 0
                                     ? product.prices[product.prices.length - 1]
                                         .toString()
-                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: priceDifference == 0 ? Colors.white : priceDifference > 0 ? Colors.green : Colors.red)),
+                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: chosenColor)),
                                 Text(product.targetPrice.toString(), style: TextStyle(color: Colors.grey, fontSize: 12 ))
                               ],
                             ))),
