@@ -99,15 +99,14 @@ class ProductParser {
               .query("//*[@id='pageContent']/div/div[2]/div/div[2]/div/h1")
               .get();
           final regexp = RegExp(
-              r'[<]strong[>](.*)[<][\/]strong[>]\s*[<]span[>](.*)[<][\/]span[>]'); //Find first double
+              r'([<]strong[>](.*)[<][\/]strong[>])?\s*[<]span[>](.*)[<][\/]span[>]'); //Find first double
           final match = regexp.firstMatch(name);
-          // TODO doesn't match => brand name missing
-          return match.group(1).replaceAllMapped(RegExp(r"<!--.*?-->"),
-                  (match) {
-                return "";
-              }).trim() +
-              " " +
-              match.group(2).trim();
+          return match.group(2) != null
+              ? match.group(2).replaceAllMapped(RegExp(r"<!--.*?-->"), (match) {
+                    return "";
+                  }).trim() +
+                  " "
+              : "" + match.group(3).trim();
           break;
       }
     } catch (e) {

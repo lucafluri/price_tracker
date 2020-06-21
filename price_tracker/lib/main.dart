@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:price_tracker/utils/database_helper.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:path/path.dart' as p;
+
 
 String appName = "Price Tracker v0.1.0";
 
@@ -26,16 +31,28 @@ String appName = "Price Tracker v0.1.0";
 // --TODO Trigger regular Scrapes of all Products in db
 // --TODO Trigger Notifications after Price fall
 // --TODO Show recent price change with icon in ListTile
-// TODO Enlarge ListTile (+ bigger Picture)
+// --TODO Enlarge ListTile (+ bigger Picture)
 // TODO Styling
 // --TODO Show onboarding help screens
 // --TODO show fail toast if pasted link didn't work, or scraping failed
-// TODO Offline Functionality => Detect Internet State and (Placeholder Images) disable adding
+// --TODO Offline Functionality => Detect Internet State and (Placeholder Images) disable adding
+
+// --TODO Fix App Crashing
+// App crashed seemingly after loading images.
+// Additionally all background services on the phone are killed...
+// Possible  culprits:
+// [X] Background Service Worker (Tested)
+// !![X] Network Image tztztztz => changed to optimized cache image
+
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
+Directory _appDocsDir;
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  _appDocsDir = await getApplicationDocumentsDirectory();
   Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
   print('init work manager');
 
@@ -161,6 +178,12 @@ Future<void> updatePrices({test: false}) async {
   }
 }
 
+File fileFromDocsDir(String filename) {
+  String pathName = p.join(_appDocsDir.path, filename);
+  return File(pathName);
+}
+
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -278,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Toast.show("Product details are being parsed", context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Product p = Product(productUrl: input);
-      if (await p.update()) {
+      if (await p.init()) {
         await dbHelper.insert(p);
       } else {
         Toast.show("Parsing error, invalid store URL?", context,
@@ -392,6 +415,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemBuilder: (BuildContext context, int index) {
                           return ProductTile(
                             id: snapshot.data[index].id,
+                            fileFromDocsDir: fileFromDocsDir,
                             onDelete: () async {
                               dbHelper.delete(snapshot.data[index].id);
                               debugPrint(

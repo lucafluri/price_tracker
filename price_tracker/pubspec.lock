@@ -71,13 +71,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  cached_network_image:
-    dependency: "direct main"
-    description:
-      name: cached_network_image
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.2.0+1"
   charcode:
     dependency: transitive
     description:
@@ -153,6 +146,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.2"
+  flutter_image_compress:
+    dependency: transitive
+    description:
+      name: flutter_image_compress
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.8"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -261,6 +261,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  optimized_cached_image:
+    dependency: "direct main"
+    description:
+      name: optimized_cached_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.13"
   path:
     dependency: transitive
     description:

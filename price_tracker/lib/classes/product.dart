@@ -43,7 +43,7 @@ class Product {
   //   return listString;
   // }
 
-  Future<bool> update({bool test = false}) async {
+  Future<bool> init() async {
     // final dbHelper = DatabaseHelper.instance;
     String parsedName = await ProductParser.parseName(this.productUrl);
     double parsedPrice = await ProductParser.parsePrice(this.productUrl);
@@ -56,6 +56,39 @@ class Product {
       return false;
     } else {
       this.name = parsedName;
+      var formatter = new DateFormat('yyyy-MM-dd');
+
+      // Save only 1 Entry per day
+      if (this._dates.length > 0) {
+        if (formatter.format(this._dates[this._dates.length - 1]) !=
+            formatter.format(DateTime.now())) {
+          this._prices.add(parsedPrice);
+          this._dates.add(DateTime.now());
+        } else {
+          this._prices[this._prices.length - 1] = (parsedPrice);
+          this._dates[this._dates.length - 1] = (DateTime.now());
+        }
+      } else {
+        this._prices.add(parsedPrice);
+        this._dates.add(DateTime.now());
+      }
+
+      this.imageUrl = parsedImageUrl;
+
+      // dbHelper.update(this);
+      debugPrint(this._id.toString() + " " + this._prices.toString());
+      return true;
+    }
+  }
+
+  Future<bool> update({bool test = false}) async {
+    double parsedPrice = await ProductParser.parsePrice(this.productUrl);
+
+    //Check if parsing successful, else return false
+    if (parsedPrice == null ) {
+      debugPrint("Failed Parsing");
+      return false;
+    } else {
       var formatter = new DateFormat('yyyy-MM-dd');
 
       if (!test) {
@@ -81,7 +114,7 @@ class Product {
         }
       }
 
-      this.imageUrl = parsedImageUrl;
+      // this.imageUrl = parsedImageUrl;
 
       // dbHelper.update(this);
       debugPrint(this._id.toString() + " " + this._prices.toString());

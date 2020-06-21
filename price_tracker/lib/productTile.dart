@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:optimized_cached_image/widgets.dart';
 import 'package:price_tracker/utils/database_helper.dart';
 import 'package:price_tracker/product_details.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,7 +8,9 @@ import 'package:url_launcher/url_launcher.dart';
 class ProductTile extends StatefulWidget {
   final int id;
   final Function onDelete;
-  const ProductTile({Key key, this.id, this.onDelete}) : super(key: key);
+  final Function fileFromDocsDir;
+  const ProductTile({Key key, this.id, this.onDelete, this.fileFromDocsDir})
+      : super(key: key);
 
   @override
   _ProductTileState createState() => _ProductTileState();
@@ -16,7 +18,6 @@ class ProductTile extends StatefulWidget {
 
 class _ProductTileState extends State<ProductTile> {
   final dbHelper = DatabaseHelper.instance;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +28,13 @@ class _ProductTileState extends State<ProductTile> {
             var product = snapshot.data;
 
             //Price Difference since last day => used for coloring
-            double priceDifference = product.prices.length > 1 ? product.prices[product.prices.length - 1] - product.prices[product.prices.length - 2] : 0.0;
-            Color chosenColor = priceDifference == 0 ? Colors.white : priceDifference < 0 ? Colors.green : Colors.red;
-
-
+            double priceDifference = product.prices.length > 1
+                ? product.prices[product.prices.length - 1] -
+                    product.prices[product.prices.length - 2]
+                : 0.0;
+            Color chosenColor = priceDifference == 0
+                ? Colors.white
+                : priceDifference < 0 ? Colors.green : Colors.red;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -42,25 +46,30 @@ class _ProductTileState extends State<ProductTile> {
                   child: ListTile(
                     onTap: () {
                       Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetails(product: product)));
-                    }, 
-                    onLongPress: () async{if (await canLaunch(product.productUrl))
-                            await launch(product.productUrl);
-                          else
-                            throw "Could not launch URL";}, // TODO Open Link
+                          builder: (context) => ProductDetails(
+                              product: product,
+                              fileFromDocsDir: widget.fileFromDocsDir)));
+                    },
+                    onLongPress: () async {
+                      if (await canLaunch(product.productUrl))
+                        await launch(product.productUrl);
+                      else
+                        throw "Could not launch URL";
+                    },
                     dense: false,
                     leading: Container(
                       //Image Placeholder
                       // color: Colors.indigoAccent,
                       width: 80,
                       height: 80,
+                      // child: Icon(Icons.error),
                       child: product.imageUrl != null
-                          ? CachedNetworkImage(
-                              placeholder: (context, url) =>
-                                  Center(child: Text("..."),),
+                          ? OptimizedCacheImage(
                               imageUrl: product.imageUrl,
-                              errorWidget: (context, url, error) => Icon(Icons.error),
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             )
                           : Container(),
                     ),
@@ -71,15 +80,22 @@ class _ProductTileState extends State<ProductTile> {
                         height: 50,
                         child: Center(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(product.prices.length > 0
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                                product.prices.length > 0
                                     ? product.prices[product.prices.length - 1]
                                         .toString()
-                                    : "--", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: chosenColor)),
-                                Text(product.targetPrice.toString(), style: TextStyle(color: Colors.grey, fontSize: 12 ))
-                              ],
-                            ))),
+                                    : "--",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                    color: chosenColor)),
+                            Text(product.targetPrice.toString(),
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 12))
+                          ],
+                        ))),
                     title: Text(product.name),
                     subtitle: Text(product.getDomain(),
                         overflow: TextOverflow.ellipsis),
@@ -95,11 +111,10 @@ class _ProductTileState extends State<ProductTile> {
                 ],
                 secondaryActions: <Widget>[
                   IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.red,
-                    icon: Icons.delete,
-                    onTap: widget.onDelete
-                  ),
+                      caption: 'Delete',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: widget.onDelete),
                 ],
               ),
             );
