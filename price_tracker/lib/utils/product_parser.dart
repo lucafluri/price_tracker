@@ -42,6 +42,15 @@ class ProductParser {
       switch (d) {
         case "digitec.ch":
         case "galaxus.ch":
+
+          // REGEX TEST CASES
+          // <strong class="ZZjx"> 12 900.–</strong>
+          // <strong class="ZZjx"> 599.–</strong>
+          // <strong class="ZZjx"> 50.10</strong>
+          // <strong class="ZZjx"> 12'900.–</strong>
+          // <div class="Z1gq"><strong class="ZZjx"> 12 900.–</strong></div>
+
+          
           String priceString = XPath.source(response.body)
               .query("//*[@id='pageContent']/div/div[2]/div/div[2]/div/div[1]")
               .get()
@@ -50,7 +59,10 @@ class ProductParser {
           final regexp = RegExp(r'>.(\d+.\d*)'); //Find first double
           final match = regexp.firstMatch(priceString);
           // debugPrint(match.group(0).replaceAll(new RegExp(r"\s+\b|\b\s|['>]"), ""));
-          return match != null ? double.parse(match.group(0).replaceAll(new RegExp(r"\s+\b|\b\s|['>]"), "")) : -1;
+          return match != null
+              ? double.parse(
+                  match.group(0).replaceAll(new RegExp(r"\s+\b|\b\s|['>]"), ""))
+              : -1;
           break;
       }
     } catch (e) {
