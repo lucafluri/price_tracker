@@ -33,6 +33,7 @@ String appName = "Price Tracker v0.1.0";
 // --TODO Show recent price change with icon in ListTile
 // --TODO Enlarge ListTile (+ bigger Picture)
 // TODO Styling
+// TODO Better Icon
 // --TODO Show onboarding help screens
 // --TODO show fail toast if pasted link didn't work, or scraping failed
 // --TODO Offline Functionality => Detect Internet State and (Placeholder Images) disable adding
@@ -136,6 +137,8 @@ void callbackDispatcher() async {
       case "Price Tracker Scraper":
         try {
           updatePrices();
+          //TODO Remove Notification
+          pushNotification(3, "Prices have been updated", "We updated the prices for you in the background!");
           print("Executed Task");
         } catch (e) {}
 
@@ -220,6 +223,8 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
     //TODO CHANGE TO 12-24 Hours
     Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
         frequency: Duration(hours: 1));
+      
+    
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
