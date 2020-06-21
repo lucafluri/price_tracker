@@ -50,7 +50,6 @@ class ProductParser {
           // <strong class="ZZjx"> 12'900.–</strong>
           // <div class="Z1gq"><strong class="ZZjx"> 12 900.–</strong></div>
 
-          
           String priceString = XPath.source(response.body)
               .query("//*[@id='pageContent']/div/div[2]/div/div[2]/div/div[1]")
               .get()
@@ -115,12 +114,10 @@ class ProductParser {
           final regexp = RegExp(
               r'([<]strong[>](.*)[<][\/]strong[>])?\s*[<]span[>](.*)[<][\/]span[>]'); //Find first double
           final match = regexp.firstMatch(name);
-          return match.group(2) != null
-              ? match.group(2).replaceAllMapped(RegExp(r"<!--.*?-->"), (match) {
+
+          return (match.group(2)??"").replaceAllMapped(RegExp(r"<!--.*?-->"), (match) {
                     return "";
-                  }).trim() +
-                  " "
-              : "" + match.group(3).trim();
+                  }).trim() + " " + match.group(3).trim();
           break;
       }
     } catch (e) {

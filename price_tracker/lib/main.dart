@@ -420,11 +420,14 @@ class _MyHomePageState extends State<MyHomePage> {
                           return ProductTile(
                             id: snapshot.data[index].id,
                             fileFromDocsDir: fileFromDocsDir,
-                            onDelete: () async {
-                              dbHelper.delete(snapshot.data[index].id);
+                            onDelete: () async{
+                              await dbHelper.delete(snapshot.data[index].id);
                               debugPrint(
                                   'Deleted Product ${snapshot.data[index].name}');
-                              setState(() {});
+                            // TODO fix build scheduled during frame error
+                            setState(() {
+                              
+                            });
                             },
                           );
                         },
