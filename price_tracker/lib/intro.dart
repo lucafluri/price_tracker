@@ -35,7 +35,7 @@ class _IntroState extends State<Intro> {
         title: "",
         description:
             "The app will get all relevant data like the current price, name and image for you."
-            +"\n\nIt will also run periodically in the background and will update the prices once per day for you. You could manually update by pulling down."
+            +"\n\nIt will also run periodically in the background and will update the prices once per day. You could manually update by pulling down."
             +"\n\nYou will be notified if prices dropped or when a product is cheaper than your set target price.",
         // pathImage: "images/photo_pencil.png",
         backgroundColor: Color(0x00203152),

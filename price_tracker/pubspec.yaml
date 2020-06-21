@@ -44,6 +44,8 @@ dependencies:
   intro_slider: ^2.3.1
   shared_preferences: ^0.5.7+3
   after_layout: ^1.0.7+2
+  share: ^0.6.4+3
+
 
 
 

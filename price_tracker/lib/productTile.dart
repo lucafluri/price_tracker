@@ -4,6 +4,8 @@ import 'package:optimized_cached_image/widgets.dart';
 import 'package:price_tracker/utils/database_helper.dart';
 import 'package:price_tracker/product_details.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart';
+
 
 class ProductTile extends StatefulWidget {
   final int id;
@@ -76,7 +78,7 @@ class _ProductTileState extends State<ProductTile> {
                     trailing: Container(
                         //Change Placeholder?
                         // color: Colors.redAccent,
-                        width: 50,
+                        width: 100,
                         height: 50,
                         child: Center(
                             child: Column(
@@ -106,7 +108,7 @@ class _ProductTileState extends State<ProductTile> {
                     caption: 'Share',
                     color: Colors.blue,
                     icon: Icons.share,
-                    onTap: () => debugPrint('Share'),
+                    onTap: () => Share.share("${product.productUrl}"),
                   ),
                 ],
                 secondaryActions: <Widget>[

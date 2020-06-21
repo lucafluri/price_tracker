@@ -54,7 +54,7 @@ Directory _appDocsDir;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _appDocsDir = await getApplicationDocumentsDirectory();
-  Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
+  Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
   print('init work manager');
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -137,8 +137,7 @@ void callbackDispatcher() async {
       case "Price Tracker Scraper":
         try {
           updatePrices();
-          //TODO Remove Notification
-          pushNotification(3, "Prices have been updated", "We updated the prices for you in the background!");
+          // pushNotification(3, "Prices have been updated", "We updated the prices for you in the background!");
           print("Executed Task");
         } catch (e) {}
 
@@ -341,22 +340,22 @@ class _MyHomePageState extends State<MyHomePage> {
               setState(() {});
             },
           ),
-          FlatButton(
-            child: Text(
-              "TEST",
-              style: TextStyle(color: Colors.black),
-            ),
-            onPressed: () async {
-              await updatePrices(test: true);
-              setState(() {});
-            },
-          ),
+          // FlatButton(
+          //   child: Text(
+          //     "TEST",
+          //     style: TextStyle(color: Colors.black),
+          //   ),
+          //   onPressed: () async {
+          //     await updatePrices(test: true);
+          //     setState(() {});
+          //   },
+          // ),
         ],
       ),
       body: Container(
         child: FRefresh(
           controller: controller,
-          headerTrigger: 75,
+          headerTrigger: 125,
           headerBuilder: (setter, constraints) {
             controller.setOnStateChangedCallback((state) {
               setter(() {
