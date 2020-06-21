@@ -46,9 +46,11 @@ class ProductParser {
               .query("//*[@id='pageContent']/div/div[2]/div/div[2]/div/div[1]")
               .get()
               .toString();
-          final regexp = RegExp(r'\s{1}(\d+)[.]{0,1}(\d*)'); //Find first double
+          // final regexp = RegExp(r'\s{1}(\d+)[.]{0,1}(\d*)'); //Find first double
+          final regexp = RegExp(r'>.(\d+.\d*)'); //Find first double
           final match = regexp.firstMatch(priceString);
-          return match != null ? double.parse(match.group(0)) : -1;
+          // debugPrint(match.group(0).replaceAll(new RegExp(r"\s+\b|\b\s|['>]"), ""));
+          return match != null ? double.parse(match.group(0).replaceAll(new RegExp(r"\s+\b|\b\s|['>]"), "")) : -1;
           break;
       }
     } catch (e) {
