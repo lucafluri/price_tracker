@@ -11,6 +11,7 @@ import 'package:price_tracker/classes/product.dart';
 import 'package:price_tracker/productTile.dart';
 import 'package:price_tracker/utils/product_parser.dart';
 import 'package:price_tracker/intro.dart';
+import 'package:price_tracker/credits.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
@@ -207,6 +208,7 @@ class MyApp extends StatelessWidget {
         "/splash": (context) => Splash(),
         "/": (context) => MyHomePage(title: appName),
         "/intro": (context) => Intro(),
+        "/credits": (context) => Credits(),
       },
     );
   }
@@ -338,6 +340,12 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               Navigator.of(context).pushNamed("/intro");
               setState(() {});
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.description),
+            onPressed: () {
+              Navigator.of(context).pushNamed("/credits");
             },
           ),
           // FlatButton(
