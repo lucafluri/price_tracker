@@ -54,7 +54,7 @@ Directory _appDocsDir;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _appDocsDir = await getApplicationDocumentsDirectory();
-  Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+  Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
   print('init work manager');
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -219,9 +219,9 @@ class Splash extends StatefulWidget {
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   Future checkFirstSeen() async {
-    //TODO CHANGE TO 12-24 Hours
+    // // TODO CHANGE TO 12-24 Hours
     Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
-        frequency: Duration(hours: 1));
+        frequency: Duration(hours: 6));
       
     
 
