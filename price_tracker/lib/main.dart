@@ -46,6 +46,10 @@ String appName = "Price Tracker v0.1.0";
 // [X] Background Service Worker (Tested)
 // !![X] Network Image tztztztz => changed to optimized cache image
 
+// TODO Availability Detection
+// TODO Case Checking for unavailable Price => -1
+// TODO Add Notification if product is available again (price -1 to positive)
+
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
