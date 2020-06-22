@@ -1,4 +1,4 @@
-![](price_tracker/assets/feature_graphic.png)
+<img src="price_tracker/assets/feature_graphic.png" alt="screenshot" />
 
 # Price Tracker
 Price Tracker App built with Flutter.
@@ -10,7 +10,5 @@ The app runs a background service and updates prices once per day. Users will th
 **_Coming_**
 
 ## Beta Screenshots
-<img src="price_tracker/assets/screenshots/Screenshot_20200622-124303.png" alt="screenshot" width="250"/>  
-<img src="price_tracker/assets/screenshots/Screenshot_20200622-124310.png" alt="screenshot" width="250"/>  
-<img src="price_tracker/assets/screenshots/Screenshot_20200622-124337.png" alt="screenshot" width="250"/>  
+<img src="price_tracker/assets/screenshots/Screenshot_20200622-124303.png" alt="screenshot" width="250"/> <img src="price_tracker/assets/screenshots/Screenshot_20200622-124310.png" alt="screenshot" width="250"/>  <img src="price_tracker/assets/screenshots/Screenshot_20200622-124337.png" alt="screenshot" width="250"/>  
 
