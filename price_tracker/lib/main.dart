@@ -45,7 +45,7 @@ String appName = "Price Tracker v0.1.0";
 // [X] Background Service Worker (Tested)
 // !![X] Network Image tztztztz => changed to optimized cache image
 
-// TODO Availability Detection
+// --TODO Availability Detection
 // TODO Case Checking for unavailable Price => -1
 // TODO Add Notification if product is available again (price -1 to positive)
 
@@ -107,7 +107,7 @@ Future<int> checkPriceUnderTarget() async {
 
   for (int i = 0; i < products.length; i++) {
     //Target Price
-    if (products[i].prices[products[i].prices.length - 1] <
+    if (products[i].prices[products[i].prices.length - 1] <=
         products[i].targetPrice) {
       // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
       if (products[i].prices[products[i].prices.length - 1] != -1) count++;
@@ -348,7 +348,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        title: Text(widget.title,
+            style: TextStyle(color: Theme.of(context).primaryColor)),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.help_outline),

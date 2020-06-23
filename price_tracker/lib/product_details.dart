@@ -38,7 +38,11 @@ class _ProductDetailsState extends State<ProductDetails> {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.product.name),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+            // title: Text("Details",
+            // style: TextStyle(color: Theme.of(context).primaryColor)),
             leading: BackButton(
               onPressed: () {
                 Navigator.of(context)
@@ -65,10 +69,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                     child: Center(
                         child: Column(
                       children: <Widget>[
-                        
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Center(child: Text(product.name, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline5)),
+                          child: Center(
+                              child: Text(product.name,
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -114,40 +121,48 @@ class _ProductDetailsState extends State<ProductDetails> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                              child: product.prices[product.prices.length-1] >= 0 ? Column(
-                            children: <Widget>[
-                              Text(
-                                  "Target Price: " +
-                                      (sliderValue).toString() +
-                                      ".-",
-                                  style: TextStyle(fontSize: 17)),
-                              Slider(
-                                value: sliderValue ??
-                                    product.prices[product.prices.length - 1] -
-                                        1,
-                                
-                                onChanged: (e) {
-                                  setState(() {
-                                    e = roundDouble(e, 0);
-                                    sliderValue = e;
-                                    product.targetPrice = e;
-                                    dbHelper.update(product);
-                                  });
-                                },
-                                max: max(
-                                    product.prices[product.prices.length - 1],
-                                    product.prices.length > 1
-                                        ? product
-                                            .prices[product.prices.length - 2]
-                                        : product
-                                            .prices[product.prices.length - 1]),
-                                min: 0,
-                                // label: "Target Price",
-                                activeColor: Theme.of(context).primaryColor,
-                                // divisions: 10,
-                              ),
-                            ],
-                          ) : Container()),
+                              child: product.prices[product.prices.length - 1] >
+                                      0
+                                  ? Column(
+                                      children: <Widget>[
+                                        Text(
+                                            "Target Price: " +
+                                                (sliderValue).toString() +
+                                                ".-",
+                                            style: TextStyle(fontSize: 17)),
+                                        Slider(
+                                          value: sliderValue ??
+                                              product.prices[
+                                                      product.prices.length -
+                                                          1] -
+                                                  1,
+
+                                          onChanged: (e) {
+                                            setState(() {
+                                              e = roundDouble(e, 0);
+                                              sliderValue = e;
+                                              product.targetPrice = e;
+                                              dbHelper.update(product);
+                                            });
+                                          },
+                                          max: max(
+                                              product.prices[
+                                                  product.prices.length - 1],
+                                              product.prices.length > 1
+                                                  ? product.prices[
+                                                      product.prices.length - 2]
+                                                  : product.prices[
+                                                      product.prices.length -
+                                                          1]),
+                                          min: 0,
+                                          // label: "Target Price",
+                                          activeColor:
+                                              Theme.of(context).primaryColor,
+                                          // divisions: 10,
+                                        ),
+                                      ],
+                                    )
+                                  : Container()),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
