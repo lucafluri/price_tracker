@@ -18,7 +18,6 @@ import 'package:workmanager/workmanager.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:path/path.dart' as p;
 
-
 String appName = "Price Tracker v0.1.0";
 
 // --TODO pass Product to ProductTile
@@ -50,11 +49,9 @@ String appName = "Price Tracker v0.1.0";
 // TODO Case Checking for unavailable Price => -1
 // TODO Add Notification if product is available again (price -1 to positive)
 
-
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Directory _appDocsDir;
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,8 +82,7 @@ Future<int> checkPriceFall() async {
   for (int i = 0; i < products.length; i++) {
     //Check difference to yesterday
     if (products[i].prices.length > 1) {
-      if (products[i].prices[products[i].prices.length - 1] <
-          products[i].prices[products[i].prices.length - 2]) {
+      if (products[i].prices[products[i].prices.length - 1] < products[i].prices[products[i].prices.length - 2]) {
         if (products[i].prices[products[i].prices.length - 1] != -1) count++;
       }
     }
@@ -103,8 +99,7 @@ Future<int> checkPriceUnderTarget() async {
 
   for (int i = 0; i < products.length; i++) {
     //Target Price
-    if (products[i].prices[products[i].prices.length - 1] <
-        products[i].targetPrice) {
+    if (products[i].prices[products[i].prices.length - 1] < products[i].targetPrice) {
       // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
       if (products[i].prices[products[i].prices.length - 1] != -1) count++;
     }
@@ -140,11 +135,16 @@ void callbackDispatcher() async {
   Workmanager.executeTask((taskName, inputData) async {
     switch (taskName) {
       case "Price Tracker Scraper":
+      case "Manual Price Tracker Scraper":
         try {
-          updatePrices();
-          // pushNotification(3, "Prices have been updated", "We updated the prices for you in the background!");
+          await updatePrices();
+          // // TODO Remove notification
+          // pushNotification(3, "Prices have been updated",
+          //     "We updated the prices for you in the background!");
           print("Executed Task");
-        } catch (e) {}
+        } catch (e) {
+          debugPrint(e);
+        }
 
         break;
     }
@@ -153,9 +153,12 @@ void callbackDispatcher() async {
 }
 
 Future<void> updatePrices({test: false}) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final dbHelper = DatabaseHelper.instance;
 
   List<Product> products = await dbHelper.getAllProducts();
+
   for (int i = 0; i < products.length; i++) {
     await products[i].update(test: test);
     await dbHelper.update(products[i]);
@@ -189,7 +192,6 @@ File fileFromDocsDir(String filename) {
   String pathName = p.join(_appDocsDir.path, filename);
   return File(pathName);
 }
-
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -227,9 +229,9 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   Future checkFirstSeen() async {
     // // TODO CHANGE TO 12-24 Hours
     Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
-        frequency: Duration(hours: 6));
-      
-    
+        frequency: Duration(
+          hours: 12,
+        ));
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
@@ -358,8 +360,9 @@ class _MyHomePageState extends State<MyHomePage> {
           //     style: TextStyle(color: Colors.black),
           //   ),
           //   onPressed: () async {
-          //     await updatePrices(test: true);
-          //     setState(() {});
+          //     Workmanager.registerOneOffTask(
+          //         "manualpriceScraping", "Manual Price Tracker Scraper");
+          //     debugPrint("registeres one off task");
           //   },
           // ),
         ],
@@ -432,14 +435,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           return ProductTile(
                             id: snapshot.data[index].id,
                             fileFromDocsDir: fileFromDocsDir,
-                            onDelete: () async{
+                            onDelete: () async {
                               await dbHelper.delete(snapshot.data[index].id);
                               debugPrint(
                                   'Deleted Product ${snapshot.data[index].name}');
-                            // TODO fix build scheduled during frame error
-                            setState(() {
-                              
-                            });
+                              // TODO fix build scheduled during frame error
+                              setState(() {});
                             },
                           );
                         },
