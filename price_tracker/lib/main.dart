@@ -383,7 +383,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         child: FRefresh(
           controller: controller,
-          headerTrigger: 125,
+          headerTrigger: 100,
+          headerHeight: 50,
           headerBuilder: (setter, constraints) {
             controller.setOnStateChangedCallback((state) {
               setter(() {
@@ -424,7 +425,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ));
           },
-          headerHeight: 50,
           onRefresh: () async {
             await updatePrices();
 

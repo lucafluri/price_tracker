@@ -41,6 +41,8 @@ class _ProductTileState extends State<ProductTile> {
                 ? Colors.transparent
                 : priceDifference < 0 ? Colors.green[800] : Colors.red[900];
 
+            bool showTargetPrice = product.targetPrice > 0;
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Column(
@@ -102,7 +104,7 @@ class _ProductTileState extends State<ProductTile> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 17,
                                         color: Colors.white)),
-                                Text(product.targetPrice.toString(),
+                                if(showTargetPrice)Text(product.targetPrice.toString(),
                                     style:
                                         TextStyle(color: Colors.grey, fontSize: 12))
                               ],
