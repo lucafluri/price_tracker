@@ -4,6 +4,7 @@ import 'package:optimized_cached_image/widgets.dart';
 import 'package:price_tracker/classes/product.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'dart:math';
 
 import 'package:price_tracker/utils/database_helper.dart';
@@ -64,10 +65,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                     child: Center(
                         child: Column(
                       children: <Widget>[
+                        
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                              "Last Update: ${formatter.format(product.dates[product.dates.length - 1].toLocal())}"),
+                          child: Center(child: Text(product.name, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline5)),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -187,6 +188,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   pinchZoom: true,
                                 ),
                               )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                              "Last Update: ${timeago.format(product.dates[product.dates.length - 1])}"),
                         ),
 
                         // Text(product.imageUrl.toString()),
