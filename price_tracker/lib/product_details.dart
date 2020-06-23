@@ -31,11 +31,13 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   final _targetInputController = TextEditingController();
   bool setTarget;
+  bool canSetTarget;
   bool validTarget = false;
 
   Future<void> setTextField() async {
     Product p = await dbHelper.getProduct(widget.product.id);
-    setTarget = p.targetPrice >= 0 && p.prices[p.prices.length - 1] > 0;
+    setTarget = p.targetPrice >= 0;
+    canSetTarget = p.prices[p.prices.length - 1] > 0;
     if (setTarget) {
       _targetInputController.text = p.targetPrice.toString();
       validTarget = true;
@@ -45,6 +47,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   void initState() {
     setTextField();
+    super.initState();
   }
 
   @override
@@ -87,7 +90,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                         value: product.prices[i], xAxis: product.dates[i]));
                   }
 
-                  // setTarget = product.targetPrice >= 0 && product.prices[product.prices.length - 1] > 0;
+                  setTarget = product.targetPrice >= 0 &&
+                      product.prices[product.prices.length - 1] > 0;
                   // if (setTarget && product.targetPrice > 0 ) {
                   //   _targetInputController.text =
                   //       product.targetPrice.toString();
@@ -148,17 +152,22 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   title: Text("Set Target Price?"),
                                   value: setTarget,
                                   onChanged: (e) async {
-                                    if (setTarget) {
+                                    if (canSetTarget) {
                                       if (e) {
                                         product.targetPrice =
                                             product.targetPrice.abs();
                                         await dbHelper.update(product);
+                                        setState(() {
+                                          _targetInputController.text =
+                                              product.targetPrice.toString();
+                                          validTarget = true;
+                                        });
                                       } else {
                                         product.targetPrice =
                                             -product.targetPrice;
                                         await dbHelper.update(product);
+                                        setState(() {});
                                       }
-                                      setState(() {});
                                     }
                                   })),
 
