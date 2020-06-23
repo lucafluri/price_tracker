@@ -452,7 +452,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               await dbHelper.delete(snapshot.data[index].id);
                               debugPrint(
                                   'Deleted Product ${snapshot.data[index].name}');
-                              // TODO fix build scheduled during frame error
                               setState(() {});
                             },
                           );

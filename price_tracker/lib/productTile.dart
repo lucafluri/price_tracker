@@ -34,8 +34,7 @@ class _ProductTileState extends State<ProductTile> {
                     product.prices[product.prices.length - 2]
                 : 0.0;
 
-            bool underTarget =
-                product.prices[product.prices.length - 1] <= product.targetPrice;
+            bool underTarget = product.prices[product.prices.length - 1] >= 0 && product.prices[product.prices.length - 1] <= product.targetPrice;
 
             // Color chosenColor = priceDifference > 0 ? Colors.green[800] : Colors.red[900];
             Color chosenColor = priceDifference == 0
