@@ -37,10 +37,21 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
-  // TODO MIGRATION STRATEGY
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // if (oldVersion == 1) {
+    //   await db.execute('ALTER TABLE $table ADD $columnRatings TEXT');
+    //   print("Database upgraded from version 1 to version 2, added column "
+    //       "'$columnRatings'");
+    // }
+    // if (oldVersion == 1 || oldVersion == 2) {
+    //   await db.execute('ALTER TABLE $table ADD $columnFavorite INTEGER');
+    //   print("Database upgraded from version 2 to version 3, added column "
+    //       "'$columnFavorite'");
+    // }
+  }
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {

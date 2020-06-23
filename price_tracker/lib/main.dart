@@ -72,6 +72,7 @@ void main() async {
   runApp(MyApp());
 }
 
+// Returns number of products that are today cheaper than yesterday or have a price at all compared to yesterday
 Future<int> checkPriceFall() async {
   final dbHelper = DatabaseHelper.instance;
 
@@ -85,11 +86,14 @@ Future<int> checkPriceFall() async {
       if (products[i].prices[products[i].prices.length - 1] < products[i].prices[products[i].prices.length - 2]) {
         if (products[i].prices[products[i].prices.length - 1] != -1) count++;
       }
+      // Has a price > 0. => count as cheaper since it is has price again
+      else if(products[i].prices[products[i].prices.length - 2] == -1 && products[i].prices[products[i].prices.length - 1] > 0) count ++;
     }
   }
   return count;
 }
 
+//Returns number of products that fell under the set target
 Future<int> checkPriceUnderTarget() async {
   final dbHelper = DatabaseHelper.instance;
 
@@ -106,6 +110,10 @@ Future<int> checkPriceUnderTarget() async {
   }
   return count;
 }
+
+
+
+
 
 void pushNotification(int id, String title, String body) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(

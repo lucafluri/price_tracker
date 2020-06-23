@@ -70,7 +70,7 @@ class ProductParser {
     return null;
   }
 
-  // returns image url string
+  // returns image url string or null if missing
   static Future<String> parseImageUrl(String url) async {
     var client = Client();
     Response response = await client.get(url);
@@ -96,7 +96,7 @@ class ProductParser {
     return null;
   }
 
-  // returns name string
+  // returns name string or null if missing
   static Future<String> parseName(String url) async {
     var client = Client();
     Response response = await client.get(url);
