@@ -33,6 +33,20 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool setTarget;
   bool validTarget = false;
 
+  Future<void> setTextField() async {
+    Product p = await dbHelper.getProduct(widget.product.id);
+    setTarget = p.targetPrice >= 0 && p.prices[p.prices.length - 1] > 0;
+    if (setTarget) {
+      _targetInputController.text = p.targetPrice.toString();
+      validTarget = true;
+    }
+  }
+
+  @override
+  void initState() {
+    setTextField();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -73,13 +87,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                         value: product.prices[i], xAxis: product.dates[i]));
                   }
 
-                  setTarget = product.targetPrice >= 0;
-                  if (product.targetPrice > 0 &&
-                      _targetInputController.text.isEmpty) {
-                    _targetInputController.text =
-                        product.targetPrice.toString();
-                    validTarget = true;
-                  }
+                  // setTarget = product.targetPrice >= 0 && product.prices[product.prices.length - 1] > 0;
+                  // if (setTarget && product.targetPrice > 0 ) {
+                  //   _targetInputController.text =
+                  //       product.targetPrice.toString();
+                  //   validTarget = true;
+                  // }
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -135,16 +148,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   title: Text("Set Target Price?"),
                                   value: setTarget,
                                   onChanged: (e) async {
-                                    if (e) {
-                                      product.targetPrice =
-                                          product.targetPrice.abs();
-                                      await dbHelper.update(product);
-                                    } else {
-                                      product.targetPrice =
-                                          -product.targetPrice;
-                                      await dbHelper.update(product);
+                                    if (setTarget) {
+                                      if (e) {
+                                        product.targetPrice =
+                                            product.targetPrice.abs();
+                                        await dbHelper.update(product);
+                                      } else {
+                                        product.targetPrice =
+                                            -product.targetPrice;
+                                        await dbHelper.update(product);
+                                      }
+                                      setState(() {});
                                     }
-                                    setState(() {});
                                   })),
 
                           Padding(
@@ -166,11 +181,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                               onChanged: (value) {
                                 // _targetInputController.text = value;
                                 try {
-                                  double input = double.parse(value);
-                                  validTarget = input > 0 &&
-                                      input <
-                                          product
-                                              .prices[product.prices.length - 1];
+                                  double input;
+                                  if (value.isNotEmpty) {
+                                    input = double.parse(value);
+                                    validTarget = input > 0 &&
+                                        input <
+                                            product.prices[
+                                                product.prices.length - 1];
+                                  } else {
+                                    validTarget = false;
+                                  }
                                 } catch (e) {
                                   validTarget = false;
                                 }
@@ -178,10 +198,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                               },
                               onSubmitted: (value) async {
                                 if (validTarget) {
-                                  product.targetPrice = double.parse(value).abs();
+                                  product.targetPrice =
+                                      double.parse(value).abs();
                                   await dbHelper.update(product);
-                                }else{
-                                  _targetInputController.text = product.targetPrice.toString();
+                                } else {
+                                  _targetInputController.text =
+                                      product.targetPrice.toString();
                                   validTarget = true;
                                 }
                                 setState(() {});
@@ -195,8 +217,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 30),
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 30),
                             child: Container(
                                 //Bezier Chart Container
                                 height: MediaQuery.of(context).size.height / 2,
