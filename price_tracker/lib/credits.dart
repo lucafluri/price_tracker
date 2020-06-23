@@ -7,6 +7,7 @@ class Credits extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        brightness: Brightness.dark,
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         title: Text("Credits",

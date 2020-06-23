@@ -9,7 +9,7 @@ class Product {
   String productUrl;
   List<double> _prices = [];
   List<DateTime> _dates = [];
-  double targetPrice = 0;
+  double targetPrice = -1;
   String imageUrl =
       "https://static.digitecgalaxus.ch/Files/3/3/4/7/5/8/1/5/gata-1301_gata_1301_02.jpeg?impolicy=PictureComponent&resizeWidth=708&resizeHeight=288&resizeType=downsize";
 
@@ -17,7 +17,7 @@ class Product {
       {this.name = "Ducky One 2 SF",
       this.productUrl =
           "https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095",
-      this.targetPrice = 0});
+      this.targetPrice = -1});
 
   Product.map(dynamic obj) {
     this._id = obj['_id'];

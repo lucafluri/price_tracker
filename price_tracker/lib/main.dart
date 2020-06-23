@@ -349,6 +349,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        brightness: Brightness.dark,
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         title: Text(widget.title,
