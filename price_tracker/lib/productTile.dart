@@ -34,9 +34,15 @@ class _ProductTileState extends State<ProductTile> {
                 ? product.prices[product.prices.length - 1] -
                     product.prices[product.prices.length - 2]
                 : 0.0;
+
+            
+            bool underTarget = product.prices[product.prices.length - 1] < product.targetPrice;
+
+    
+            // Color chosenColor = priceDifference > 0 ? Colors.green[800] : Colors.red[900];
             Color chosenColor = priceDifference == 0
-                ? Colors.white
-                : priceDifference < 0 ? Colors.green : Colors.red;
+                ? Colors.transparent
+                : priceDifference < 0 ? Colors.green[800] : Colors.red[900];
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -44,7 +50,7 @@ class _ProductTileState extends State<ProductTile> {
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
                 child: Container(
-                  color: Theme.of(context).cardColor,
+                  color: underTarget ? Colors.green[800] : Theme.of(context).cardColor,
                   child: ListTile(
                     onTap: () {
                       Navigator.of(context).push(new MaterialPageRoute(
@@ -52,6 +58,7 @@ class _ProductTileState extends State<ProductTile> {
                               product: product,
                               fileFromDocsDir: widget.fileFromDocsDir)));
                     },
+                    // TODO replace with reorder functionality
                     onLongPress: () async {
                       if (await canLaunch(product.productUrl))
                         await launch(product.productUrl);
@@ -77,7 +84,7 @@ class _ProductTileState extends State<ProductTile> {
                     ),
                     trailing: Container(
                         //Change Placeholder?
-                        // color: Colors.redAccent,
+                        color: chosenColor,
                         width: 100,
                         height: 50,
                         child: Center(
@@ -92,7 +99,7 @@ class _ProductTileState extends State<ProductTile> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 17,
-                                    color: chosenColor)),
+                                    color: Colors.white)),
                             Text(product.targetPrice.toString(),
                                 style:
                                     TextStyle(color: Colors.grey, fontSize: 12))

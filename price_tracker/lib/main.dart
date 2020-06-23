@@ -55,7 +55,9 @@ Directory _appDocsDir;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   _appDocsDir = await getApplicationDocumentsDirectory();
+
   Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
   print('init work manager');
 
@@ -83,11 +85,13 @@ Future<int> checkPriceFall() async {
   for (int i = 0; i < products.length; i++) {
     //Check difference to yesterday
     if (products[i].prices.length > 1) {
-      if (products[i].prices[products[i].prices.length - 1] < products[i].prices[products[i].prices.length - 2]) {
+      if (products[i].prices[products[i].prices.length - 1] <
+          products[i].prices[products[i].prices.length - 2]) {
         if (products[i].prices[products[i].prices.length - 1] != -1) count++;
       }
       // Has a price > 0. => count as cheaper since it is has price again
-      else if(products[i].prices[products[i].prices.length - 2] == -1 && products[i].prices[products[i].prices.length - 1] > 0) count ++;
+      else if (products[i].prices[products[i].prices.length - 2] == -1 &&
+          products[i].prices[products[i].prices.length - 1] > 0) count++;
     }
   }
   return count;
@@ -103,17 +107,14 @@ Future<int> checkPriceUnderTarget() async {
 
   for (int i = 0; i < products.length; i++) {
     //Target Price
-    if (products[i].prices[products[i].prices.length - 1] < products[i].targetPrice) {
+    if (products[i].prices[products[i].prices.length - 1] <
+        products[i].targetPrice) {
       // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
       if (products[i].prices[products[i].prices.length - 1] != -1) count++;
     }
   }
   return count;
 }
-
-
-
-
 
 void pushNotification(int id, String title, String body) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
