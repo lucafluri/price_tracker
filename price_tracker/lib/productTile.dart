@@ -129,7 +129,10 @@ class _ProductTileState extends State<ProductTile> {
                           onTap: widget.onDelete),
                     ],
                   ),
-                  Divider()
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Divider(),
+                  )
                 ],
               ),
             );
