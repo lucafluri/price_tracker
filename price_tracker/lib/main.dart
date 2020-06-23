@@ -342,7 +342,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // debugPrint(t.toString().substring(1, t.toString().length-1));
     // dbHelper.deleteAll();
-    String textRefresh = "";
+    String textRefresh = "Pull to refresh";
 
     test();
 
@@ -389,13 +389,13 @@ class _MyHomePageState extends State<MyHomePage> {
             controller.setOnStateChangedCallback((state) {
               setter(() {
                 if (controller.refreshState == RefreshState.PREPARING_REFRESH) {
-                  textRefresh = "Release to Refresh";
+                  textRefresh = "Release to refresh";
                 } else if (controller.refreshState == RefreshState.REFRESHING) {
                   textRefresh = "Loading...";
                 } else if (controller.refreshState == RefreshState.FINISHING) {
                   textRefresh = "Refresh completed";
                 } else {
-                  textRefresh = "Pull to Refresh";
+                  textRefresh = "Pull to refresh";
                 }
               });
             });
