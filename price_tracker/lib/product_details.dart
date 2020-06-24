@@ -127,6 +127,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: RaisedButton(
+                              color: Theme.of(context).primaryColor,
                               //Launch URL Button
                               onPressed: () async {
                                 if (await canLaunch(product.productUrl))
@@ -134,7 +135,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 else
                                   throw "Could not launch URL";
                               },
-                              child: Text("Open Product Site"),
+                              child: Text(
+                                "Open Product Site",
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           ),
                           Padding(
@@ -144,11 +148,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold)),
                           ),
-                          Divider(
-                            color: Colors.grey,
-                          ),
+                          // Divider(
+                          //   color: Colors.grey,
+                          // ),
                           Container(
                               child: CheckboxListTile(
+                                  activeColor: Theme.of(context).primaryColor,
+                                  checkColor: Colors.black,
                                   title: Text("Set Target Price?"),
                                   value: setTarget,
                                   onChanged: (e) async {
@@ -166,6 +172,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         product.targetPrice =
                                             -product.targetPrice;
                                         await dbHelper.update(product);
+                                        _targetInputController.text = "";
                                         setState(() {});
                                       }
                                     }
@@ -179,7 +186,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                               controller: _targetInputController,
                               cursorColor: Theme.of(context).primaryColor,
                               decoration: new InputDecoration(
-                                  focusColor: Colors.red,
                                   labelText: product.targetPrice >= 0
                                       ? "Set Target Price"
                                       : "Target Price Disabled",
@@ -219,12 +225,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                               },
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: Divider(
-                              color: Colors.grey,
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.symmetric(vertical: 20),
+                          //   child: Divider(
+                          //     color: Colors.grey,
+                          //   ),
+                          // ),
                           Padding(
                             padding:
                                 const EdgeInsets.only(top: 8.0, bottom: 30),

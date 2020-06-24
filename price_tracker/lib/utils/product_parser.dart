@@ -38,6 +38,7 @@ class ProductParser {
     // debugPrint(d);
     // debugPrint(rest);
 
+    client.close();
     try {
       switch (d) {
         case "digitec.ch":
@@ -78,6 +79,8 @@ class ProductParser {
     var domain = DomainUtils.getDomainFromUrl(url);
     var d = domain.sld + "." + domain.tld;
 
+    client.close();
+
     try {
       switch (d) {
         case "digitec.ch":
@@ -103,6 +106,7 @@ class ProductParser {
 
     var domain = DomainUtils.getDomainFromUrl(url);
     var d = domain.sld + "." + domain.tld;
+    client.close();
 
     try {
       switch (d) {

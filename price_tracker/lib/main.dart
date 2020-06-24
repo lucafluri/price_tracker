@@ -32,8 +32,8 @@ String appName = "Price Tracker v0.1.0";
 // --TODO Trigger Notifications after Price fall
 // --TODO Show recent price change with icon in ListTile
 // --TODO Enlarge ListTile (+ bigger Picture)
-// TODO Styling
-// TODO Better Icon
+// --TODO Styling
+// TODO Better Icon  
 // --TODO Show onboarding help screens
 // --TODO show fail toast if pasted link didn't work, or scraping failed
 // --TODO Offline Functionality => Detect Internet State and (Placeholder Images) disable adding
@@ -48,6 +48,13 @@ String appName = "Price Tracker v0.1.0";
 // --TODO Availability Detection
 // --TODO Case Checking for unavailable Price => -1
 // --TODO Add Notification if product is available again (price -1 to positive)
+
+// --TODO ScrolPhysics main ListView
+// --TODO Remove scroll glow
+// --TODO Remove Dividers in Details
+// --TODO adjust color of checkbox and buttons
+
+
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -202,6 +209,14 @@ File fileFromDocsDir(String filename) {
   return File(pathName);
 }
 
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -216,6 +231,12 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.yellowAccent[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: MyBehavior(),
+          child: child,
+        );
+      },
 
       //Routes
       initialRoute: "/splash",
@@ -279,8 +300,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final dbHelper = DatabaseHelper.instance;
   FRefreshController controller = FRefreshController();
 
-  void initState() {
-    super.initState();
+
+
+  @override
+  void dispose(){
+    controller.dispose();
+    super.dispose();
   }
 
   // List<double> t = [232.4535, 45455.2342, 54536.342423];

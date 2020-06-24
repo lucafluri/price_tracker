@@ -21,6 +21,11 @@ class _ProductTileState extends State<ProductTile> {
   final dbHelper = DatabaseHelper.instance;
 
   @override
+  void dispose(){
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: dbHelper.getProduct(widget.id),
