@@ -18,7 +18,7 @@ class _IntroState extends State<Intro> {
 
     slides.add(
       new Slide(
-        title: "Price Tracker v0.1.0",
+        title: "Price Tracker",
         // styleTitle: Theme.of(context).textTheme.headline1,
         description:
             "You can add products by copying the link to the product page." 

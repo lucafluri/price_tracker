@@ -18,7 +18,7 @@ import 'package:workmanager/workmanager.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:path/path.dart' as p;
 
-String appName = "Price Tracker v0.1.0";
+String appName = "Price Tracker v0.1.1";
 
 // --TODO pass Product to ProductTile
 // --TODO Add Products and Tiles via button
