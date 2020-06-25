@@ -1,3 +1,6 @@
+// Returns number of products that are today cheaper than yesterday or have a price at all compared to yesterday
+import 'package:price_tracker/classes/product.dart';
+import 'package:price_tracker/utils/database_helper.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -119,9 +122,12 @@ class ProductParser {
               r'([<]strong[>](.*)[<][\/]strong[>])?\s*[<]span[>](.*)[<][\/]span[>]'); //Find first double
           final match = regexp.firstMatch(name);
 
-          return (match.group(2)??"").replaceAllMapped(RegExp(r"<!--.*?-->"), (match) {
-                    return "";
-                  }).trim() + " " + match.group(3).trim();
+          return (match.group(2) ?? "").replaceAllMapped(RegExp(r"<!--.*?-->"),
+                  (match) {
+                return "";
+              }).trim() +
+              " " +
+              match.group(3).trim();
           break;
       }
     } catch (e) {
@@ -135,4 +141,45 @@ class ProductParser {
     debugPrint((await parsePrice(url)).toString());
     debugPrint((await parseImageUrl(url)).toString());
   }
+}
+
+Future<int> checkPriceFall() async {
+  final dbHelper = DatabaseHelper.instance;
+
+  List<Product> products = await dbHelper.getAllProducts();
+
+  int count = 0;
+
+  for (int i = 0; i < products.length; i++) {
+    //Check difference to yesterday
+    if (products[i].prices.length > 1) {
+      if (products[i].prices[products[i].prices.length - 1] <
+          products[i].prices[products[i].prices.length - 2]) {
+        if (products[i].prices[products[i].prices.length - 1] != -1) count++;
+      }
+      // Has a price > 0. => count as cheaper since it is has price again
+      else if (products[i].prices[products[i].prices.length - 2] == -1 &&
+          products[i].prices[products[i].prices.length - 1] > 0) count++;
+    }
+  }
+  return count;
+}
+
+//Returns number of products that fell under the set target
+Future<int> checkPriceUnderTarget() async {
+  final dbHelper = DatabaseHelper.instance;
+
+  List<Product> products = await dbHelper.getAllProducts();
+
+  int count = 0;
+
+  for (int i = 0; i < products.length; i++) {
+    //Target Price
+    if (products[i].prices[products[i].prices.length - 1] <=
+        products[i].targetPrice) {
+      // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
+      if (products[i].prices[products[i].prices.length - 1] != -1) count++;
+    }
+  }
+  return count;
 }

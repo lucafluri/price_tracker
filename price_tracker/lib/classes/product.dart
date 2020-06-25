@@ -1,7 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:price_tracker/utils/product_parser.dart';
 import 'package:intl/intl.dart';
+import 'package:price_tracker/utils/product_utils.dart';
 
 class Product {
   int _id;
@@ -35,14 +35,8 @@ class Product {
   List<double> get prices => _prices;
   List<DateTime> get dates => _dates;
 
-  // String prices2String(List<double> prices){
-  //   String listString = prices.toString();
-  //   // for(int i = 1; i < prices.length; i++) {
-  //   //   listString += "," + prices[i].toString();
-  //   // }
-  //   return listString;
-  // }
 
+  // Parses all information from the web
   Future<bool> init() async {
     // final dbHelper = DatabaseHelper.instance;
     String parsedName = await ProductParser.parseName(this.productUrl);
@@ -81,6 +75,7 @@ class Product {
     }
   }
 
+  // Only Parses the price
   Future<bool> update({bool test = false}) async {
     double parsedPrice = await ProductParser.parsePrice(this.productUrl);
 
@@ -114,9 +109,7 @@ class Product {
         }
       }
 
-      // this.imageUrl = parsedImageUrl;
 
-      // dbHelper.update(this);
       debugPrint(this._id.toString() + " " + this._prices.toString());
       return true;
     }

@@ -9,9 +9,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/classes/product.dart';
 import 'package:price_tracker/productTile.dart';
-import 'package:price_tracker/utils/product_parser.dart';
 import 'package:price_tracker/intro.dart';
 import 'package:price_tracker/credits.dart';
+import 'package:price_tracker/utils/product_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
@@ -81,47 +81,7 @@ void main() async {
   runApp(MyApp());
 }
 
-// Returns number of products that are today cheaper than yesterday or have a price at all compared to yesterday
-Future<int> checkPriceFall() async {
-  final dbHelper = DatabaseHelper.instance;
 
-  List<Product> products = await dbHelper.getAllProducts();
-
-  int count = 0;
-
-  for (int i = 0; i < products.length; i++) {
-    //Check difference to yesterday
-    if (products[i].prices.length > 1) {
-      if (products[i].prices[products[i].prices.length - 1] <
-          products[i].prices[products[i].prices.length - 2]) {
-        if (products[i].prices[products[i].prices.length - 1] != -1) count++;
-      }
-      // Has a price > 0. => count as cheaper since it is has price again
-      else if (products[i].prices[products[i].prices.length - 2] == -1 &&
-          products[i].prices[products[i].prices.length - 1] > 0) count++;
-    }
-  }
-  return count;
-}
-
-//Returns number of products that fell under the set target
-Future<int> checkPriceUnderTarget() async {
-  final dbHelper = DatabaseHelper.instance;
-
-  List<Product> products = await dbHelper.getAllProducts();
-
-  int count = 0;
-
-  for (int i = 0; i < products.length; i++) {
-    //Target Price
-    if (products[i].prices[products[i].prices.length - 1] <=
-        products[i].targetPrice) {
-      // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
-      if (products[i].prices[products[i].prices.length - 1] != -1) count++;
-    }
-  }
-  return count;
-}
 
 void pushNotification(int id, String title, String body) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -257,7 +217,6 @@ class Splash extends StatefulWidget {
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   Future checkFirstSeen() async {
-    // // TODO CHANGE TO 12-24 Hours
     Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
         frequency: Duration(
           hours: 12,
@@ -300,15 +259,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final dbHelper = DatabaseHelper.instance;
   FRefreshController controller = FRefreshController();
 
-
-
   @override
   void dispose(){
     controller.dispose();
     super.dispose();
   }
 
-  // List<double> t = [232.4535, 45455.2342, 54536.342423];
 
   List<Widget> productTiles = <Widget>[];
 
@@ -324,7 +280,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addProduct() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
-    // debugPrint(ProductParser.validUrl(input).toString());
 
     List<String> inputs = (await showTextInputDialog(
       context: context,
@@ -365,7 +320,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint(t.toString().substring(1, t.toString().length-1));
     // dbHelper.deleteAll();
     String textRefresh = "Pull to refresh";
 

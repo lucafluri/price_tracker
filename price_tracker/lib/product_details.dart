@@ -61,11 +61,8 @@ class _ProductDetailsState extends State<ProductDetails> {
           appBar: AppBar(
             elevation: 0,
             brightness: Brightness.dark,
-
             backgroundColor: Colors.transparent,
             iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-            // title: Text("Details",
-            // style: TextStyle(color: Theme.of(context).primaryColor)),
             leading: BackButton(
               onPressed: () {
                 Navigator.of(context)
@@ -92,11 +89,6 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                   setTarget = product.targetPrice >= 0 &&
                       product.prices[product.prices.length - 1] > 0;
-                  // if (setTarget && product.targetPrice > 0 ) {
-                  //   _targetInputController.text =
-                  //       product.targetPrice.toString();
-                  //   validTarget = true;
-                  // }
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -148,9 +140,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold)),
                           ),
-                          // Divider(
-                          //   color: Colors.grey,
-                          // ),
                           Container(
                               child: CheckboxListTile(
                                   activeColor: Theme.of(context).primaryColor,
@@ -177,7 +166,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       }
                                     }
                                   })),
-
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: TextField(
@@ -225,12 +213,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                               },
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(vertical: 20),
-                          //   child: Divider(
-                          //     color: Colors.grey,
-                          //   ),
-                          // ),
                           Padding(
                             padding:
                                 const EdgeInsets.only(top: 8.0, bottom: 30),
@@ -270,10 +252,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                             child: Text(
                                 "Last Update: ${timeago.format(product.dates[product.dates.length - 1])}"),
                           ),
-
-                          // Text(product.imageUrl.toString()),
-                          // Text(product.prices.toString()),
-                          // Text(product.dates.toString()),
                         ],
                       )),
                     ),
