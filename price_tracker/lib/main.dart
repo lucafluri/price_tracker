@@ -20,39 +20,10 @@ import 'package:path/path.dart' as p;
 
 String appName = "Price Tracker v0.1.1";
 
-// --TODO pass Product to ProductTile
-// --TODO Add Products and Tiles via button
-// --TODO Product Image Handling (async loading)
-// --TODO edit Product Details => Details (Settings) View (with future Graph)
-// --TODO Webscraping Test
-// --TODO Background Service check
-// --TODO Notifications Test
-// --TODO Chart from price data
-// --TODO Trigger regular Scrapes of all Products in db
-// --TODO Trigger Notifications after Price fall
-// --TODO Show recent price change with icon in ListTile
-// --TODO Enlarge ListTile (+ bigger Picture)
-// --TODO Styling
 // TODO Better Icon  
-// --TODO Show onboarding help screens
-// --TODO show fail toast if pasted link didn't work, or scraping failed
-// --TODO Offline Functionality => Detect Internet State and (Placeholder Images) disable adding
 
-// --TODO Fix App Crashing
-// App crashed seemingly after loading images.
-// Additionally all background services on the phone are killed...
-// Possible  culprits:
-// [X] Background Service Worker (Tested)
-// !![X] Network Image tztztztz => changed to optimized cache image
-
-// --TODO Availability Detection
-// --TODO Case Checking for unavailable Price => -1
-// --TODO Add Notification if product is available again (price -1 to positive)
-
-// --TODO ScrolPhysics main ListView
-// --TODO Remove scroll glow
-// --TODO Remove Dividers in Details
-// --TODO adjust color of checkbox and buttons
+// BETA BUG LIST
+// TODO better digitecgalacus parsing: see page: https://www.digitec.ch/de/product/fossil-collider-hybrid-hr-42mm-edelstahl-sportuhr-smartwatch-11773438
 
 
 
