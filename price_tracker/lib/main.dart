@@ -18,7 +18,7 @@ import 'package:workmanager/workmanager.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:path/path.dart' as p;
 
-String appName = "Price Tracker v0.1.1";
+String appName = "Price Tracker v0.1.2";
 
 // TODO Better Icon  
 // TODO Rewrite Parser to Strategy Pattern
