@@ -20,12 +20,16 @@ import 'package:path/path.dart' as p;
 
 String appName = "Price Tracker v0.1.2";
 
-// TODO Better Icon  
-// TODO Rewrite Parser to Strategy Pattern
+// Things todo:
+//-------
+// TODO Rewrite Parser to Strategy Pattern => parse xpaths from json on app start from github
+  // Solves several problems, faster iteration process, store adding and parser quickfixes
+// TODO Disable Adding of Elements if no Internet Connection available (recheck every initState of main)
+// TODO Testing: Tests and Test Button in app, that tests Notifications, background Service and update functionality
+// TODO Better Icon
 
 // BETA BUG LIST
-// TODO better digitecgalacus parsing: see page: https://www.digitec.ch/de/product/fossil-collider-hybrid-hr-42mm-edelstahl-sportuhr-smartwatch-11773438
-
+//--------------
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
