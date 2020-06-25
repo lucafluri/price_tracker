@@ -88,9 +88,18 @@ class ProductParser {
       switch (d) {
         case "digitec.ch":
         case "galaxus.ch":
+
+          // All known image positions
           String image = XPath.source(response.body)
               .query("//*[@id='slide-0']/div/div/picture/img")
               .get();
+
+          // Other Position
+          image = image.isEmpty ?
+              XPath.source(response.body)
+                  .query("//*[@id='slide-0']/div/picture/img")
+                  .get() : image;
+
           final regexp2 = RegExp(r'"(\S*)"'); //Find first double
           final match2 = regexp2.firstMatch(image);
           return match2.group(1);
