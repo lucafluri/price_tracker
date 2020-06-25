@@ -21,6 +21,7 @@ import 'package:path/path.dart' as p;
 String appName = "Price Tracker v0.1.1";
 
 // TODO Better Icon  
+// TODO Rewrite Parser to Strategy Pattern
 
 // BETA BUG LIST
 // TODO better digitecgalacus parsing: see page: https://www.digitec.ch/de/product/fossil-collider-hybrid-hr-42mm-edelstahl-sportuhr-smartwatch-11773438
@@ -240,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> productTiles = <Widget>[];
 
   void test() async {
-    await ProductParser.test("https://www.digitec.ch/de/product/fossil-collider-hybrid-hr-42mm-edelstahl-sportuhr-smartwatch-11773438#mobileModel");
+    // await ProductParser.test("https://www.digitec.ch/de/product/fossil-collider-hybrid-hr-42mm-edelstahl-sportuhr-smartwatch-11773438#mobileModel");
     // await ProductParser.test("https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095");
     // await ProductParser.test("https://www.digitec.ch/en/s1/product/digitec-connect-mobile-subscription-with-a-12-month-data-flat-rate-unlimited-sim-card-12409780");
     // await ProductParser.test("https://www.galaxus.ch/de/s3/product/uvex-sportstyle-706-vario-sportbrille-7587273");
