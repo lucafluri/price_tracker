@@ -26,7 +26,7 @@ class _IntroState extends State<Intro> {
             +"\n\nSupported stores include:"
             +" \n${ProductParser.possibleDomains}",
         // pathImage: "images/photo_eraser.png",
-        backgroundColor: Color(0x00682b02),
+        backgroundColor: Color(0xff000000),
         
       ),
     );
@@ -38,7 +38,7 @@ class _IntroState extends State<Intro> {
             +"\n\nIt will also run periodically in the background and will update the prices once per day. You could manually update by pulling down."
             +"\n\nYou will be notified if prices dropped or when a product is cheaper than your set target price.",
         // pathImage: "images/photo_pencil.png",
-        backgroundColor: Color(0x00203152),
+        backgroundColor: Color(0xff000000),
       ),
     );
     // slides.add(
@@ -47,7 +47,7 @@ class _IntroState extends State<Intro> {
     //     description:
     //         "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
     //     // pathImage: "images/photo_ruler.png",
-    //     backgroundColor: Color(0xff9932CC),
+    //     backgroundColor: Color(0xff000000),
     //   ),
     // );
   }
