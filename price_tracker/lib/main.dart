@@ -27,9 +27,21 @@ String appName = "Price Tracker v0.1.2";
 // TODO Disable Adding of Elements if no Internet Connection available (recheck every initState of main)
 // TODO Testing: Tests and Test Button in app, that tests Notifications, background Service and update functionality
 // TODO Better Icon
+// TODO Notification per Product including prices (price diff etc.)
+// TODO Black color for target prices in colored containers in producttiles
+// TODO Show price diff percentage in producttile if prices changed
+// TODO Star functionality (pin products to top and mark them)
+// TODO i18n functionality
+// TODO Settings/Credits Screen
+
+
+
+
 
 // BETA BUG LIST
 //--------------
+// TODO Notification only once per day (or when price changes again)
+// TODO Touch and drag of graph is outside graph on the left
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
