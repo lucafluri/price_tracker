@@ -152,7 +152,7 @@ class ProductParser {
   }
 }
 
-Future<int> checkPriceFall() async {
+Future<int> countPriceFall() async {
   final dbHelper = DatabaseHelper.instance;
 
   List<Product> products = await dbHelper.getAllProducts();
@@ -175,7 +175,7 @@ Future<int> checkPriceFall() async {
 }
 
 //Returns number of products that fell under the set target
-Future<int> checkPriceUnderTarget() async {
+Future<int> countPriceUnderTarget() async {
   final dbHelper = DatabaseHelper.instance;
 
   List<Product> products = await dbHelper.getAllProducts();

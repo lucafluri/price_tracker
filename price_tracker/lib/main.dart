@@ -129,8 +129,8 @@ Future<void> updatePrices({test: false}) async {
   }
 
   products = await dbHelper.getAllProducts();
-  int countFall = await checkPriceFall();
-  int countTarget = await checkPriceUnderTarget();
+  int countFall = await countPriceFall();
+  int countTarget = await countPriceUnderTarget();
 
   if (countFall > 0) {
     if (countFall == 1) {
