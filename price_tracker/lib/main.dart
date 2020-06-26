@@ -28,7 +28,7 @@ String appName = "Price Tracker v0.1.2";
 // TODO Testing: Tests and Test Button in app, that tests Notifications, background Service and update functionality
 // TODO Better Icon
 // TODO Notification per Product including prices (price diff etc.)
-// TODO Black color for target prices in colored containers in producttiles
+// --TODO Black color for target prices in colored containers in producttiles
 // TODO Show price diff percentage in producttile if prices changed
 // TODO Star functionality (pin products to top and mark them)
 // TODO i18n functionality

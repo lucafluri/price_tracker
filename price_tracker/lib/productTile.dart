@@ -21,7 +21,7 @@ class _ProductTileState extends State<ProductTile> {
   final dbHelper = DatabaseHelper.instance;
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
 
@@ -34,17 +34,24 @@ class _ProductTileState extends State<ProductTile> {
             var product = snapshot.data;
 
             //Price Difference since last day => used for coloring
-            double priceDifference = (product.prices.length > 1 && product.prices[product.prices.length - 1] >= 0)
+            double priceDifference = (product.prices.length > 1 &&
+                    product.prices[product.prices.length - 1] >= 0)
                 ? product.prices[product.prices.length - 1] -
                     product.prices[product.prices.length - 2]
                 : 0.0;
 
-            bool underTarget = product.prices[product.prices.length - 1] >= 0 && product.prices[product.prices.length - 1] <= product.targetPrice;
+            bool underTarget = product.prices[product.prices.length - 1] >= 0 &&
+                product.prices[product.prices.length - 1] <=
+                    product.targetPrice;
 
             // Color chosenColor = priceDifference > 0 ? Colors.green[800] : Colors.red[900];
             Color chosenColor = priceDifference == 0
                 ? Colors.transparent
                 : priceDifference < 0 ? Colors.green[800] : Colors.red[900];
+
+            Color targetColor = priceDifference < 0 || priceDifference > 0
+                ? Colors.black54
+                : Colors.grey;
 
             bool showTargetPrice = product.targetPrice > 0;
 
@@ -56,10 +63,9 @@ class _ProductTileState extends State<ProductTile> {
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     child: Container(
-                      color: underTarget
-                          ? Colors.green[800]
-                          : Colors.transparent,
-                          // : Theme.of(context).cardColor,
+                      color:
+                          underTarget ? Colors.green[800] : Colors.transparent,
+                      // : Theme.of(context).cardColor,
                       child: ListTile(
                         onTap: () {
                           Navigator.of(context).push(new MaterialPageRoute(
@@ -84,8 +90,8 @@ class _ProductTileState extends State<ProductTile> {
                           child: product.imageUrl != null
                               ? OptimizedCacheImage(
                                   imageUrl: product.imageUrl,
-                                  placeholder: (context, url) =>
-                                      Center(child: CircularProgressIndicator()),
+                                  placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator()),
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error),
                                 )
@@ -101,17 +107,20 @@ class _ProductTileState extends State<ProductTile> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                    product.prices[product.prices.length - 1] >= 0
-                                        ? product.prices[product.prices.length - 1]
+                                    product.prices[product.prices.length - 1] >=
+                                            0
+                                        ? product
+                                            .prices[product.prices.length - 1]
                                             .toString()
                                         : "--",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 17,
                                         color: Colors.white)),
-                                if(showTargetPrice)Text(product.targetPrice.toString(),
-                                    style:
-                                        TextStyle(color: Colors.grey, fontSize: 12))
+                                if (showTargetPrice)
+                                  Text(product.targetPrice.toString(),
+                                      style: TextStyle(
+                                          color: targetColor, fontSize: 12))
                               ],
                             ))),
                         title: Text(product.name),
