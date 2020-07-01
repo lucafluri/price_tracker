@@ -323,6 +323,14 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(color: Theme.of(context).primaryColor)),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.speaker_notes),
+            onPressed: () {
+              pushNotification(1, "test push", "this is a test notification!");
+              print("a push notification should have been sent!");
+            },
+            color: Colors.redAccent,
+          ),
+          IconButton(
             icon: Icon(Icons.help_outline),
             onPressed: () {
               Navigator.of(context).pushNamed("/intro");
