@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:price_tracker/utils/database_helper.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
@@ -23,7 +24,7 @@ String appName = "Price Tracker BETA";
 // Things todo:
 //-------
 // TODO Rewrite Parser to Strategy Pattern => parse xpaths from json on app start from github
-  // Solves several problems, faster iteration process, store adding and parser quickfixes
+// Solves several problems, faster iteration process, store adding and parser quickfixes
 // TODO Disable Adding of Elements if no Internet Connection available (recheck every initState of main)
 // TODO Testing: Tests and Test Button in app, that tests Notifications, background Service and update functionality
 // TODO Better Icon
@@ -34,15 +35,10 @@ String appName = "Price Tracker BETA";
 // TODO i18n functionality
 // TODO Settings/Credits Screen
 
-
-
-
-
 // BETA BUG LIST
 //--------------
 // TODO Notification only once per day (or when price changes again)
 // TODO Touch and drag of graph is outside graph on the left
-
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -68,8 +64,6 @@ void main() async {
 
   runApp(MyApp());
 }
-
-
 
 void pushNotification(int id, String title, String body) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -205,10 +199,17 @@ class Splash extends StatefulWidget {
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   Future checkFirstSeen() async {
-    Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
-        frequency: Duration(
-          hours: 12,
-        ));
+    // The following is for Android only! -> see https://github.com/vrtdev/flutter_workmanager#customisation-android-only
+    // For iOS, you can set the interval here:
+    // ios/Runner/AppDelegate.swift -> in the line   UIApplication.shared.setMinimumBackgroundFetchInterval(
+    if (Platform.isAndroid) {
+      Workmanager.registerPeriodicTask("priceScraping", "Price Tracker Scraper",
+          frequency: Duration(
+            hours: 12,
+          ));
+    } else {
+      print('You are on an iPhone.');
+    }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
@@ -248,11 +249,10 @@ class _MyHomePageState extends State<MyHomePage> {
   FRefreshController controller = FRefreshController();
 
   @override
-  void dispose(){
+  void dispose() {
     controller.dispose();
     super.dispose();
   }
-
 
   List<Widget> productTiles = <Widget>[];
 
