@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'package:price_tracker/utils/product_utils.dart';
+import 'package:price_tracker/services/product_utils.dart';
 
-class Intro extends StatefulWidget {
-  Intro({Key key}) : super(key: key);
+class IntroScreen extends StatefulWidget {
+  IntroScreen({Key key}) : super(key: key);
   @override
-  _IntroState createState() => _IntroState();
+  _IntroScreenState createState() => _IntroScreenState();
 }
 
-class _IntroState extends State<Intro> {
+class _IntroScreenState extends State<IntroScreen> {
   List<Slide> slides = new List();
 
   @override

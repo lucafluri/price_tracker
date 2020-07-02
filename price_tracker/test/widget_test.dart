@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:price_tracker/main.dart';
+import 'package:price_tracker/todo.md';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
