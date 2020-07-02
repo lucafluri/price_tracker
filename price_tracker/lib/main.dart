@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -6,7 +5,6 @@ import 'package:price_tracker/utils/database_helper.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/classes/product.dart';
 import 'package:price_tracker/productTile.dart';
@@ -17,139 +15,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:path/path.dart' as p;
+
+import 'package:price_tracker/utils/utils.dart';
 
 String appName = "Price Tracker BETA";
 
 // Things todo:
 //-------
 // TODO Rewrite Parser to Strategy Pattern => parse xpaths from json on app start from github
-// Solves several problems, faster iteration process, store adding and parser quickfixes
+  // Solves several problems, faster iteration process, store adding and parser quickfixes
 // TODO Disable Adding of Elements if no Internet Connection available (recheck every initState of main)
 // TODO Testing: Tests and Test Button in app, that tests Notifications, background Service and update functionality
 // TODO Better Icon
 // TODO Notification per Product including prices (price diff etc.)
-// --TODO Black color for target prices in colored containers in producttiles
+// TODO Better contrast for target prices in colored containers in producttiles
 // TODO Show price diff percentage in producttile if prices changed
 // TODO Star functionality (pin products to top and mark them)
 // TODO i18n functionality
 // TODO Settings/Credits Screen
+// TODO Intro Screen sizing on all types (rewrite/change intro screen to interactive tutorial or simple help page)
+
 
 // BETA BUG LIST
 //--------------
 // TODO Notification only once per day (or when price changes again)
 // TODO Touch and drag of graph is outside graph on the left
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
-Directory _appDocsDir;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  _appDocsDir = await getApplicationDocumentsDirectory();
-
-  Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
-  print('init work manager');
-
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-  var initializationSettingsIOS = IOSInitializationSettings();
-  var initializationSettings = InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-  );
+  await startApp();
 
   runApp(MyApp());
 }
 
-void pushNotification(int id, String title, String body) async {
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your channel id', 'your channel name', 'your channel description',
-      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin
-      .show(id, title, body, platformChannelSpecifics, payload: 'item x');
-}
-
-void callbackDispatcher() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  //Init Notifications Plugin
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-  var initializationSettingsIOS = IOSInitializationSettings();
-  var initializationSettings = InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-  );
-
-  Workmanager.executeTask((taskName, inputData) async {
-    switch (taskName) {
-      case "Price Tracker Scraper":
-      case "Manual Price Tracker Scraper":
-        try {
-          await updatePrices();
-          // // TODO Remove notification
-          // pushNotification(3, "Prices have been updated",
-          //     "We updated the prices for you in the background!");
-          print("Executed Task");
-        } catch (e) {
-          debugPrint(e);
-        }
-
-        break;
-    }
-    return Future.value(true);
-  });
-}
-
-Future<void> updatePrices({test: false}) async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final dbHelper = DatabaseHelper.instance;
-
-  List<Product> products = await dbHelper.getAllProducts();
-
-  for (int i = 0; i < products.length; i++) {
-    await products[i].update(test: test);
-    await dbHelper.update(products[i]);
-  }
-
-  products = await dbHelper.getAllProducts();
-  int countFall = await countPriceFall();
-  int countTarget = await countPriceUnderTarget();
-
-  if (countFall > 0) {
-    if (countFall == 1) {
-      pushNotification(0, '$countFall Product is cheaper',
-          'We detected that $countFall is cheaper today!'); //Display Notification
-    } else {
-      pushNotification(0, '$countFall Products are cheaper',
-          'We detected that $countFall are cheaper today!'); //Display Notification
-    }
-  }
-  if (countTarget > 0) {
-    if (countTarget == 1) {
-      pushNotification(1, '$countTarget Product is under their target!',
-          'We detected that $countTarget Product is under the set target today!'); //Display Notification
-    } else {
-      pushNotification(1, '$countTarget Products are under their target!',
-          'We detected that $countTarget Products are under the set targets today!'); //Display Notification
-    }
-  }
-}
-
-File fileFromDocsDir(String filename) {
-  String pathName = p.join(_appDocsDir.path, filename);
-  return File(pathName);
-}
 
 class MyBehavior extends ScrollBehavior {
   @override
