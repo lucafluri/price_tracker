@@ -16,29 +16,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final dbHelper = DatabaseService.instance;
-  FRefreshController controller = FRefreshController();
+  FRefreshController _refreshController = FRefreshController();
+
+  List<Product> _products = <Product>[];
+  String _pullToRefreshText = "Pull to refresh";
 
   @override
-  void dispose(){
-    controller.dispose();
+  void initState() {
+    _refreshController.setOnStateChangedCallback(_onPullRefreshStateChanged);
+    _loadProducts();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
     super.dispose();
   }
 
+  Future<void> _loadProducts() {
+    final db = DatabaseService.instance;
 
-  List<Widget> productTiles = <Widget>[];
-
-  void test() async {
-    // await ProductParser.test("https://www.digitec.ch/de/product/fossil-collider-hybrid-hr-42mm-edelstahl-sportuhr-smartwatch-11773438#mobileModel");
-    // await ProductParser.test("https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095");
-    // await ProductParser.test("https://www.digitec.ch/en/s1/product/digitec-connect-mobile-subscription-with-a-12-month-data-flat-rate-unlimited-sim-card-12409780");
-    // await ProductParser.test("https://www.galaxus.ch/de/s3/product/uvex-sportstyle-706-vario-sportbrille-7587273");
-
-    // int id = await dbHelper.insert(Product());
-    // debugPrint((await dbHelper.getProduct(id)).id.toString());
+    return db.getAllProducts().then((products) => {
+          setState(() {
+            _products = products;
+          })
+        });
   }
 
-  void addProduct() async {
+  void _addProduct() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
 
     List<String> inputs = (await showTextInputDialog(
@@ -47,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         DialogTextField(
             initialText: ProductParser.validUrl(input) ? input : "",
             hintText:
-            ProductParser.validUrl(input) ? "Paste from Clipboard" : "")
+                ProductParser.validUrl(input) ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
       message: "Paste Link to Product. \n\nSupported Stores:\n" +
@@ -63,14 +70,14 @@ class _HomeScreenState extends State<HomeScreen> {
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Product p = Product(productUrl: input);
       if (await p.init()) {
-        await dbHelper.insert(p);
+        await DatabaseService.instance.insert(p);
       } else {
         Toast.show("Parsing error, invalid store URL?", context,
             duration: 4, gravity: Toast.BOTTOM);
         // await FlutterClipboardManager.copyToClipBoard("");
       }
 
-      setState(() {});
+      _loadProducts();
     } else {
       if (input != null)
         Toast.show("Invalid URL or unsupported store", context,
@@ -78,141 +85,129 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _deleteProduct(Product product) async {
+    await DatabaseService.instance.delete(product.id);
+    debugPrint('Deleted Product ${product.name}');
+
+    _loadProducts();
+  }
+
+  void _onRefresh() async {
+    await updatePrices();
+    await _loadProducts();
+
+    _refreshController.finishRefresh();
+  }
+
+  void _onPullRefreshStateChanged(RefreshState state) {
+    setState(() {
+      switch (state) {
+        case RefreshState.PREPARING_REFRESH:
+          _pullToRefreshText = "Release to refresh";
+          break;
+        case RefreshState.REFRESHING:
+          _pullToRefreshText = "Loading...";
+          break;
+        case RefreshState.FINISHING:
+          _pullToRefreshText = "Refresh completed";
+          break;
+        default:
+          _pullToRefreshText = "Pull to refresh";
+          break;
+      }
+    });
+  }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      elevation: 0,
+      brightness: Brightness.dark,
+      backgroundColor: Colors.transparent,
+      iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+      title: Text('Price Tracker BETA',
+          style: TextStyle(color: Theme.of(context).primaryColor)),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.help_outline),
+          onPressed: () => Navigator.of(context).pushNamed("/intro"),
+        ),
+        IconButton(
+          icon: Icon(Icons.description),
+          onPressed: () => Navigator.of(context).pushNamed("/credits"),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFAB() {
+    return FloatingActionButton(
+      onPressed: _addProduct,
+      tooltip: 'Add Product',
+      child: Icon(Icons.add),
+    );
+  }
+
+  Widget _buildPullRefreshHeader(setter, constraints) {
+    return Container(
+        height: 50,
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 15,
+              height: 15,
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+                valueColor: new AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryTextTheme.caption.color),
+                strokeWidth: 2.0,
+              ),
+            ),
+            const SizedBox(width: 9.0),
+            Text(
+              _pullToRefreshText,
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    // dbHelper.deleteAll();
-    String textRefresh = "Pull to refresh";
-
-    test();
-
-    return ScrollConfiguration(
-      behavior: EmptyScrollBehavior(),
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          brightness: Brightness.dark,
-          backgroundColor: Colors.transparent,
-          iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-          title: Text('Price Tracker BETA',
-              style: TextStyle(color: Theme.of(context).primaryColor)),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.help_outline),
-              onPressed: () {
-                Navigator.of(context).pushNamed("/intro");
-                setState(() {});
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.description),
-              onPressed: () {
-                Navigator.of(context).pushNamed("/credits");
-              },
-            ),
-            // FlatButton(
-            //   child: Text(
-            //     "TEST",
-            //     style: TextStyle(color: Colors.black),
-            //   ),
-            //   onPressed: () async {
-            //     Workmanager.registerOneOffTask(
-            //         "manualpriceScraping", "Manual Price Tracker Scraper");
-            //     debugPrint("registeres one off task");
-            //   },
-            // ),
-          ],
-        ),
-        body: Container(
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: Container(
+        child: ScrollConfiguration(
+          behavior: EmptyScrollBehavior(),
           child: FRefresh(
-            controller: controller,
-            headerTrigger: 100,
-            headerHeight: 50,
-            headerBuilder: (setter, constraints) {
-              controller.setOnStateChangedCallback((state) {
-                setter(() {
-                  if (controller.refreshState == RefreshState.PREPARING_REFRESH) {
-                    textRefresh = "Release to refresh";
-                  } else if (controller.refreshState == RefreshState.REFRESHING) {
-                    textRefresh = "Loading...";
-                  } else if (controller.refreshState == RefreshState.FINISHING) {
-                    textRefresh = "Refresh completed";
-                  } else {
-                    textRefresh = "Pull to refresh";
-                  }
-                });
-              });
-
-              return Container(
-                  height: 50,
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 15,
-                        height: 15,
-                        child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).primaryTextTheme.caption.color),
-                          strokeWidth: 2.0,
-                        ),
-                      ),
-                      const SizedBox(width: 9.0),
-                      Text(
-                        textRefresh,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ));
-            },
-            onRefresh: () async {
-              await updatePrices();
-
-              // Check if MyHomePage is still mounted otherwise setState gets called on a unmounted widget => crash
-              if (this.mounted)
-                setState(() {
-                  controller.finishRefresh();
-                });
-            },
-            child: FutureBuilder(
-                future: dbHelper.getAllProducts(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      children: <Widget>[
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ProductListTile(
-                              id: snapshot.data[index].id,
-                              onDelete: () async {
-                                await dbHelper.delete(snapshot.data[index].id);
-                                debugPrint(
-                                    'Deleted Product ${snapshot.data[index].name}');
-                                setState(() {});
-                              },
-                            );
-                          },
-                        ),
-                        Container(height: 70)
-                      ],
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: addProduct,
-          tooltip: 'Add Product',
-          child: Icon(Icons.add),
+              controller: _refreshController,
+              headerTrigger: 100,
+              headerHeight: 50,
+              headerBuilder: _buildPullRefreshHeader,
+              onRefresh: _onRefresh,
+              child: Column(
+                children: <Widget>[
+                  if (_products.length == 0)
+                    Center(child: CircularProgressIndicator()),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _products.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ProductListTile(
+                        id: _products[index].id,
+                        onDelete: () => _deleteProduct(_products[index]),
+                      );
+                    },
+                  ),
+                  Container(height: 70)
+                ],
+              )),
         ),
       ),
+      floatingActionButton: _buildFAB(),
     );
   }
 }
