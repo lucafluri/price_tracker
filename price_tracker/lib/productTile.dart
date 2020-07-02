@@ -73,7 +73,7 @@ class _ProductTileState extends State<ProductTile> {
                                   product: product,
                                   fileFromDocsDir: widget.fileFromDocsDir)));
                         },
-                        // TODO replace with reorder functionality
+                        // TODO replace with reorder (or pin to top) functionality
                         onLongPress: () async {
                           if (await canLaunch(product.productUrl))
                             await launch(product.productUrl);

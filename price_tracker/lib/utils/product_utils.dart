@@ -4,6 +4,7 @@ import 'package:price_tracker/utils/database_helper.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:price_tracker/utils/utils.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:xpath_parse/xpath_selector.dart';
 
@@ -191,4 +192,40 @@ Future<int> countPriceUnderTarget() async {
     }
   }
   return count;
+}
+
+Future<void> updatePrices({test: false}) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final dbHelper = DatabaseHelper.instance;
+
+  List<Product> products = await dbHelper.getAllProducts();
+
+  for (int i = 0; i < products.length; i++) {
+    await products[i].update(test: test);
+    await dbHelper.update(products[i]);
+  }
+
+  products = await dbHelper.getAllProducts();
+  int countFall = await countPriceFall();
+  int countTarget = await countPriceUnderTarget();
+
+  if (countFall > 0) {
+    if (countFall == 1) {
+      pushNotification(0, '$countFall Product is cheaper',
+          'We detected that $countFall is cheaper today!'); //Display Notification
+    } else {
+      pushNotification(0, '$countFall Products are cheaper',
+          'We detected that $countFall are cheaper today!'); //Display Notification
+    }
+  }
+  if (countTarget > 0) {
+    if (countTarget == 1) {
+      pushNotification(1, '$countTarget Product is under their target!',
+          'We detected that $countTarget Product is under the set target today!'); //Display Notification
+    } else {
+      pushNotification(1, '$countTarget Products are under their target!',
+          'We detected that $countTarget Products are under the set targets today!'); //Display Notification
+    }
+  }
 }
