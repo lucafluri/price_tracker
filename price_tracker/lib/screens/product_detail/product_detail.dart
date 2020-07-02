@@ -1,31 +1,29 @@
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:optimized_cached_image/widgets.dart';
-import 'package:price_tracker/classes/product.dart';
+import 'package:price_tracker/models/product.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:math';
 
-import 'package:price_tracker/utils/database_helper.dart';
+import 'package:price_tracker/services/database.dart';
 
 double roundDouble(double value, int places) {
   double mod = pow(10.0, places);
   return ((value * mod).round().toDouble() / mod);
 }
 
-class ProductDetails extends StatefulWidget {
+class ProductDetail extends StatefulWidget {
   final Product product;
-  final Function fileFromDocsDir;
 
-  const ProductDetails({Key key, this.product, this.fileFromDocsDir})
-      : super(key: key);
+  const ProductDetail({Key key, this.product,}) : super(key: key);
   @override
-  _ProductDetailsState createState() => _ProductDetailsState();
+  _ProductDetailState createState() => _ProductDetailState();
 }
 
-class _ProductDetailsState extends State<ProductDetails> {
-  final dbHelper = DatabaseHelper.instance;
+class _ProductDetailState extends State<ProductDetail> {
+  final dbHelper = DatabaseService.instance;
   var formatter = new DateFormat('yyyy-MM-dd--HH:mm:ss');
   double sliderValue;
 

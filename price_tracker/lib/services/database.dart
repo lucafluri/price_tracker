@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:price_tracker/classes/product.dart';
+import 'package:price_tracker/models/product.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
-class DatabaseHelper {
+class DatabaseService {
   static final _databaseName = "price_tracker.db";
   static final _databaseVersion = 1;
 
@@ -20,27 +20,26 @@ class DatabaseHelper {
   static final columnImageUrl = 'imageUrl';
 
   // make this a singleton class
-  DatabaseHelper._privateConstructor();
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  DatabaseService._privateConstructor();
+  static final DatabaseService _instance = DatabaseService._privateConstructor();
+
+  static DatabaseService get instance => _instance;
 
   // only have a single app-wide reference to the database
   static Database _database;
-  Future<Database> get database async {
-    if (_database != null) return _database;
-    // lazily instantiate the db the first time it is accessed
-    _database = await _initDatabase();
-    return _database;
-  }
 
   // this opens the database (and creates it if it doesn't exist)
-  _initDatabase() async {
+  static Future<void> init() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    _database = await openDatabase(path,
+        version: _databaseVersion,
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade
+    );
   }
 
-  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // if (oldVersion == 1) {
     //   await db.execute('ALTER TABLE $table ADD $columnRatings TEXT');
     //   print("Database upgraded from version 1 to version 2, added column "
@@ -54,7 +53,7 @@ class DatabaseHelper {
   }
 
   // SQL code to create the database table
-  Future _onCreate(Database db, int version) async {
+  static Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
           CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY NOT NULL,
@@ -74,14 +73,13 @@ class DatabaseHelper {
   ///
   /// returns id of the inserted product or -1 if already present
   Future<int> insert(Product product) async {
-    Database db = await instance.database;
     // First check, whether the movie already exists:
     final Product exists = await getProduct(product.id);
     if (exists != null) {
       print('Product ${product.id} already exists in db');
       return -1;
     } else {
-      int answer = await db.insert(table, product.toMap());
+      int answer = await _database.insert(table, product.toMap());
       product.id = answer;
 
       print('Product ${product.id} inserted into db.');
@@ -93,9 +91,7 @@ class DatabaseHelper {
   /// Gets a specific product from the database.
   /// Returns product, or 'null' if not found.
   Future<Product> getProduct(int id) async {
-    Database db = await instance.database;
-    var result =
-        await db.rawQuery('SELECT * FROM $table WHERE $columnId = $id');
+    var result = await _database.rawQuery('SELECT * FROM $table WHERE $columnId = $id');
 
     if (result.length > 0) {
       return new Product.fromMap(result.first);
@@ -105,10 +101,9 @@ class DatabaseHelper {
   }
 
   Stream<List<Product>> getAllProductsStream() async* {
-    Database db = await instance.database;
     while (true) {
       await Future.delayed(Duration(milliseconds: 1000));
-      List<Map<String, dynamic>> list = await db.query(table);
+      List<Map<String, dynamic>> list = await _database.query(table);
       List<Product> products = list.map((el) => Product.fromMap(el)).toList();
       yield products;
     }
@@ -116,8 +111,7 @@ class DatabaseHelper {
 
   /// Returns the list of Products
   Future<List<Product>> getAllProducts() async {
-    Database db = await instance.database;
-    List<Map<String, dynamic>> list = await db.query(table);
+    List<Map<String, dynamic>> list = await _database.query(table);
     List<Product> products = list.map((el) => Product.fromMap(el)).toList();
     return products;
   }
@@ -125,44 +119,36 @@ class DatabaseHelper {
   // All of the rows are returned as a list of maps, where each map is
   // a key-value list of columns.
   Future<List<Map<String, dynamic>>> queryAllRows() async {
-    Database db = await instance.database;
-    return await db.query(table);
+    return await _database.query(table);
   }
 
   // All of the methods (insert, query, update, delete) can also be done using
   // raw SQL commands. This method uses a raw query to give the row count.
   Future<int> queryCount() async {
-    Database db = await instance.database;
-    return Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM $table'));
+    return Sqflite.firstIntValue(await _database.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
   // We are assuming here that the id column in the map is set. The other
   // column values will be used to update the row.
   Future<int> update(Product prod) async {
-    Database db = await instance.database;
-    return await db.update(table, prod.toMap(),
+    return await _database.update(table, prod.toMap(),
         where: '$columnId = ?', whereArgs: [prod.id]);
   }
 
   // We are assuming here that the id column in the map is set. The other
   // column values will be used to update the row.
   Future<void> updateId(int id) async {
-    Database db = await instance.database;
-    await db
-        .rawQuery('UPDATE $table SET $columnId = $id WHERE $columnId = $id');
+    await _database.rawQuery('UPDATE $table SET $columnId = $id WHERE $columnId = $id');
   }
 
   // Deletes the row specified by the id. The number of affected rows is
   // returned. This should be 1 as long as the row exists.
   Future<int> delete(int id) async {
-    Database db = await instance.database;
-    return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+    return await _database.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
-  //Clears db
+  // Clears db
   Future<int> deleteAll() async {
-    Database db = await instance.database;
-    return await db.delete(table);
+    return await _database.delete(table);
   }
 }

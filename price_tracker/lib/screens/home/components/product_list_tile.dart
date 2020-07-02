@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:optimized_cached_image/widgets.dart';
-import 'package:price_tracker/utils/database_helper.dart';
-import 'package:price_tracker/product_details.dart';
+import 'package:price_tracker/services/database.dart';
+import 'package:price_tracker/screens/product_detail/product_detail.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
 
-class ProductTile extends StatefulWidget {
+class ProductListTile extends StatefulWidget {
   final int id;
   final Function onDelete;
-  final Function fileFromDocsDir;
-  const ProductTile({Key key, this.id, this.onDelete, this.fileFromDocsDir})
+  const ProductListTile({Key key, this.id, this.onDelete})
       : super(key: key);
 
   @override
-  _ProductTileState createState() => _ProductTileState();
+  _ProductListTileState createState() => _ProductListTileState();
 }
 
-class _ProductTileState extends State<ProductTile> {
-  final dbHelper = DatabaseHelper.instance;
+class _ProductListTileState extends State<ProductListTile> {
+  final dbHelper = DatabaseService.instance;
 
   @override
   void dispose() {
@@ -69,9 +68,8 @@ class _ProductTileState extends State<ProductTile> {
                       child: ListTile(
                         onTap: () {
                           Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (context) => ProductDetails(
-                                  product: product,
-                                  fileFromDocsDir: widget.fileFromDocsDir)));
+                              builder: (context) => ProductDetail(product: product,)
+                          ));
                         },
                         // TODO replace with reorder (or pin to top) functionality
                         onLongPress: () async {

@@ -1,7 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:price_tracker/utils/product_utils.dart';
+import 'package:price_tracker/services/product_utils.dart';
 
 class Product {
   int _id;

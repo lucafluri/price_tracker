@@ -1,10 +1,10 @@
 // Returns number of products that are today cheaper than yesterday or have a price at all compared to yesterday
-import 'package:price_tracker/classes/product.dart';
-import 'package:price_tracker/utils/database_helper.dart';
+import 'package:price_tracker/models/product.dart';
+import 'package:price_tracker/services/database.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:price_tracker/utils/utils.dart';
+import 'package:price_tracker/services/notifications.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:xpath_parse/xpath_selector.dart';
 
@@ -154,7 +154,7 @@ class ProductParser {
 }
 
 Future<int> countPriceFall() async {
-  final dbHelper = DatabaseHelper.instance;
+  final dbHelper = DatabaseService.instance;
 
   List<Product> products = await dbHelper.getAllProducts();
 
@@ -177,7 +177,7 @@ Future<int> countPriceFall() async {
 
 //Returns number of products that fell under the set target
 Future<int> countPriceUnderTarget() async {
-  final dbHelper = DatabaseHelper.instance;
+  final dbHelper = DatabaseService.instance;
 
   List<Product> products = await dbHelper.getAllProducts();
 
@@ -197,7 +197,7 @@ Future<int> countPriceUnderTarget() async {
 Future<void> updatePrices({test: false}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final dbHelper = DatabaseHelper.instance;
+  final dbHelper = DatabaseService.instance;
 
   List<Product> products = await dbHelper.getAllProducts();
 
@@ -212,19 +212,19 @@ Future<void> updatePrices({test: false}) async {
 
   if (countFall > 0) {
     if (countFall == 1) {
-      pushNotification(0, '$countFall Product is cheaper',
+      NotificationService.sendPushNotification(0, '$countFall Product is cheaper',
           'We detected that $countFall is cheaper today!'); //Display Notification
     } else {
-      pushNotification(0, '$countFall Products are cheaper',
+      NotificationService.sendPushNotification(0, '$countFall Products are cheaper',
           'We detected that $countFall are cheaper today!'); //Display Notification
     }
   }
   if (countTarget > 0) {
     if (countTarget == 1) {
-      pushNotification(1, '$countTarget Product is under their target!',
+      NotificationService.sendPushNotification(1, '$countTarget Product is under their target!',
           'We detected that $countTarget Product is under the set target today!'); //Display Notification
     } else {
-      pushNotification(1, '$countTarget Products are under their target!',
+      NotificationService.sendPushNotification(1, '$countTarget Products are under their target!',
           'We detected that $countTarget Products are under the set targets today!'); //Display Notification
     }
   }
