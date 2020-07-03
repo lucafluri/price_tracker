@@ -85,8 +85,6 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
               onRefresh: state.onRefresh,
               child: Column(
                 children: <Widget>[
-                  if (state.products.length == 0)
-                    Center(child: CircularProgressIndicator()),
                   ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -97,6 +95,10 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                         onDelete: () => state.deleteProduct(state.products[index]),
                       );
                     },
+                  ),
+                  if (state.loading) Center(child: CircularProgressIndicator()),
+                  if (!state.loading && state.products.length == 0) Center(
+                      child: Text("You don't have any tracked products yet.")
                   ),
                   Container(height: 70)
                 ],

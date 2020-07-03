@@ -11,6 +11,7 @@ import 'package:toast/toast.dart';
 class HomeScreenController extends State<HomeScreen> {
   FRefreshController refreshController = FRefreshController();
 
+  bool loading = false;
   List<Product> products = <Product>[];
   String pullToRefreshText = "Pull to refresh";
 
@@ -29,12 +30,15 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   Future<void> _loadProducts() async {
+    loading = true;
+    setState(() {});
+
     final _db = await DatabaseService.getInstance();
 
-    return _db.getAllProducts().then((value) => {
-          setState(() {
-            products = value;
-          })
+    return _db.getAllProducts().then((value) {
+          products = value;
+          loading = false;
+          setState(() {});
         });
   }
 
@@ -78,6 +82,8 @@ class HomeScreenController extends State<HomeScreen> {
     input = inputs != null ? inputs[0] : inputs;
 
     if (input != null && ProductParser.validUrl(input)) {
+      loading = true;
+      setState(() {});
       Toast.show("Product details are being parsed", context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Product p = Product(productUrl: input);
