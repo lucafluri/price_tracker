@@ -28,10 +28,10 @@ class HomeScreenController extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _loadProducts() {
-    final db = DatabaseService.instance;
+  Future<void> _loadProducts() async {
+    final _db = await DatabaseService.getInstance();
 
-    return db.getAllProducts().then((value) => {
+    return _db.getAllProducts().then((value) => {
           setState(() {
             products = value;
           })
@@ -82,7 +82,8 @@ class HomeScreenController extends State<HomeScreen> {
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Product p = Product(productUrl: input);
       if (await p.init()) {
-        await DatabaseService.instance.insert(p);
+        final _db = await DatabaseService.getInstance();
+        await _db.insert(p);
       } else {
         Toast.show("Parsing error, invalid store URL?", context,
             duration: 4, gravity: Toast.BOTTOM);
@@ -98,7 +99,9 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   void deleteProduct(Product product) async {
-    await DatabaseService.instance.delete(product.id);
+    final _db = await DatabaseService.getInstance();
+
+    await _db.delete(product.id);
     debugPrint('Deleted Product ${product.name}');
 
     _loadProducts();

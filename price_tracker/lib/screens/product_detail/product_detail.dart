@@ -23,7 +23,6 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  final dbHelper = DatabaseService.instance;
   var formatter = new DateFormat('yyyy-MM-dd--HH:mm:ss');
   double sliderValue;
 
@@ -33,13 +32,21 @@ class _ProductDetailState extends State<ProductDetail> {
   bool validTarget = false;
 
   Future<void> setTextField() async {
-    Product p = await dbHelper.getProduct(widget.product.id);
+    final _db = await DatabaseService.getInstance();
+
+    Product p = await _db.getProduct(widget.product.id);
     setTarget = p.targetPrice >= 0;
     canSetTarget = p.prices[p.prices.length - 1] > 0;
     if (setTarget) {
       _targetInputController.text = p.targetPrice.toString();
       validTarget = true;
     }
+  }
+
+  Future<Product> _getProduct() async {
+    final _db = await DatabaseService.getInstance();
+
+    return await _db.getProduct(widget.product.id);
   }
 
   @override
@@ -69,7 +76,7 @@ class _ProductDetailState extends State<ProductDetail> {
             ),
           ),
           body: FutureBuilder(
-              future: dbHelper.getProduct(widget.product.id),
+              future: _getProduct(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   Product product = snapshot.data;
@@ -145,11 +152,13 @@ class _ProductDetailState extends State<ProductDetail> {
                                   title: Text("Set Target Price?"),
                                   value: setTarget,
                                   onChanged: (e) async {
+                                    final _db = await DatabaseService.getInstance();
+
                                     if (canSetTarget) {
                                       if (e) {
                                         product.targetPrice =
                                             product.targetPrice.abs();
-                                        await dbHelper.update(product);
+                                        await _db.update(product);
                                         setState(() {
                                           _targetInputController.text =
                                               product.targetPrice.toString();
@@ -158,7 +167,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                       } else {
                                         product.targetPrice =
                                             -product.targetPrice;
-                                        await dbHelper.update(product);
+                                        await _db.update(product);
                                         _targetInputController.text = "";
                                         setState(() {});
                                       }
@@ -198,10 +207,12 @@ class _ProductDetailState extends State<ProductDetail> {
                                 setState(() {});
                               },
                               onSubmitted: (value) async {
+                                final _db = await DatabaseService.getInstance();
+
                                 if (validTarget) {
                                   product.targetPrice =
                                       double.parse(value).abs();
-                                  await dbHelper.update(product);
+                                  await _db.update(product);
                                 } else {
                                   _targetInputController.text =
                                       product.targetPrice.toString();

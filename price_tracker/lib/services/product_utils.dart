@@ -154,9 +154,9 @@ class ProductParser {
 }
 
 Future<int> countPriceFall() async {
-  final dbHelper = DatabaseService.instance;
+  final _db = await DatabaseService.getInstance();
 
-  List<Product> products = await dbHelper.getAllProducts();
+  List<Product> products = await _db.getAllProducts();
 
   int count = 0;
 
@@ -177,9 +177,9 @@ Future<int> countPriceFall() async {
 
 //Returns number of products that fell under the set target
 Future<int> countPriceUnderTarget() async {
-  final dbHelper = DatabaseService.instance;
+  final _db = await DatabaseService.getInstance();
 
-  List<Product> products = await dbHelper.getAllProducts();
+  List<Product> products = await _db.getAllProducts();
 
   int count = 0;
 
@@ -197,16 +197,16 @@ Future<int> countPriceUnderTarget() async {
 Future<void> updatePrices({test: false}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final dbHelper = DatabaseService.instance;
+  final _db = await DatabaseService.getInstance();
 
-  List<Product> products = await dbHelper.getAllProducts();
+  List<Product> products = await _db.getAllProducts();
 
   for (int i = 0; i < products.length; i++) {
     await products[i].update(test: test);
-    await dbHelper.update(products[i]);
+    await _db.update(products[i]);
   }
 
-  products = await dbHelper.getAllProducts();
+  products = await _db.getAllProducts();
   int countFall = await countPriceFall();
   int countTarget = await countPriceUnderTarget();
 
