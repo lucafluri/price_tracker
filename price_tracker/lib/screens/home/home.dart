@@ -83,13 +83,14 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
             onRefresh: state.onRefresh,
             child: Column(
               children: <Widget>[
-                ListView.builder(
+                ListView.separated(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: state.products.length,
+                  separatorBuilder: (BuildContext context, int index) => Divider(height: 1.0),
                   itemBuilder: (BuildContext context, int index) {
                     return ProductListTile(
-                      id: state.products[index].id,
+                      product: state.products[index],
                       onDelete: () => state.deleteProduct(state.products[index]),
                     );
                   },
