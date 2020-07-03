@@ -9,30 +9,30 @@ class BackgroundWorkerService {
   static BackgroundWorkerService get instance => _instance;
 
   static Future<void> init() async {
-    Workmanager.initialize(_dispatchCallbacks, isInDebugMode: false);
+    await Workmanager.initialize(_dispatchCallbacks, isInDebugMode: false);
   }
+}
 
-  static void _dispatchCallbacks() async {
-    WidgetsFlutterBinding.ensureInitialized();
+void _dispatchCallbacks() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-    Workmanager.executeTask((taskName, inputData) async {
-      switch (taskName) {
-        case "Price Tracker Scraper":
-        case "Manual Price Tracker Scraper":
-          try {
-            // TODO change to per price
-            await updatePrices();
-            // // TODO Remove notification
-            // pushNotification(3, "Prices have been updated",
-            //     "We updated the prices for you in the background!");
-            print("Executed Task");
-          } catch (e) {
-            debugPrint(e);
-          }
+  Workmanager.executeTask((taskName, inputData) async {
+    switch (taskName) {
+      case "Price Tracker Scraper":
+      case "Manual Price Tracker Scraper":
+        try {
+          // TODO change to per price
+          await updatePrices();
+          // // TODO Remove notification
+          // pushNotification(3, "Prices have been updated",
+          //     "We updated the prices for you in the background!");
+          print("Executed Task");
+        } catch (e) {
+          debugPrint(e);
+        }
 
-          break;
-      }
-      return Future.value(true);
-    });
-  }
+        break;
+    }
+    return Future.value(true);
+  });
 }

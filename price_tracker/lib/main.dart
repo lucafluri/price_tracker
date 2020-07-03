@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:price_tracker/routes.dart';
 import 'package:price_tracker/services/init.dart';
 import 'package:price_tracker/themes/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initApp();
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool _seen = (prefs.getBool('seen') ?? false);
+  bool firstLaunch = await checkFirstLaunch();
 
-  runApp(PriceTrackerApp(firstLaunch: !_seen,));
+  runApp(PriceTrackerApp(firstLaunch: firstLaunch,));
 }
 
 class PriceTrackerApp extends StatelessWidget {

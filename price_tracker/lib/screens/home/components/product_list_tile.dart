@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:optimized_cached_image/widgets.dart';
+import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/screens/product_detail/product_detail.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,17 +18,21 @@ class ProductListTile extends StatefulWidget {
 }
 
 class _ProductListTileState extends State<ProductListTile> {
-  final dbHelper = DatabaseService.instance;
-
   @override
   void dispose() {
     super.dispose();
   }
 
+  Future<Product> _getProduct() async {
+    final _db = await DatabaseService.getInstance();
+
+    return _db.getProduct(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: dbHelper.getProduct(widget.id),
+        future: _getProduct(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var product = snapshot.data;

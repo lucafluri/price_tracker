@@ -23,7 +23,11 @@ class DatabaseService {
   DatabaseService._privateConstructor();
   static final DatabaseService _instance = DatabaseService._privateConstructor();
 
-  static DatabaseService get instance => _instance;
+  static Future<DatabaseService> getInstance() async {
+    if (_database == null) await init();
+    
+    return _instance;
+  } 
 
   // only have a single app-wide reference to the database
   static Database _database;
@@ -98,15 +102,6 @@ class DatabaseService {
     }
 
     return null;
-  }
-
-  Stream<List<Product>> getAllProductsStream() async* {
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 1000));
-      List<Map<String, dynamic>> list = await _database.query(table);
-      List<Product> products = list.map((el) => Product.fromMap(el)).toList();
-      yield products;
-    }
   }
 
   /// Returns the list of Products

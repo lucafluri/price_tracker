@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:price_tracker/services/background_worker.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/services/notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 Future<void> initApp() async {
@@ -21,3 +22,12 @@ Future<void> initApp() async {
   }
 }
 
+Future<bool> checkFirstLaunch() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  bool seen = prefs.getBool('seen') ?? false;
+
+  if (!seen) prefs.setBool('seen', true);
+
+  return !seen;
+}
