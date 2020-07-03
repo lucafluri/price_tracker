@@ -102,7 +102,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
               ],
             )),
       ),
-      floatingActionButton: _buildFAB(),
+      floatingActionButton: state.iConnectivity ? _buildFAB() : null,
     );
   }
 }

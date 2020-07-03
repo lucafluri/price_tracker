@@ -17,6 +17,7 @@ class HomeScreenController extends State<HomeScreen> {
   bool loading = false;
   List<Product> products = <Product>[];
   String pullToRefreshText = "Pull to refresh";
+  bool iConnectivity = true;
 
   @override
   void initState() {
@@ -37,9 +38,12 @@ class HomeScreenController extends State<HomeScreen> {
       final result = await InternetAddress.lookup('google.com');
       if(result.isNotEmpty && result[0].rawAddress.isNotEmpty){
         print('connected to internet');
+        iConnectivity = true;
       }
     }on SocketException catch(_){
       print('NOT connected to internet');
+      iConnectivity = false;
+      Toast.show('Please ensure an internet connection', context, duration: 3, gravity: Toast.BOTTOM);
     }
   }
 
