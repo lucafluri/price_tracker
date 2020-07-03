@@ -75,35 +75,32 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Container(
-        child: ScrollConfiguration(
-          behavior: EmptyScrollBehavior(),
-          child: FRefresh(
-              controller: state.refreshController,
-              headerTrigger: 100,
-              headerHeight: 50,
-              headerBuilder: _buildPullRefreshHeader(context),
-              onRefresh: state.onRefresh,
-              child: Column(
-                children: <Widget>[
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: state.products.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ProductListTile(
-                        id: state.products[index].id,
-                        onDelete: () => state.deleteProduct(state.products[index]),
-                      );
-                    },
-                  ),
-                  if (state.loading) Center(child: CircularProgressIndicator()),
-                  if (!state.loading && state.products.length == 0) Center(
-                      child: Text("You don't have any tracked products yet.")
-                  ),
-                  Container(height: 70)
-                ],
-              )),
-        ),
+        child: FRefresh(
+            controller: state.refreshController,
+            headerTrigger: 100,
+            headerHeight: 50,
+            headerBuilder: _buildPullRefreshHeader(context),
+            onRefresh: state.onRefresh,
+            child: Column(
+              children: <Widget>[
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: state.products.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ProductListTile(
+                      id: state.products[index].id,
+                      onDelete: () => state.deleteProduct(state.products[index]),
+                    );
+                  },
+                ),
+                if (state.loading) Center(child: CircularProgressIndicator()),
+                if (!state.loading && state.products.length == 0) Center(
+                    child: Text("You don't have any tracked products yet.")
+                ),
+                Container(height: 70)
+              ],
+            )),
       ),
       floatingActionButton: _buildFAB(),
     );
