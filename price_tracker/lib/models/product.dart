@@ -35,7 +35,6 @@ class Product {
   List<double> get prices => _prices;
   List<DateTime> get dates => _dates;
 
-
   // Parses all information from the web
   Future<bool> init() async {
     // final dbHelper = DatabaseHelper.instance;
