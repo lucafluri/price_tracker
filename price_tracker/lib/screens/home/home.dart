@@ -3,6 +3,7 @@ import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
+import 'package:toast/toast.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -35,10 +36,11 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
     );
   }
 
-  Widget _buildFAB() {
+  Widget _buildFAB(BuildContext context) {
     return FloatingActionButton(
-      onPressed: state.addProduct,
-      tooltip: 'Add Product',
+      onPressed: state.iConnectivity ? state.addProduct : () {Toast.show('Please ensure an internet connection', context, duration: 3, gravity: Toast.BOTTOM);},
+      tooltip: state.iConnectivity ? 'Add Product': 'No Internet',
+      backgroundColor: state.iConnectivity ? null : Colors.grey,
       child: Icon(Icons.add),
     );
   }
@@ -102,7 +104,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
               ],
             )),
       ),
-      floatingActionButton: state.iConnectivity ? _buildFAB() : null,
+      floatingActionButton: _buildFAB(context),
     );
   }
 }
