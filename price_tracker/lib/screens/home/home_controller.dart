@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
 import 'package:frefresh/frefresh.dart';
@@ -14,12 +17,13 @@ class HomeScreenController extends State<HomeScreen> {
   bool loading = false;
   List<Product> products = <Product>[];
   String pullToRefreshText = "Pull to refresh";
+  bool iConnectivity = true;
 
   @override
   void initState() {
     refreshController.setOnStateChangedCallback(_onPullRefreshStateChanged);
     _loadProducts();
-
+    _checkInternet();
     super.initState();
   }
 
@@ -27,6 +31,20 @@ class HomeScreenController extends State<HomeScreen> {
   void dispose() {
     refreshController.dispose();
     super.dispose();
+  }
+
+  _checkInternet() async{
+    try{
+      final result = await InternetAddress.lookup('google.com');
+      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty){
+        print('connected to internet');
+        iConnectivity = true;
+      }
+    }on SocketException catch(_){
+      print('NOT connected to internet');
+      iConnectivity = false;
+      Toast.show('Please ensure an internet connection', context, duration: 3, gravity: Toast.BOTTOM);
+    }
   }
 
   Future<void> _loadProducts() async {
