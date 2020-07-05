@@ -14,8 +14,11 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     name: Test and Build APK
+    runs-on: ${{ matrix.os }}
     # The type of runner that the job will run on
-    runs-on: [windows-latest, macos-latest]
+    strategy:
+      matrix:
+        runs-on: [windows-latest, macos-latest]
     
 
     # Steps represent a sequence of tasks that will be executed as part of the job
