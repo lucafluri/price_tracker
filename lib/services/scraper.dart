@@ -43,6 +43,7 @@ class ScraperService {
       return Future.value(null);
   }
 
+
   // Takes a valid url and returns sld + tld
   static String getDomain(String url) {
     var domain = DomainUtils.getDomainFromUrl(url);
