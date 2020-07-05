@@ -1,4 +1,6 @@
-<img src="assets/feature_graphic.png" alt="screenshot" />
+<img src="assets/feature_graphic.png" alt="screenshot" />  
+
+![CI](https://github.com/lucafluri/price_tracker/workflows/CI/badge.svg)
 
 # Price Tracker
 Price Tracker App built with Flutter.
