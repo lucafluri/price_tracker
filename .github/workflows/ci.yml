@@ -5,22 +5,13 @@ on:
     branches: 
       - master
       - dev
-  pull_request:
-    branches: 
-      - master
-      - dev
 
 jobs:
   # This workflow contains a single job called "build"
-  build:
-    name: Test and Build APK
-    runs-on: ${{ matrix.os }}
-    # The type of runner that the job will run on
-    strategy:
-      matrix:
-        os: [windows-latest, macOS-latest]
-    
-
+  test:
+    name: Test
+    runs-on: windows-latest
+ 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -34,4 +25,4 @@ jobs:
 
     - run: flutter pub get
     - run: flutter test
-    - run: flutter build apk
+
