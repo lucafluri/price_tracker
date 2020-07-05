@@ -9,6 +9,7 @@ import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/services/product_utils.dart';
+import 'package:price_tracker/services/scraper.dart';
 import 'package:toast/toast.dart';
 
 class HomeScreenController extends State<HomeScreen> {
@@ -86,20 +87,20 @@ class HomeScreenController extends State<HomeScreen> {
       context: context,
       textFields: [
         DialogTextField(
-            initialText: ProductParser.validUrl(input) ? input : "",
+            initialText: ScraperService.validUrl(input) ? input : "",
             hintText:
-                ProductParser.validUrl(input) ? "Paste from Clipboard" : "")
+                ScraperService.validUrl(input) ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
       message: "Paste Link to Product. \n\nSupported Stores:\n" +
-          ProductParser.possibleDomains
+          ScraperService.possibleDomains
               .toString()
               .replaceAll("[", "")
               .replaceAll("]", ""),
     ));
     input = inputs != null ? inputs[0] : inputs;
 
-    if (input != null && ProductParser.validUrl(input)) {
+    if (input != null && ScraperService.validUrl(input)) {
       loading = true;
       setState(() {});
       Toast.show("Product details are being parsed", context,

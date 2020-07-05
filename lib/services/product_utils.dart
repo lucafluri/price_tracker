@@ -5,44 +5,17 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:price_tracker/services/notifications.dart';
-import 'package:string_validator/string_validator.dart';
+import 'package:price_tracker/services/scraper.dart';
 import 'package:xpath_parse/xpath_selector.dart';
 
 class ProductParser {
-  static List<String> possibleDomains = ["digitec.ch", "galaxus.ch"];
-
-  static bool validUrl(String url) {
-    if (isURL(url, {
-      'protocols': ['http', 'https'],
-      'require_tld': true,
-      'require_protocol': true,
-      'allow_underscores': true,
-      'host_whitelist': false,
-      'host_blacklist': false
-    })) {
-      var domain = DomainUtils.getDomainFromUrl(url);
-      String d = domain.sld + "." + domain.tld;
-      if (possibleDomains.contains(d)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   //returns parsed double price or -1 if not present
   static Future<double> parsePrice(String url) async {
-    var client = Client();
-    Response response = await client.get(url);
+    Response response = await ScraperService.getPage(url);
+    String d = ScraperService.getDomain(url);
 
-    var domain = DomainUtils.getDomainFromUrl(url);
-    var d = domain.sld + "." + domain.tld;
-    // var beginning = url.substring(0, url.indexOf(d));
-    // var rest = url.substring(url.indexOf(d) + d.length);
-    // debugPrint(beginning);
-    // debugPrint(d);
-    // debugPrint(rest);
+    
 
-    client.close();
     try {
       switch (d) {
         case "digitec.ch":
@@ -77,13 +50,8 @@ class ProductParser {
 
   // returns image url string or null if missing
   static Future<String> parseImageUrl(String url) async {
-    var client = Client();
-    Response response = await client.get(url);
-
-    var domain = DomainUtils.getDomainFromUrl(url);
-    var d = domain.sld + "." + domain.tld;
-
-    client.close();
+    Response response = await ScraperService.getPage(url);
+    String d = ScraperService.getDomain(url);
 
     try {
       switch (d) {
@@ -96,10 +64,11 @@ class ProductParser {
               .get();
 
           // Other Position
-          image = image.isEmpty ?
-              XPath.source(response.body)
+          image = image.isEmpty
+              ? XPath.source(response.body)
                   .query("//*[@id='slide-0']/div/picture/img")
-                  .get() : image;
+                  .get()
+              : image;
 
           final regexp2 = RegExp(r'"(\S*)"'); //Find first double
           final match2 = regexp2.firstMatch(image);
@@ -114,12 +83,8 @@ class ProductParser {
 
   // returns name string or null if missing
   static Future<String> parseName(String url) async {
-    var client = Client();
-    Response response = await client.get(url);
-
-    var domain = DomainUtils.getDomainFromUrl(url);
-    var d = domain.sld + "." + domain.tld;
-    client.close();
+    Response response = await ScraperService.getPage(url);
+    String d = ScraperService.getDomain(url);
 
     try {
       switch (d) {
@@ -212,19 +177,27 @@ Future<void> updatePrices({test: false}) async {
 
   if (countFall > 0) {
     if (countFall == 1) {
-      NotificationService.sendPushNotification(0, '$countFall Product is cheaper',
+      NotificationService.sendPushNotification(
+          0,
+          '$countFall Product is cheaper',
           'We detected that $countFall is cheaper today!'); //Display Notification
     } else {
-      NotificationService.sendPushNotification(0, '$countFall Products are cheaper',
+      NotificationService.sendPushNotification(
+          0,
+          '$countFall Products are cheaper',
           'We detected that $countFall are cheaper today!'); //Display Notification
     }
   }
   if (countTarget > 0) {
     if (countTarget == 1) {
-      NotificationService.sendPushNotification(1, '$countTarget Product is under their target!',
+      NotificationService.sendPushNotification(
+          1,
+          '$countTarget Product is under their target!',
           'We detected that $countTarget Product is under the set target today!'); //Display Notification
     } else {
-      NotificationService.sendPushNotification(1, '$countTarget Products are under their target!',
+      NotificationService.sendPushNotification(
+          1,
+          '$countTarget Products are under their target!',
           'We detected that $countTarget Products are under the set targets today!'); //Display Notification
     }
   }
