@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
