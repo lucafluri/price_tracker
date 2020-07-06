@@ -12,6 +12,10 @@ import Flutter
     // Setting the interval of the background task, in seconds. So 60*60*12 is 12 hours.
     UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*60*12))
     
+    if #available(iOS 10.0, *) {
+        UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+    }
+    
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
