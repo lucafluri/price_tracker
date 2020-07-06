@@ -12,7 +12,7 @@ import 'package:xpath_parse/xpath_selector.dart';
 class ProductParser {
   //returns parsed double price or -1 if not present
   static Future<double> parsePrice(String url) async {
-    Response response = await ScraperService.getPage(url);
+    Response response = await ScraperService.instance.getPage(url);
     String d = ScraperService.getDomain(url);
 
     // TODO Structured Data
@@ -75,7 +75,7 @@ class ProductParser {
 
   // returns image url string or null if missing
   static Future<String> parseImageUrl(String url) async {
-    Response response = await ScraperService.getPage(url);
+    Response response = await ScraperService.instance.getPage(url);
     String d = ScraperService.getDomain(url);
 
     try {
@@ -108,7 +108,7 @@ class ProductParser {
 
   // returns name string or null if missing
   static Future<String> parseName(String url) async {
-    Response response = await ScraperService.getPage(url);
+    Response response = await ScraperService.instance.getPage(url);
     String d = ScraperService.getDomain(url);
 
     try {

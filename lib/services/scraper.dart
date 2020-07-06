@@ -9,11 +9,11 @@ class ScraperService {
 
   ScraperService._privateConstructor();
   static final ScraperService _instance = ScraperService._privateConstructor();
-  static ScraperService get instance => _instance;
-
-  static Future<void> init() async {
-    _client = Client();
+  static ScraperService get instance {
+    if(_client == null) _client = Client();
+    return _instance;
   }
+
 
   static bool validUrl(String url) {
     if (isURL(url, {
@@ -35,7 +35,7 @@ class ScraperService {
 
   // Returns Response if valid URL
   // or null if invalid url
-  static Future<Response> getPage(String url) async {
+  Future<Response> getPage(String url) async {
     if (validUrl(url)) {
       Response r = await _client.get(url);
       return r;
