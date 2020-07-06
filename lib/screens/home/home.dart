@@ -8,6 +8,9 @@ import 'package:price_tracker/screens/home/home_controller.dart';
 import 'package:price_tracker/services/notifications.dart';
 import 'package:toast/toast.dart';
 
+/// Set this to 'true' if you want to have a red button to create a test-notification:
+const NOTIFICATION_TEST_BUTTON = false;
+
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
 
@@ -27,7 +30,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
       title: Text('Price Tracker BETA',
           style: TextStyle(color: Theme.of(context).primaryColor)),
       actions: <Widget>[
-        if (Platform.isIOS)
+        if (NOTIFICATION_TEST_BUTTON)
           IconButton(
             icon: Icon(Icons.speaker_notes),
             onPressed: () => NotificationService.sendPushNotification(

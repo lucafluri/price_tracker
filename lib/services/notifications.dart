@@ -6,6 +6,7 @@ class NotificationService {
   static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   NotificationService._privateConstructor();
+
   static final NotificationService _instance =
       NotificationService._privateConstructor();
 
@@ -27,9 +28,6 @@ class NotificationService {
           didReceiveLocalNotificationSubject.add(ReceivedNotification(
               id: id, title: title, body: body, payload: payload));
         });
-
-//    await _flutterLocalNotificationsPlugin.initialize(InitializationSettings(
-//        androidInitializationSettings, iOSInitializationSettings));
 
     var initializationSettings = InitializationSettings(
         androidInitializationSettings, iOSInitializationSettings);
@@ -58,12 +56,14 @@ class NotificationService {
   }
 }
 
-final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
-    BehaviorSubject<ReceivedNotification>();
-
 final BehaviorSubject<String> selectNotificationSubject =
     BehaviorSubject<String>();
 
+/// For iOS-notifications:
+final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
+    BehaviorSubject<ReceivedNotification>();
+
+/// For iOS-notifications:
 class ReceivedNotification {
   final int id;
   final String title;
