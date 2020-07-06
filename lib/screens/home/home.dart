@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
+import 'package:price_tracker/services/notifications.dart';
 import 'package:toast/toast.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,6 +27,13 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
       title: Text('Price Tracker BETA',
           style: TextStyle(color: Theme.of(context).primaryColor)),
       actions: <Widget>[
+        if (Platform.isIOS)
+          IconButton(
+            icon: Icon(Icons.speaker_notes),
+            onPressed: () => NotificationService.sendPushNotification(
+                0, "test", "test body"),
+            color: Colors.redAccent,
+          ),
         IconButton(
           icon: Icon(Icons.help_outline),
           onPressed: () => Navigator.of(context).pushNamed("/intro"),
@@ -38,15 +48,20 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
 
   Widget _buildFAB(BuildContext context) {
     return FloatingActionButton(
-      onPressed: state.iConnectivity ? state.addProduct : () {Toast.show('Please ensure an internet connection', context, duration: 3, gravity: Toast.BOTTOM);},
-      tooltip: state.iConnectivity ? 'Add Product': 'No Internet',
+      onPressed: state.iConnectivity
+          ? state.addProduct
+          : () {
+              Toast.show('Please ensure an internet connection', context,
+                  duration: 3, gravity: Toast.BOTTOM);
+            },
+      tooltip: state.iConnectivity ? 'Add Product' : 'No Internet',
       backgroundColor: state.iConnectivity ? null : Colors.grey,
       child: Icon(Icons.add),
     );
   }
 
   Function _buildPullRefreshHeader(BuildContext context) {
-    return (setter,constraints) => Container(
+    return (setter, constraints) => Container(
         height: 50,
         alignment: Alignment.center,
         child: Row(
@@ -89,18 +104,20 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: state.products.length,
-                  separatorBuilder: (BuildContext context, int index) => Divider(height: 1.0),
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(height: 1.0),
                   itemBuilder: (BuildContext context, int index) {
                     return ProductListTile(
                       product: state.products[index],
-                      onDelete: () => state.deleteProduct(state.products[index]),
+                      onDelete: () =>
+                          state.deleteProduct(state.products[index]),
                     );
                   },
                 ),
                 if (state.loading) Center(child: CircularProgressIndicator()),
-                if (!state.loading && state.products.length == 0) Center(
-                    child: Text("You don't have any tracked products yet.")
-                ),
+                if (!state.loading && state.products.length == 0)
+                  Center(
+                      child: Text("You don't have any tracked products yet.")),
                 Container(height: 70)
               ],
             )),
