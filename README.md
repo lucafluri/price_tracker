@@ -1,6 +1,14 @@
 <img src="assets/feature_graphic.png" alt="screenshot" />  
 
-![CI](https://github.com/lucafluri/price_tracker/workflows/CI/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/lucafluri/price_tracker/CI?style=flat-square)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/lucafluri/price_tracker?color=yellow&style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/lucafluri/price_tracker?style=flat-square)
+![GitHub milestones](https://img.shields.io/github/milestones/open/lucafluri/price_tracker?style=flat-square)  
+
+![GitHub milestone](https://img.shields.io/github/milestones/progress-percent/lucafluri/price_tracker/1?style=flat-square)  
+
+![Made with Flutter](https://img.shields.io/badge/made%20with-flutter-blue?style=flat-square&logo=flutter)
+![GitHub stars](https://img.shields.io/github/stars/lucafluri/price_tracker?style=social)
 
 # Price Tracker
 Price Tracker App built with Flutter.
