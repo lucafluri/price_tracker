@@ -8,7 +8,6 @@ import 'package:http/http.dart';
 import 'package:price_tracker/services/parsers.dart';
 import 'package:string_validator/string_validator.dart';
 
-
 // https://schema.org/Product
 
 // {
@@ -105,15 +104,12 @@ class ScraperService {
     return null;
   }
 
-  // Returns Response if valid URL
-  // or null if invalid url
+  // Takes a valid URL!
+  // Returns Response
   // !! Has to be called via instance so that _client initialization is ensured
   Future<Response> getResponse(String url) async {
-    if (validUrl(url)) {
-      Response r = await _client.get(url);
-      return r;
-    } else
-      return Future.value(null);
+    Response r = await _client.get(url);
+    return r;
   }
 
   static Document getDOM(Response r) {
@@ -127,10 +123,12 @@ class ScraperService {
   }
 
   // Returns a Parser Instance
-  Future<Parser> getParser(String url) async{
+  Future<Parser> getParser(String url) async {
     Response r = await getResponse(url);
-    if(hasStructuredDataJSON(r)) return ParserSD(url, r);
-    else return ParserXPath(url, r);
+    if (hasStructuredDataJSON(r))
+      return ParserSD(url, r);
+    else
+      return ParserXPath(url, r);
   }
 
   static void test(String url) async {
@@ -139,8 +137,4 @@ class ScraperService {
     debugPrint(parser.getPrice().toString());
     debugPrint(parser.getImage().toString());
   }
-
-
-
 }
-

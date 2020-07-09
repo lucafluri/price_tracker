@@ -82,17 +82,18 @@ class HomeScreenController extends State<HomeScreen> {
 
   void addProduct() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
+    bool validURL = ScraperService.validUrl(input);
 
     List<String> inputs = (await showTextInputDialog(
       context: context,
       textFields: [
         DialogTextField(
-            initialText: ScraperService.validUrl(input) ? input : "",
+            initialText: validURL ? input : "",
             hintText:
-                ScraperService.validUrl(input) ? "Paste from Clipboard" : "")
+                !validURL ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
-      message: "Paste Link to Product.",
+      message: "Paste Link to Product. \n\n" + (!validURL ? "No valid Product Link or unsupported Store Link found in the Clipboard!" : "Valid Link pasted from the Clipboard!"),
       // message: "Paste Link to Product. \n\nSupported Stores:\n" +
       //     ScraperService.parseableDomains
       //         .toString()
@@ -104,8 +105,8 @@ class HomeScreenController extends State<HomeScreen> {
     if (input != null && ScraperService.validUrl(input)) {
       loading = true;
       setState(() {});
-      Toast.show("Product details are being parsed", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      // Toast.show("Product details are being parsed", context,
+      //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Product p = Product(productUrl: input);
       if (await p.init()) {
         final _db = await DatabaseService.getInstance();
