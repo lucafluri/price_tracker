@@ -28,7 +28,10 @@ class ParserSD extends Parser {
   @override
   String getImage() {
     var images = structData["image"];
-    return images is List ? images[0] : images;
+    String image = images is List ? images[0] : images;
+    //Fix missing protocol (brack.ch for instance...)
+    if(image.substring(0, 2) == "//") image = "https:" + image;
+    return image;
   }
 
   @override
@@ -37,7 +40,8 @@ class ParserSD extends Parser {
     String brand = "";
 
     if (structData["brand"] != null) {
-      brand = structData["brand"]["name"] ?? "";
+      if(structData["brand"] is String) brand = structData["brand"];
+      else brand = structData["brand"]["name"] ?? "";
       return '$brand $name';
     } else if (name != "" && brand == "")
       return name;
