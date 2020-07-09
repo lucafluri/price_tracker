@@ -125,8 +125,9 @@ class ScraperService {
   // Returns a Parser Instance
   Future<Parser> getParser(String url) async {
     Response r = await getResponse(url);
-    if (hasStructuredDataJSON(r))
-      return ParserSD(url, r);
+    dynamic sdJSON = getStructuredDataJSON(r);
+    if (sdJSON != null)
+      return ParserSD(url, r, sdJSON);
     else
       return ParserXPath(url, r);
   }

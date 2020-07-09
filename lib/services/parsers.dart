@@ -21,8 +21,8 @@ abstract class Parser {
 class ParserSD extends Parser {
   dynamic structData;
   @override
-  ParserSD(String url, Response r) : super(url, r) {
-    this.structData = ScraperService.getStructuredDataJSON(this.response);
+  ParserSD(String url, Response r, dynamic structData) : super(url, r) {
+    this.structData = structData;
   }
 
   @override
