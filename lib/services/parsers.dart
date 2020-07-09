@@ -14,7 +14,7 @@ abstract class Parser {
   String getName();
   //Returns String of first image or null if not present
   String getImage();
-  //Returns price double or null if not present
+  //Returns price double or -1 if not present
   double getPrice();
 }
 
@@ -66,7 +66,7 @@ class ParserSD extends Parser {
 
       return double.parse(offer["price"].toString());
     } else
-      return null;
+      return -1;
   }
 }
 
