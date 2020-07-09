@@ -52,8 +52,17 @@ class ParserSD extends Parser {
   @override
   double getPrice() {
     if (structData["offers"] != null) {
-      var offer = structData["offers"];
-      if(offer is List) offer = offer[0];
+      var offers = structData["offers"];
+      var offer = offers;
+      //Find first non empty entry in list (Playzone.ch...)
+      if(offers is List) {
+        for(var o in offers){
+          if(o.isNotEmpty) {
+            offer = o;
+            break;
+          }
+        }
+      }
 
       return double.parse(offer["price"].toString());
     } else
