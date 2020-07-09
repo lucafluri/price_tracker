@@ -47,6 +47,8 @@ Future<int> countPriceUnderTarget() async {
 Future<void> updatePrices({test: false}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
+
   final _db = await DatabaseService.getInstance();
 
   List<Product> products = await _db.getAllProducts();

@@ -34,17 +34,18 @@ class HomeScreenController extends State<HomeScreen> {
     super.dispose();
   }
 
-  _checkInternet() async{
-    try{
+  _checkInternet() async {
+    try {
       final result = await InternetAddress.lookup('google.com');
-      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty){
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('connected to internet');
         iConnectivity = true;
       }
-    }on SocketException catch(_){
+    } on SocketException catch (_) {
       print('NOT connected to internet');
       iConnectivity = false;
-      Toast.show('Please ensure an internet connection', context, duration: 3, gravity: Toast.BOTTOM);
+      Toast.show('Please ensure an internet connection', context,
+          duration: 3, gravity: Toast.BOTTOM);
     }
   }
 
@@ -55,10 +56,10 @@ class HomeScreenController extends State<HomeScreen> {
     final _db = await DatabaseService.getInstance();
 
     return _db.getAllProducts().then((value) {
-          products = value;
-          loading = false;
-          setState(() {});
-        });
+      products = value;
+      loading = false;
+      setState(() {});
+    });
   }
 
   void _onPullRefreshStateChanged(state) {
@@ -89,11 +90,13 @@ class HomeScreenController extends State<HomeScreen> {
       textFields: [
         DialogTextField(
             initialText: validURL ? input : "",
-            hintText:
-                !validURL ? "Paste from Clipboard" : "")
+            hintText: !validURL ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
-      message: "Paste Link to Product. \n\n" + (!validURL ? "No valid Product Link or unsupported Store Link found in the Clipboard!" : "Valid Link pasted from the Clipboard!"),
+      message: "Paste Link to Product. \n\n" +
+          (!validURL
+              ? "No valid Product Link or unsupported Store Link found in the Clipboard!"
+              : "Valid Link pasted from the Clipboard!"),
       // message: "Paste Link to Product. \n\nSupported Stores:\n" +
       //     ScraperService.parseableDomains
       //         .toString()

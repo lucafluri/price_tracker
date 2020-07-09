@@ -52,7 +52,10 @@ class ParserSD extends Parser {
   @override
   double getPrice() {
     if (structData["offers"] != null) {
-      return double.parse(structData["offers"]["price"].toString());
+      var offer = structData["offers"];
+      if(offer is List) offer = offer[0];
+
+      return double.parse(offer["price"].toString());
     } else
       return null;
   }
