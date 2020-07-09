@@ -1,4 +1,4 @@
-<img src="assets/feature_graphic.png" alt="screenshot" />  
+<img src="assets/github_banner.png" alt="screenshot" />  
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/lucafluri/price_tracker/CI?style=flat-square)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/lucafluri/price_tracker?color=yellow&style=flat-square)
