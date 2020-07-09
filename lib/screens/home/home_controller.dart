@@ -9,6 +9,7 @@ import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/services/product_utils.dart';
+import 'package:price_tracker/services/scraper.dart';
 import 'package:toast/toast.dart';
 
 class HomeScreenController extends State<HomeScreen> {
@@ -81,35 +82,37 @@ class HomeScreenController extends State<HomeScreen> {
 
   void addProduct() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
+    bool validURL = ScraperService.validUrl(input);
 
     List<String> inputs = (await showTextInputDialog(
       context: context,
       textFields: [
         DialogTextField(
-            initialText: ProductParser.validUrl(input) ? input : "",
+            initialText: validURL ? input : "",
             hintText:
-                ProductParser.validUrl(input) ? "Paste from Clipboard" : "")
+                !validURL ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
-      message: "Paste Link to Product. \n\nSupported Stores:\n" +
-          ProductParser.possibleDomains
-              .toString()
-              .replaceAll("[", "")
-              .replaceAll("]", ""),
+      message: "Paste Link to Product. \n\n" + (!validURL ? "No valid Product Link or unsupported Store Link found in the Clipboard!" : "Valid Link pasted from the Clipboard!"),
+      // message: "Paste Link to Product. \n\nSupported Stores:\n" +
+      //     ScraperService.parseableDomains
+      //         .toString()
+      //         .replaceAll("[", "")
+      //         .replaceAll("]", ""),
     ));
     input = inputs != null ? inputs[0] : inputs;
 
-    if (input != null && ProductParser.validUrl(input)) {
+    if (input != null && ScraperService.validUrl(input)) {
       loading = true;
       setState(() {});
-      Toast.show("Product details are being parsed", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      // Toast.show("Product details are being parsed", context,
+      //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Product p = Product(productUrl: input);
       if (await p.init()) {
         final _db = await DatabaseService.getInstance();
         await _db.insert(p);
       } else {
-        Toast.show("Parsing error, invalid store URL?", context,
+        Toast.show("Invalid URL or unsupported store", context,
             duration: 4, gravity: Toast.BOTTOM);
         // await FlutterClipboardManager.copyToClipBoard("");
       }
@@ -118,7 +121,7 @@ class HomeScreenController extends State<HomeScreen> {
     } else {
       if (input != null)
         Toast.show("Invalid URL or unsupported store", context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+            duration: 4, gravity: Toast.BOTTOM);
     }
   }
 

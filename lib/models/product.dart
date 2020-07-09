@@ -1,7 +1,8 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:price_tracker/services/product_utils.dart';
+import 'package:price_tracker/services/parsers.dart';
+import 'package:price_tracker/services/scraper.dart';
 
 class Product {
   int _id;
@@ -38,9 +39,10 @@ class Product {
   // Parses all information from the web
   Future<bool> init() async {
     // final dbHelper = DatabaseHelper.instance;
-    String parsedName = await ProductParser.parseName(this.productUrl);
-    double parsedPrice = await ProductParser.parsePrice(this.productUrl);
-    String parsedImageUrl = await ProductParser.parseImageUrl(this.productUrl);
+    Parser parser = await ScraperService.instance.getParser(this.productUrl);
+    String parsedName = parser.getName();
+    double parsedPrice = parser.getPrice();
+    String parsedImageUrl = parser.getImage();
 
     //Check if parsing successful, else return false
     if (parsedName == null || parsedPrice == null || parsedImageUrl == null) {
@@ -76,7 +78,8 @@ class Product {
 
   // Only Parses the price
   Future<bool> update({bool test = false}) async {
-    double parsedPrice = await ProductParser.parsePrice(this.productUrl);
+    Parser parser = await ScraperService.instance.getParser(this.productUrl);
+    double parsedPrice = parser.getPrice();
 
     //Check if parsing successful, else return false
     if (parsedPrice == null ) {
