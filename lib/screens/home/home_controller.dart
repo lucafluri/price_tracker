@@ -92,11 +92,12 @@ class HomeScreenController extends State<HomeScreen> {
                 ScraperService.validUrl(input) ? "Paste from Clipboard" : "")
       ],
       title: "Add new Product",
-      message: "Paste Link to Product. \n\nSupported Stores:\n" +
-          ScraperService.possibleDomains
-              .toString()
-              .replaceAll("[", "")
-              .replaceAll("]", ""),
+      message: "Paste Link to Product.",
+      // message: "Paste Link to Product. \n\nSupported Stores:\n" +
+      //     ScraperService.parseableDomains
+      //         .toString()
+      //         .replaceAll("[", "")
+      //         .replaceAll("]", ""),
     ));
     input = inputs != null ? inputs[0] : inputs;
 
@@ -110,7 +111,7 @@ class HomeScreenController extends State<HomeScreen> {
         final _db = await DatabaseService.getInstance();
         await _db.insert(p);
       } else {
-        Toast.show("Parsing error, invalid store URL?", context,
+        Toast.show("Invalid URL or unsupported store", context,
             duration: 4, gravity: Toast.BOTTOM);
         // await FlutterClipboardManager.copyToClipBoard("");
       }
@@ -119,7 +120,7 @@ class HomeScreenController extends State<HomeScreen> {
     } else {
       if (input != null)
         Toast.show("Invalid URL or unsupported store", context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+            duration: 4, gravity: Toast.BOTTOM);
     }
   }
 

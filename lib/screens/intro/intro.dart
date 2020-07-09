@@ -22,9 +22,9 @@ class _IntroScreenState extends State<IntroScreen> {
         // styleTitle: Theme.of(context).textTheme.headline1,
         description:
             "You can add products by copying the link to the product page." 
-            +"\n\n A valid link in the clipboard will be automatically pasted for you."
-            +"\n\nSupported stores include:"
-            +" \n${ScraperService.possibleDomains}",
+            +"\n\n A valid link in the clipboard will be automatically pasted for you.",
+            // +"\n\nSupported stores include:"
+            // +" \n${ScraperService.parseableDomains}",
         // pathImage: "images/photo_eraser.png",
         backgroundColor: Color(0xff000000),
         
