@@ -15,18 +15,18 @@ class ProductListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Price Difference since last day => used for coloring
-    double _priceDifference = (product.prices.length > 1 && product.prices[product.prices.length - 1] >= 0)
-        ? product.prices[product.prices.length - 1] - product.prices[product.prices.length - 2]
+    double _priceDifference = (product.prices.length > 1 &&
+            product.prices[product.prices.length - 1] >= 0)
+        ? product.prices[product.prices.length - 1] -
+            product.prices[product.prices.length - 2]
         : 0.0;
 
     bool _underTarget = product.prices[product.prices.length - 1] >= 0 &&
-        product.prices[product.prices.length - 1] <=
-            product.targetPrice;
+        product.prices[product.prices.length - 1] <= product.targetPrice;
 
     Color _chosenColor = _priceDifference == 0
         ? Colors.transparent
-        : _priceDifference < 0 ? Colors.green[800]
-        : Colors.red[900];
+        : _priceDifference < 0 ? Colors.green[800] : Colors.red[900];
 
     Color _targetColor = _priceDifference < 0 || _priceDifference > 0
         ? Colors.black54
@@ -36,9 +36,9 @@ class ProductListTile extends StatelessWidget {
 
     void _onTap() {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetail(product: product,)
-        )
-      );
+          builder: (context) => ProductDetail(
+                product: product,
+              )));
     }
 
     void _onLongPress() async {
@@ -49,46 +49,52 @@ class ProductListTile extends StatelessWidget {
       }
     }
 
+    Widget _getLeadingImage() {
+      Widget image = Icon(Icons.error);
+      if (product.imageUrl != null) {
+        try {
+          image = OptimizedCacheImage(
+              imageUrl: product.imageUrl,
+              placeholder: (context, url) =>
+                  Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => Icon(Icons.error));
+        } catch (e) {
+          image = Icon(Icons.error);
+        }
+      }
+      return image;
+    }
+
     Widget _buildLeadingImage() {
       return Container(
         //Image Placeholder
         width: 80,
-        child: product.imageUrl != null ? OptimizedCacheImage(
-          imageUrl: product.imageUrl,
-          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ) : Container(),
+        child: _getLeadingImage(),
       );
     }
 
     Widget _buildTrailing() {
       return Container(
-        //Change Placeholder?
+          //Change Placeholder?
           color: _chosenColor,
           width: 100,
           child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                      product.prices[product.prices.length - 1] >=
-                          0
-                          ? product
-                          .prices[product.prices.length - 1]
-                          .toString()
-                          : "--",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          color: Colors.white)),
-                  if (_showTargetPrice)
-                    Text(product.targetPrice.toString(),
-                        style: TextStyle(
-                            color: _targetColor, fontSize: 12))
-                ],
-              )
-          )
-      );
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                  product.prices[product.prices.length - 1] >= 0
+                      ? product.prices[product.prices.length - 1].toString()
+                      : "--",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.white)),
+              if (_showTargetPrice)
+                Text(product.targetPrice.toString(),
+                    style: TextStyle(color: _targetColor, fontSize: 12))
+            ],
+          )));
     }
 
     return Slidable(
@@ -97,7 +103,9 @@ class ProductListTile extends StatelessWidget {
       child: Container(
         color: _underTarget ? Colors.green[800] : Colors.transparent,
         child: ListTile(
-          title: Text(product.name.length >= 60 ? product.name.substring(0, 60) + "..." : product.name),
+          title: Text(product.name.length >= 60
+              ? product.name.substring(0, 60) + "..."
+              : product.name),
           subtitle: Text(product.getDomain(), overflow: TextOverflow.ellipsis),
           leading: _buildLeadingImage(),
           trailing: _buildTrailing(),
@@ -119,8 +127,7 @@ class ProductListTile extends StatelessWidget {
             caption: 'Delete',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: onDelete
-        ),
+            onTap: onDelete),
       ],
     );
   }

@@ -4,7 +4,6 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
-import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
 import 'package:price_tracker/services/database.dart';
@@ -14,17 +13,17 @@ import 'package:price_tracker/services/share_intent.dart';
 import 'package:toast/toast.dart';
 
 class HomeScreenController extends State<HomeScreen> {
-  FRefreshController refreshController = FRefreshController();
-  ScrollController listviewController = ScrollController();
+  ScrollController listviewController;
 
   bool loading = false;
+  bool refreshing = false;
+  String refreshingText = "Refreshing Prices";
   List<Product> products = <Product>[];
-  String pullToRefreshText = "Pull to refresh";
   bool iConnectivity = true;
 
   @override
   void initState() {
-    refreshController.setOnStateChangedCallback(_onPullRefreshStateChanged);
+    listviewController = ScrollController();
     init();
     super.initState();
   }
@@ -37,7 +36,7 @@ class HomeScreenController extends State<HomeScreen> {
 
   @override
   void dispose() {
-    refreshController.dispose();
+    listviewController.dispose();
     super.dispose();
   }
 
@@ -75,28 +74,11 @@ class HomeScreenController extends State<HomeScreen> {
       products = value;
       products = products.reversed.toList();
       loading = false;
+      refreshing = false;
     });
     setState(() {});
   }
 
-  void _onPullRefreshStateChanged(state) {
-    setState(() {
-      switch (state) {
-        case RefreshState.PREPARING_REFRESH:
-          pullToRefreshText = "Release to refresh";
-          break;
-        case RefreshState.REFRESHING:
-          pullToRefreshText = "Loading...";
-          break;
-        case RefreshState.FINISHING:
-          pullToRefreshText = "Refresh completed";
-          break;
-        default:
-          pullToRefreshText = "Pull to refresh";
-          break;
-      }
-    });
-  }
 
   void addProductDialogue() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
@@ -127,9 +109,7 @@ class HomeScreenController extends State<HomeScreen> {
 
   Future<void> addProduct(String input) async {
     if (input != null && ScraperService.validUrl(input)) {
-      refreshController.scrollTo(
-          refreshController.scrollMetrics.minScrollExtent,
-          duration: Duration(milliseconds: 500));
+      await scrollToTop();
       loading = true;
       setState(() {});
       // Toast.show("Product details are being parsed", context,
@@ -162,10 +142,16 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   void onRefresh() async {
+    refreshing = true;
+    await scrollToTop();
+    setState(() {});
     await updatePrices();
     await _loadProducts();
+  }
 
-    refreshController.finishRefresh();
+  Future<void> scrollToTop() async {
+    listviewController.animateTo(listviewController.position.minScrollExtent,
+        curve: Curves.easeInOut, duration: Duration(milliseconds: 1000));
   }
 
   @override

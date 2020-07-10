@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frefresh/frefresh.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
@@ -36,6 +35,10 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
             color: Colors.redAccent,
           ),
         IconButton(
+          icon: Icon(Icons.refresh),
+          onPressed: () => state.onRefresh(),
+        ),
+        IconButton(
           icon: Icon(Icons.help_outline),
           onPressed: () => Navigator.of(context).pushNamed("/intro"),
         ),
@@ -61,72 +64,56 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
     );
   }
 
-  Function _buildPullRefreshHeader(BuildContext context) {
-    return (setter, constraints) => Container(
-        height: 50,
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 15,
-              height: 15,
-              child: CircularProgressIndicator(
-                backgroundColor: Theme.of(context).primaryColor,
-                valueColor: new AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryTextTheme.caption.color),
-                strokeWidth: 2.0,
-              ),
-            ),
-            const SizedBox(width: 9.0),
-            Text(
-              state.pullToRefreshText,
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ));
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Container(
-        child: FRefresh(
-            controller: state.refreshController,
-            headerTrigger: 100,
-            headerHeight: 50,
-            headerBuilder: _buildPullRefreshHeader(context),
-            onRefresh: state.onRefresh,
-            child: Column(
-              children: <Widget>[
-                if (state.loading) Padding(
+        child: SingleChildScrollView(
+          controller: state.listviewController,
+          child: Column(
+            children: <Widget>[
+              if (state.refreshing)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Center(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(state.refreshingText),
+                      Container(
+                        width: 20,
+                      ),
+                      CircularProgressIndicator(),
+                    ],
+                  )),
+                ),
+              if (state.loading)
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Center(child: CircularProgressIndicator()),
                 ),
-                if (!state.loading && state.products.length == 0)
-                  Center(
-                      child: Text("You don't have any tracked products yet.")),
-                ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: state.listviewController,
-                  shrinkWrap: true,
-                  itemCount: state.products.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      Divider(height: 1.0),
-                  itemBuilder: (BuildContext context, int index) {
-                    return ProductListTile(
-                      product: state.products[index],
-                      onDelete: () =>
-                          state.deleteProduct(state.products[index]),
-                    );
-                  },
-                ),
-                
-                Container(height: 70)
-              ],
-            )),
+              if (!state.loading && state.products.length == 0)
+                Center(child: Text("You don't have any tracked products yet.")),
+              ListView.separated(
+                physics: BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: state.products.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(height: 1.0),
+                itemBuilder: (BuildContext context, int index) {
+                  return ProductListTile(
+                    product: state.products[index],
+                    onDelete: () => state.deleteProduct(state.products[index]),
+                  );
+                },
+              ),
+              Container(height: 70)
+            ],
+          ),
+        ),
       ),
       floatingActionButton: _buildFAB(context),
     );

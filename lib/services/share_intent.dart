@@ -5,6 +5,8 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 
 class ShareIntentService {
+  // ignore: cancel_subscriptions
+  // ignore: unused_field
   static StreamSubscription _intentDataStreamSubscription;
   static String sharedText;
 
