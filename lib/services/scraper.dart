@@ -11,6 +11,7 @@ import 'package:price_tracker/services/parsers/selector_parser.dart';
 import 'package:price_tracker/services/parsers/xpath_parser.dart';
 import 'package:price_tracker/services/parsers/struct_data_parser.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
+import 'package:toast/toast.dart';
 
 
 class ScraperService {
@@ -119,7 +120,10 @@ class ScraperService {
   // Returns Response
   // !! Has to be called via instance so that _client initialization is ensured
   Future<Response> getResponse(String url) async {
-    Response r = await _client.get(url);
+    Response r = await _client.get(url).timeout(Duration(seconds: 30), onTimeout: () {
+      debugPrint("HTTP GET Timout!");
+      return null;
+    });
     return r;
   }
 
@@ -136,6 +140,8 @@ class ScraperService {
   // Returns a Parser Instance
   Future<Parser> getParser(String url) async {
     Response r = await getResponse(url);
+    if(r == null) return null;
+    
     String d = ScraperService.getDomain(url);
     dynamic sdJSON = getStructuredDataJSON(r);
     if (sdJSON != null)
