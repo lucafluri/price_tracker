@@ -25,6 +25,14 @@
                         "remove": "",
                         "group": 1
                     }
+                },
+                {
+                    "path": "#priceblock_saleprice",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
                 }
             ],
             "image": [{
@@ -67,6 +75,14 @@
                 },
                 {
                     "path": "#priceblock_dealprice",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "#priceblock_saleprice",
                     "regex": {
                         "pattern": "(\\d+[,.]?[\\d]*)",
                         "remove": "",
