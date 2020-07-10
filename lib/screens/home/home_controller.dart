@@ -51,15 +51,15 @@ class HomeScreenController extends State<HomeScreen> {
 
   Future<void> _loadProducts() async {
     loading = true;
-    setState(() {});
+    // setState(() {});
 
     final _db = await DatabaseService.getInstance();
 
-    return _db.getAllProducts().then((value) {
+    await _db.getAllProducts().then((value) {
       products = value;
       loading = false;
-      setState(() {});
     });
+    setState(() {});
   }
 
   void _onPullRefreshStateChanged(state) {

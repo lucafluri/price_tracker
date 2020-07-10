@@ -1,7 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:price_tracker/services/parsers.dart';
+import 'package:price_tracker/services/parsers/abstract_parser.dart';
 import 'package:price_tracker/services/scraper.dart';
 
 class Product {
@@ -40,6 +40,8 @@ class Product {
   Future<bool> init() async {
     // final dbHelper = DatabaseHelper.instance;
     Parser parser = await ScraperService.instance.getParser(this.productUrl);
+    if (parser == null) return false;
+
     String parsedName = parser.getName();
     double parsedPrice = parser.getPrice();
     String parsedImageUrl = parser.getImage();
@@ -79,10 +81,12 @@ class Product {
   // Only Parses the price
   Future<bool> update({bool test = false}) async {
     Parser parser = await ScraperService.instance.getParser(this.productUrl);
+    if (parser == null) return false;
+
     double parsedPrice = parser.getPrice();
 
     //Check if parsing successful, else return false
-    if (parsedPrice == null ) {
+    if (parsedPrice == null) {
       debugPrint("Failed Parsing");
       return false;
     } else {
@@ -110,7 +114,6 @@ class Product {
           this._dates[this._dates.length - 1] = (DateTime.now());
         }
       }
-
 
       debugPrint(this._id.toString() + " " + this._prices.toString());
       return true;
