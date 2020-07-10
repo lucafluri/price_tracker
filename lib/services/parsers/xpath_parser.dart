@@ -1,78 +1,12 @@
+
 import 'package:http/http.dart';
 import 'package:price_tracker/services/scraper.dart';
 import 'package:xpath_parse/xpath_selector.dart';
+import 'package:price_tracker/services/parsers/abstract_parser.dart';
 
-abstract class Parser {
-  String url;
-  Response response;
-
-  Parser(String url, Response response) {
-    this.url = url;
-    this.response = response;
-  }
-  //Returns name (brand + name) or null if no product name present
-  String getName();
-  //Returns String of first image or null if not present
-  String getImage();
-  //Returns price double or -1 if not present
-  double getPrice();
-}
-
-class ParserSD extends Parser {
-  dynamic structData;
-  @override
-  ParserSD(String url, Response r, dynamic structData) : super(url, r) {
-    this.structData = structData;
-  }
-
-  @override
-  String getImage() {
-    var images = structData["image"];
-    String image = images is List ? images[0] : images;
-    //Fix missing protocol (brack.ch for instance...)
-    if(image.substring(0, 2) == "//") image = "https:" + image;
-    return image;
-  }
-
-  @override
-  String getName() {
-    String name = structData["name"] ?? "";
-    String brand = "";
-
-    if (structData["brand"] != null) {
-      if(structData["brand"] is String) brand = structData["brand"];
-      else brand = structData["brand"]["name"] ?? "";
-      return '$brand $name';
-    } else if (name != "" && brand == "")
-      return name;
-    else
-      return null;
-  }
-
-  @override
-  double getPrice() {
-    if (structData["offers"] != null) {
-      var offers = structData["offers"];
-      var offer = offers;
-      //Find first non empty entry in list (Playzone.ch...)
-      if(offers is List) {
-        for(var o in offers){
-          if(o.isNotEmpty) {
-            offer = o;
-            break;
-          }
-        }
-      }
-
-      return double.parse(offer["price"].toString());
-    } else
-      return -1;
-  }
-}
 
 class ParserXPath extends Parser {
-  ParserXPath(String url, Response r) : super(url, r);
-
+  ParserXPath(String url, Response response) : super(url, response);
 
   @override
   String getImage() {

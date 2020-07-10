@@ -97,7 +97,7 @@ class ProductListTile extends StatelessWidget {
       child: Container(
         color: _underTarget ? Colors.green[800] : Colors.transparent,
         child: ListTile(
-          title: Text(product.name),
+          title: Text(product.name.length >= 60 ? product.name.substring(0, 60) + "..." : product.name),
           subtitle: Text(product.getDomain(), overflow: TextOverflow.ellipsis),
           leading: _buildLeadingImage(),
           trailing: _buildTrailing(),

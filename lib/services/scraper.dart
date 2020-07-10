@@ -2,45 +2,24 @@ import 'dart:convert';
 
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
-import 'package:price_tracker/services/parsers.dart';
 import 'package:string_validator/string_validator.dart';
+import 'package:price_tracker/services/parsers/selector_parser.dart';
+import 'package:price_tracker/services/parsers/xpath_parser.dart';
+import 'package:price_tracker/services/parsers/struct_data_parser.dart';
+import 'package:price_tracker/services/parsers/abstract_parser.dart';
 
-// https://schema.org/Product
-
-// {
-//   "@context": "https://schema.org/",
-//   "@type": "Product",
-//   "image": [
-//     "https://static.digitecgalaxus.ch/Files/7/7/1/7/6/0/7/71GdNUGDzqL._SL1500_.jpg",
-//     "https://static.digitecgalaxus.ch/Files/7/7/1/7/6/0/9/61ggGeAoI4L._SL1500_.jpg",
-//     "https://static.digitecgalaxus.ch/Files/7/7/1/7/6/1/0/71kWo2BkYACL._SL1500_.jpg"
-//   ],
-//   "name": "USB type C nylon – pack of 5",
-//   "description": "Compatible with USB-C smartphones, tablets and laptops.",
-//   "url": "https://www.digitec.ch/en/s1/product/aukey-usb-type-c-nylon-pack-of-5-usb-cables-6213310",
-//   "brand": {
-//     "@type": "Thing",
-//     "name": "Aukey"
-//   },
-//   "sku": 6213310,
-//   "aggregateRating": {
-//     "@type": "AggregateRating",
-//     "ratingValue": 4.5,
-//     "ratingCount": 269
-//   },
-//   "offers": {
-//     "@type": "Offer",
-//     "availability": "http://schema.org/InStock",
-//     "price": 45,
-//     "priceCurrency": "CHF"
-//   }
-// }
 
 class ScraperService {
-  static List<String> parseableDomains = ["digitec.ch", "galaxus.ch"];
+  static final parseInfoURL =
+      "https://gist.githubusercontent.com/lucafluri/528d5c168da2c87a97d44fc93a082bd6/raw/7c2dc06199078b1226ad775a734e503d1d1b88ee/tracker_test.json";
+
+  // static List<String> parseableDomains = ["digitec.ch", "galaxus.ch"];
+  static Map<dynamic, dynamic> parserConf;
+  static List<String> parseableDomains;
 
   static Client _client;
 
@@ -49,6 +28,38 @@ class ScraperService {
   static ScraperService get instance {
     if (_client == null) _client = Client();
     return _instance;
+  }
+
+  static Future<void> init() async {
+    await getParserInfo();
+  }
+
+  static Future<String> loadFallbackParseInfo() async {
+    return await rootBundle
+        .loadString('lib/configuration/parser_configuration.json');
+  }
+
+  static Future<void> getParserInfo() async {
+    // TODO Parse from github -- Uncomment
+    //Load PARSE_INFO from Github or local fallback copy if something fails
+    // try {
+    //   Response response =
+    //       await ScraperService.instance.getResponse(parseInfoURL);
+    //   parserConf = jsonDecode(response.body);
+    //   print("Loaded newest parser_configuration from Github");
+    // } catch (e) {
+    //   print("PARSER_CONFIGURATION GET ERROR --- LOADING LOCAL FILE");
+    //   parserConf = jsonDecode(await loadFallbackParseInfo());
+    // }
+    // TODO Delete Line
+    parserConf = jsonDecode(await loadFallbackParseInfo());
+
+    //Set possible domains var
+    parseableDomains = parserConf["domains"].keys.toList();
+
+    // Map<dynamic, dynamic> domains = parseInfo["domains"];
+    // debugPrint(possibleDomains.toString());
+    // debugPrint(domains[supportedDomains[0]]["name"][0].toString());
   }
 
   static bool validUrl(String url) {
@@ -125,11 +136,16 @@ class ScraperService {
   // Returns a Parser Instance
   Future<Parser> getParser(String url) async {
     Response r = await getResponse(url);
+    String d = ScraperService.getDomain(url);
     dynamic sdJSON = getStructuredDataJSON(r);
     if (sdJSON != null)
       return ParserSD(url, r, sdJSON);
     else
-      return ParserXPath(url, r);
+      if(parseableDomains.contains(d)){
+        if(toBoolean(parserConf["domains"][d]["xpath"])) return ParserXPath(url, r);
+        else return ParserSelector(url, r);
+      }else return null;
+      
   }
 
   static void test(String url) async {

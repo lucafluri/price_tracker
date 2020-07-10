@@ -1,0 +1,98 @@
+{
+    "domains": {
+        "amazon.de": {
+            "xpath": "false",
+            "name": [{
+                "path": "#productTitle",
+                "regex": {
+                    "pattern": "",
+                    "remove": "",
+                    "group": 1
+                }
+            }],
+            "price": [{
+                    "path": "#priceblock_ourprice",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "#priceblock_dealprice",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ],
+            "image": [{
+                    "path": "#landingImage",
+                    "regex": {
+                        "attribute": "data-old-hires",
+                        "pattern": "",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "#landingImage",
+                    "regex": {
+                        "attribute": "src",
+                        "pattern": "",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ]
+        },
+        "amazon.com": {
+            "xpath": "false",
+            "name": [{
+                "path": "#productTitle",
+                "regex": {
+                    "pattern": "",
+                    "remove": "",
+                    "group": 1
+                }
+            }],
+            "price": [{
+                    "path": "#priceblock_ourprice",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "#priceblock_dealprice",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ],
+            "image": [{
+                    "path": "#landingImage",
+                    "regex": {
+                        "attribute": "data-old-hires",
+                        "pattern": "",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "#landingImage",
+                    "regex": {
+                        "attribute": "src",
+                        "pattern": "",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ]
+        }
+    }
+}
