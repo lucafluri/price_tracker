@@ -12,9 +12,7 @@ import 'package:price_tracker/services/parsers/xpath_parser.dart';
 import 'package:price_tracker/services/parsers/struct_data_parser.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
 
-
 class ScraperService {
-  
   static final parseInfoURL =
       "https://raw.githubusercontent.com/lucafluri/price_tracker/dev/lib/configuration/parser_configuration.json";
 
@@ -45,7 +43,7 @@ class ScraperService {
     try {
       Response response =
           await ScraperService.instance.getResponse(parseInfoURL);
-      if(response == null) throw Exception();
+      if (response == null) throw Exception();
       parserConf = jsonDecode(response.body);
       print("Loaded newest parser_configuration from Github");
     } catch (e) {
@@ -63,14 +61,15 @@ class ScraperService {
   }
 
   static bool validUrl(String url) {
-    if (isURL(url, {
-      'protocols': ['http', 'https'],
-      'require_tld': true,
-      'require_protocol': true,
-      'allow_underscores': true,
-      'host_whitelist': false,
-      'host_blacklist': false
-    })) {
+    if (url != null &&
+        isURL(url, {
+          'protocols': ['http', 'https'],
+          'require_tld': true,
+          'require_protocol': true,
+          'allow_underscores': true,
+          'host_whitelist': false,
+          'host_blacklist': false
+        })) {
       // String d = getDomain(url);
       // if (possibleDomains.contains(d)) {
       //   return true;
@@ -119,11 +118,16 @@ class ScraperService {
   // Returns Response
   // !! Has to be called via instance so that _client initialization is ensured
   Future<Response> getResponse(String url) async {
-    Response r = await _client.get(url).timeout(Duration(seconds: 30), onTimeout: () {
-      debugPrint("HTTP GET Timout!");
+    try {
+      Response r =
+          await _client.get(url).timeout(Duration(seconds: 30), onTimeout: () {
+        debugPrint("HTTP GET Timout!");
+        return null;
+      });
+      return r;
+    } catch (e) {
       return null;
-    });
-    return r;
+    }
   }
 
   static Document getDOM(Response r) {
@@ -139,18 +143,19 @@ class ScraperService {
   // Returns a Parser Instance
   Future<Parser> getParser(String url) async {
     Response r = await getResponse(url);
-    if(r == null) return null;
-    
+    if (r == null) return null;
+
     String d = ScraperService.getDomain(url);
     dynamic sdJSON = getStructuredDataJSON(r);
     if (sdJSON != null)
       return ParserSD(url, r, sdJSON);
-    else
-      if(parseableDomains.contains(d)){
-        if(toBoolean(parserConf["domains"][d]["xpath"])) return ParserXPath(url, r);
-        else return ParserSelector(url, r);
-      }else return null;
-      
+    else if (parseableDomains.contains(d)) {
+      if (toBoolean(parserConf["domains"][d]["xpath"]))
+        return ParserXPath(url, r);
+      else
+        return ParserSelector(url, r);
+    } else
+      return null;
   }
 
   static void test(String url) async {

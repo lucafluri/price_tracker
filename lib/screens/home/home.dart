@@ -50,7 +50,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
   Widget _buildFAB(BuildContext context) {
     return FloatingActionButton(
       onPressed: state.iConnectivity
-          ? state.addProduct
+          ? state.addProductDialogue
           : () {
               Toast.show('Please ensure an internet connection', context,
                   duration: 3, gravity: Toast.BOTTOM);
@@ -101,8 +101,16 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
             onRefresh: state.onRefresh,
             child: Column(
               children: <Widget>[
+                if (state.loading) Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                if (!state.loading && state.products.length == 0)
+                  Center(
+                      child: Text("You don't have any tracked products yet.")),
                 ListView.separated(
                   physics: NeverScrollableScrollPhysics(),
+                  controller: state.listviewController,
                   shrinkWrap: true,
                   itemCount: state.products.length,
                   separatorBuilder: (BuildContext context, int index) =>
@@ -115,10 +123,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                     );
                   },
                 ),
-                if (state.loading) Center(child: CircularProgressIndicator()),
-                if (!state.loading && state.products.length == 0)
-                  Center(
-                      child: Text("You don't have any tracked products yet.")),
+                
                 Container(height: 70)
               ],
             )),

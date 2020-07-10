@@ -10,10 +10,12 @@ import 'package:price_tracker/screens/home/home.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:price_tracker/services/scraper.dart';
+import 'package:price_tracker/services/share_intent.dart';
 import 'package:toast/toast.dart';
 
 class HomeScreenController extends State<HomeScreen> {
   FRefreshController refreshController = FRefreshController();
+  ScrollController listviewController = ScrollController();
 
   bool loading = false;
   List<Product> products = <Product>[];
@@ -23,15 +25,29 @@ class HomeScreenController extends State<HomeScreen> {
   @override
   void initState() {
     refreshController.setOnStateChangedCallback(_onPullRefreshStateChanged);
-    _loadProducts();
-    _checkInternet();
+    init();
     super.initState();
+  }
+
+  void init() async {
+    await _loadProducts();
+    await _checkInternet();
+    if (iConnectivity) await _checkForSharedText();
   }
 
   @override
   void dispose() {
     refreshController.dispose();
     super.dispose();
+  }
+
+  _checkForSharedText() async {
+    if (ShareIntentService.sharedText != null) {
+      String input = ShareIntentService.sharedText;
+      ShareIntentService.sharedText = null;
+
+      await addProduct(input);
+    }
   }
 
   _checkInternet() async {
@@ -57,6 +73,7 @@ class HomeScreenController extends State<HomeScreen> {
 
     await _db.getAllProducts().then((value) {
       products = value;
+      products = products.reversed.toList();
       loading = false;
     });
     setState(() {});
@@ -81,7 +98,7 @@ class HomeScreenController extends State<HomeScreen> {
     });
   }
 
-  void addProduct() async {
+  void addProductDialogue() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
     bool validURL = ScraperService.validUrl(input);
 
@@ -105,7 +122,14 @@ class HomeScreenController extends State<HomeScreen> {
     ));
     input = inputs != null ? inputs[0] : inputs;
 
+    await addProduct(input);
+  }
+
+  Future<void> addProduct(String input) async {
     if (input != null && ScraperService.validUrl(input)) {
+      refreshController.scrollTo(
+          refreshController.scrollMetrics.minScrollExtent,
+          duration: Duration(milliseconds: 500));
       loading = true;
       setState(() {});
       // Toast.show("Product details are being parsed", context,
