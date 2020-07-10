@@ -4,6 +4,7 @@ import 'package:price_tracker/services/background_worker.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/services/notifications.dart';
 import 'package:price_tracker/services/scraper.dart';
+import 'package:price_tracker/services/share_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -12,6 +13,7 @@ Future<void> initApp() async {
   await DatabaseService.init();
   await BackgroundWorkerService.init();
   await NotificationService.init();
+  await ShareIntentService.init();
 
   // The following is for Android only! -> see https://github.com/vrtdev/flutter_workmanager#customisation-android-only
   // For iOS, you can set the interval here:

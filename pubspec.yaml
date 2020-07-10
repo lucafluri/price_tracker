@@ -46,6 +46,8 @@ dependencies:
   after_layout: ^1.0.7+2
   share: ^0.6.4+3
   timeago: ^2.0.26
+  receive_sharing_intent: ^1.4.0+2
+
 
 
 
