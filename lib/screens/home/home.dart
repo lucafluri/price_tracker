@@ -3,6 +3,7 @@ import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
 import 'package:price_tracker/services/notifications.dart';
+import 'package:price_tracker/services/product_utils.dart';
 import 'package:toast/toast.dart';
 
 /// Set this to 'true' if you want to have a red button to create a test-notification:
@@ -86,7 +87,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                       Container(
                         width: 20,
                       ),
-                      CircularProgressIndicator(),
+                      CircularProgressIndicator(value: progress,),
                     ],
                   )),
                 ),

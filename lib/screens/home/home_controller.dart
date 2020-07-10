@@ -79,7 +79,6 @@ class HomeScreenController extends State<HomeScreen> {
     setState(() {});
   }
 
-
   void addProductDialogue() async {
     String input = await FlutterClipboardManager.copyFromClipBoard();
     bool validURL = ScraperService.validUrl(input);
@@ -145,7 +144,7 @@ class HomeScreenController extends State<HomeScreen> {
     refreshing = true;
     await scrollToTop();
     setState(() {});
-    await updatePrices();
+    await updatePrices(perUpdate: () => setState(() {}));
     await _loadProducts();
   }
 

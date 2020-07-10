@@ -3,6 +3,9 @@ import 'package:price_tracker/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/services/notifications.dart';
 
+//TODO product service
+double progress = 0.0;
+
 Future<int> countPriceFall() async {
   final _db = await DatabaseService.getInstance();
 
@@ -44,7 +47,7 @@ Future<int> countPriceUnderTarget() async {
   return count;
 }
 
-Future<void> updatePrices({test: false}) async {
+Future<void> updatePrices({test: false, perUpdate: Function}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
 
@@ -56,6 +59,8 @@ Future<void> updatePrices({test: false}) async {
   for (int i = 0; i < products.length; i++) {
     await products[i].update(test: test);
     await _db.update(products[i]);
+    progress = i / products.length;
+    perUpdate();
   }
 
   products = await _db.getAllProducts();
@@ -88,4 +93,6 @@ Future<void> updatePrices({test: false}) async {
           'We detected that $countTarget products are under the set targets today!'); //Display Notification
     }
   }
+
+  progress = 0.0;
 }
