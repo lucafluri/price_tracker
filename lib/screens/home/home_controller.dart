@@ -144,7 +144,7 @@ class HomeScreenController extends State<HomeScreen> {
     refreshing = true;
     await scrollToTop();
     setState(() {});
-    await updatePrices(perUpdate: () => setState(() {}));
+    await updatePrices(() => setState(() {}));
     await _loadProducts();
   }
 

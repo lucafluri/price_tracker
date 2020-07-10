@@ -21,7 +21,7 @@ void _dispatchCallbacks() async {
       case "Price Tracker Scraper":
       case "Manual Price Tracker Scraper":
         try {
-          await updatePrices();
+          await updatePrices( () {} );
           // pushNotification(3, "Prices have been updated",
           //     "We updated the prices for you in the background!");
           print("Executed Task");

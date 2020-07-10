@@ -47,7 +47,7 @@ Future<int> countPriceUnderTarget() async {
   return count;
 }
 
-Future<void> updatePrices({test: false, perUpdate: Function}) async {
+Future<void> updatePrices(Function perUpdate, {test: false} ) async {
   WidgetsFlutterBinding.ensureInitialized();
 
 
