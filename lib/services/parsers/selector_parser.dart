@@ -5,7 +5,7 @@ import 'package:price_tracker/services/scraper.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
 
 class ParserSelector extends Parser {
-  String d;
+  String domain;
   Document doc;
 
   //Map with selector, regex
@@ -14,9 +14,9 @@ class ParserSelector extends Parser {
   Map<String, dynamic> image = Map();
 
   ParserSelector(String url, Response response) : super(url, response) {
-    d = ScraperService.getDomain(url);
+    domain = ScraperService.getDomain(url);
     doc = ScraperService.getDOM(response);
-    dynamic domainConf = ScraperService.parserConf["domains"][d];
+    dynamic domainConf = ScraperService.parserConf["domains"][domain];
 
     //Set paths and regexp
     for (dynamic obj in domainConf["name"]) {
@@ -50,7 +50,7 @@ class ParserSelector extends Parser {
         break;
       } catch (e) {}
     }
-    return n ?? "-1";
+    return n;
   }
 
   @override
@@ -80,7 +80,8 @@ class ParserSelector extends Parser {
 
   @override
   double getPrice() {
-    String s = getInnerString(price).replaceAll(RegExp(r","), ".");
+    String inner = getInnerString(price) ?? "-1";
+    String s = inner.replaceAll(RegExp(r","), ".");
     return double.parse(s);
   }
 }

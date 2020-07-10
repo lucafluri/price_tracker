@@ -109,6 +109,36 @@
                     }
                 }
             ]
+        },
+        "officeworld.ch": {
+            "xpath": "true",
+            "name": [{
+                "path": "//*[@id='pageHeader']/div[1]/div/div[2]/div[1]/h1",
+                "regex": {
+                    "pattern": ">(.*)<",
+                    "remove": "",
+                    "group": 1
+                }
+            }],
+            "price": [{
+                    "path": "//*[@id='pageHeader']/div[1]/div/div[2]/div[2]/div[1]/div[1]/div/div/div[1]/div[2]",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ],
+            "image": [{
+                    "path": "//*[@id='currentPicture']",
+                    "regex": {
+                        "attribute": "src",
+                        "pattern": "src=\"(\\S*)\"",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ]
         }
     }
 }

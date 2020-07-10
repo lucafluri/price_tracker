@@ -11,12 +11,11 @@ import 'package:price_tracker/services/parsers/selector_parser.dart';
 import 'package:price_tracker/services/parsers/xpath_parser.dart';
 import 'package:price_tracker/services/parsers/struct_data_parser.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
-import 'package:toast/toast.dart';
 
 
 class ScraperService {
   static final parseInfoURL =
-      "https://gist.githubusercontent.com/lucafluri/528d5c168da2c87a97d44fc93a082bd6/raw/7c2dc06199078b1226ad775a734e503d1d1b88ee/tracker_test.json";
+      "https://gist.githubusercontent.com/lucafluri/528d5c168da2c87a97d44fc93a082bd6/raw/70350453ebd4c688c7fd40f0a3570bae7d7ea145/tracker_test.json";
 
   // static List<String> parseableDomains = ["digitec.ch", "galaxus.ch"];
   static Map<dynamic, dynamic> parserConf;
@@ -41,19 +40,17 @@ class ScraperService {
   }
 
   static Future<void> getParserInfo() async {
-    // TODO Parse from github -- Uncomment
-    //Load PARSE_INFO from Github or local fallback copy if something fails
-    // try {
-    //   Response response =
-    //       await ScraperService.instance.getResponse(parseInfoURL);
-    //   parserConf = jsonDecode(response.body);
-    //   print("Loaded newest parser_configuration from Github");
-    // } catch (e) {
-    //   print("PARSER_CONFIGURATION GET ERROR --- LOADING LOCAL FILE");
-    //   parserConf = jsonDecode(await loadFallbackParseInfo());
-    // }
-    // TODO Delete Line
-    parserConf = jsonDecode(await loadFallbackParseInfo());
+    // Load PARSE_INFO from Github or local fallback copy if something fails
+    try {
+      Response response =
+          await ScraperService.instance.getResponse(parseInfoURL);
+      parserConf = jsonDecode(response.body);
+      print("Loaded newest parser_configuration from Github");
+    } catch (e) {
+      print("PARSER_CONFIGURATION GET ERROR --- LOADING LOCAL FILE");
+      parserConf = jsonDecode(await loadFallbackParseInfo());
+    }
+    // parserConf = jsonDecode(await loadFallbackParseInfo());
 
     //Set possible domains var
     parseableDomains = parserConf["domains"].keys.toList();
