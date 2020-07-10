@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -121,8 +123,12 @@ class Product {
   }
 
   String getDomain() {
-    var domain = DomainUtils.getDomainFromUrl(productUrl);
-    return domain.sld + "." + domain.tld;
+    return ScraperService.getDomain(productUrl);
+  }
+
+  double roundToPlace(double d, int places) {
+    double mod = pow(10.0, places);
+    return ((d * mod).round().toDouble() / mod);
   }
 
   List<double> prices2List(String prices) {
