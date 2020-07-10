@@ -14,8 +14,9 @@ import 'package:price_tracker/services/parsers/abstract_parser.dart';
 
 
 class ScraperService {
+  
   static final parseInfoURL =
-      "https://gist.githubusercontent.com/lucafluri/528d5c168da2c87a97d44fc93a082bd6/raw/70350453ebd4c688c7fd40f0a3570bae7d7ea145/tracker_test.json";
+      "https://raw.githubusercontent.com/lucafluri/price_tracker/dev/lib/configuration/parser_configuration.json";
 
   // static List<String> parseableDomains = ["digitec.ch", "galaxus.ch"];
   static Map<dynamic, dynamic> parserConf;
@@ -44,6 +45,7 @@ class ScraperService {
     try {
       Response response =
           await ScraperService.instance.getResponse(parseInfoURL);
+      if(response == null) throw Exception();
       parserConf = jsonDecode(response.body);
       print("Loaded newest parser_configuration from Github");
     } catch (e) {
