@@ -4,16 +4,9 @@ import 'package:optimized_cached_image/widgets.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'dart:math';
 
 import 'package:price_tracker/services/database.dart';
-
-double roundDouble(double value, int places) {
-  double mod = pow(10.0, places);
-  return ((value * mod).round().toDouble() / mod);
-}
 
 class ProductDetail extends StatefulWidget {
   final Product product;
@@ -27,7 +20,6 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  var formatter = new DateFormat('yyyy-MM-dd--HH:mm:ss');
   double sliderValue;
 
   final _targetInputController = TextEditingController();
