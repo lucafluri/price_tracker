@@ -29,8 +29,10 @@ class ProductListTile extends StatelessWidget {
         : _priceDifference < 0 ? Colors.green[800] : Colors.red[900];
 
     Color _targetColor = _priceDifference < 0 || _priceDifference > 0
-        ? Colors.black54
+        ? Colors.black87
         : Colors.grey;
+
+    Color _storeColor = _underTarget ? Colors.black54 : Colors.grey;
 
     bool _showTargetPrice = product.targetPrice > 0;
 
@@ -92,7 +94,7 @@ class ProductListTile extends StatelessWidget {
                       color: Colors.white)),
               if (_showTargetPrice)
                 Text(product.targetPrice.toString(),
-                    style: TextStyle(color: _targetColor, fontSize: 12))
+                    style: TextStyle(color: _targetColor, fontSize: 12, fontWeight: FontWeight.w600))
             ],
           )));
     }
@@ -104,7 +106,7 @@ class ProductListTile extends StatelessWidget {
         color: _underTarget ? Colors.green[800] : Colors.transparent,
         child: ListTile(
           title: Text(product.getShortName()),
-          subtitle: Text(product.getDomain(), overflow: TextOverflow.ellipsis),
+          subtitle: Text(product.getDomain(), overflow: TextOverflow.ellipsis, style: TextStyle(color: _storeColor),),
           leading: _buildLeadingImage(),
           trailing: _buildTrailing(),
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
