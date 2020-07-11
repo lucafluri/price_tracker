@@ -3,8 +3,7 @@ import 'package:price_tracker/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/services/notifications.dart';
 
-//TODO product service
-double progress = 0.0;
+double progress;
 
 Future<int> countPriceFall() async {
   final _db = await DatabaseService.getInstance();
@@ -95,5 +94,5 @@ Future<void> updatePrices(Function perUpdate, {test: false} ) async {
     }
   }
 
-  progress = 0.0;
+  progress = null;
 }

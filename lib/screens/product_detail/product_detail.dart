@@ -1,6 +1,6 @@
 import 'package:bezier_chart/bezier_chart.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:optimized_cached_image/widgets.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -109,7 +109,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               child: Container(
                                 height: 250,
                                 child: product.imageUrl != null
-                                    ? OptimizedCacheImage(
+                                    ? CachedNetworkImage(
                                         imageUrl: product.imageUrl,
                                         placeholder: (context, url) => Center(
                                             child: CircularProgressIndicator()),

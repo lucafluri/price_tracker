@@ -19,6 +19,7 @@ class ScraperService {
   // static List<String> parseableDomains = ["digitec.ch", "galaxus.ch"];
   static Map<dynamic, dynamic> parserConf;
   static List<String> parseableDomains;
+  static bool _initDone = false;
 
   static Client _client;
 
@@ -31,6 +32,7 @@ class ScraperService {
 
   static Future<void> init() async {
     await getParserInfo();
+    _initDone = true;
   }
 
   static Future<String> loadFallbackParseInfo() async {
@@ -142,6 +144,7 @@ class ScraperService {
 
   // Returns a Parser Instance
   Future<Parser> getParser(String url) async {
+    if(!_initDone) await init();
     Response r = await getResponse(url);
     if (r == null) return null;
 

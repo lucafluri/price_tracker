@@ -26,7 +26,7 @@ void _dispatchCallbacks() async {
           //     "We updated the prices for you in the background!");
           print("Executed Task");
         } catch (e) {
-          debugPrint(e);
+          debugPrint(e.toString());
         }
 
         break;

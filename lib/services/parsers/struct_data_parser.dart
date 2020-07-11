@@ -80,7 +80,10 @@ class ParserSD extends Parser {
       if (structData["offers"] != null) {
         var offers = structData["offers"];
         var offer = offers;
-        if (offers["@type"] == "AggregateOffer") offers = offers["offers"];
+
+        if (offers is! List && offers["@type"] == "AggregateOffer") {
+          offers = offers["offers"];
+        }
         //Find first non empty entry in list (Playzone.ch...)
         if (offers is List) {
           for (var o in offers) {

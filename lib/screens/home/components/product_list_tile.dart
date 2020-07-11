@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:optimized_cached_image/widgets.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/product_detail/product_detail.dart';
 import 'package:share/share.dart';
@@ -53,7 +53,7 @@ class ProductListTile extends StatelessWidget {
       Widget image = Icon(Icons.error);
       if (product.imageUrl != null) {
         try {
-          image = OptimizedCacheImage(
+          image = CachedNetworkImage(
               imageUrl: product.imageUrl,
               placeholder: (context, url) =>
                   Center(child: CircularProgressIndicator()),

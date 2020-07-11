@@ -55,8 +55,9 @@ class HomeScreenController extends State<HomeScreen> {
           .timeout(Duration(seconds: 5), onTimeout: () {
         debugPrint("HTTP GET Timout!");
         iConnectivity = false;
+        return null;
       });
-      ;
+      
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         // print('connected to internet');
         setState(() {

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:html/dom.dart';
 import 'package:http/http.dart';
 import 'package:price_tracker/services/scraper.dart';
@@ -64,7 +63,7 @@ class ParserSelector extends Parser {
             .querySelector(selector)
             .attributes[regex["attribute"]]
             .toString();
-        debugPrint(tmp);
+        // debugPrint(tmp);
         if(!ScraperService.validUrl(tmp)) continue;
         n = tmp;
         break;
