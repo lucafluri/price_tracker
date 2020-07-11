@@ -12,23 +12,10 @@ class Product {
   List<double> _prices = [];
   List<DateTime> _dates = [];
   double targetPrice = -1;
-  String imageUrl =
-      "https://static.digitecgalaxus.ch/Files/3/3/4/7/5/8/1/5/gata-1301_gata_1301_02.jpeg?impolicy=PictureComponent&resizeWidth=708&resizeHeight=288&resizeType=downsize";
+  String imageUrl;
 
-  Product(
-      {this.name = "Ducky One 2 SF",
-      this.productUrl =
-          "https://www.digitec.ch/en/s1/product/ducky-one-2-sf-ch-cable-keyboards-12826095",
-      this.targetPrice = -1});
-
-  Product.map(dynamic obj) {
-    this._id = obj['_id'];
-    this.name = obj['name'];
-    this.productUrl = obj['productUrl'];
-    this._prices = prices2List(obj['prices']);
-    this._dates = dates2List(obj['dates']);
-    this.targetPrice = double.parse(obj['targetPrice']);
-    this.imageUrl = obj['imageUrl'];
+  Product(String productUrl) {
+    this.productUrl = productUrl;
   }
 
   int get id => _id;
@@ -38,9 +25,10 @@ class Product {
   List<DateTime> get dates => _dates;
 
   @override
-  bool operator ==(o) => o is Product && o.productUrl == productUrl && o.name == name;
+  bool operator ==(o) =>
+      o is Product && o.productUrl == productUrl && o.name == name;
   @override
-  int get hashCode => name.hashCode^productUrl.hashCode;
+  int get hashCode => name.hashCode ^ productUrl.hashCode;
 
   // Parses all information from the web
   Future<bool> init() async {
@@ -130,10 +118,10 @@ class Product {
     return ScraperService.getDomain(productUrl);
   }
 
-  String getShortName({numChars: 60}){
-    return this.name.length >= numChars
-              ? this.name.substring(0, numChars) + "..."
-              : this.name;
+  String getShortName({numChars: 60}) {
+    return this.name.length > numChars
+        ? this.name.substring(0, numChars) + "..."
+        : this.name;
   }
 
   double roundToPlace(double d, int places) {
@@ -142,22 +130,27 @@ class Product {
   }
 
   List<double> prices2List(String prices) {
-    if (prices == "null") return [];
-    return prices
-        .substring(1, prices.length - 1)
-        .split(",")
-        .map(double.parse)
-        .toList();
+    if (prices == "null" || prices == "[]" || prices == null) return [];
+    try {
+      return prices
+          .substring(1, prices.length - 1)
+          .split(",")
+          .map(double.parse)
+          .toList();
+    } catch (e) {}
+    return null;
   }
 
   List<DateTime> dates2List(String dates) {
-    if (dates == "null") return [];
-    // debugPrint(dates);
-    return dates
-        .substring(1, dates.length - 1)
-        .split(",")
-        .map((date) => DateTime.parse(date.trim()))
-        .toList();
+    if (dates == "null" || dates == "[]" || dates == null) return [];
+    try {
+      return dates
+          .substring(1, dates.length - 1)
+          .split(",")
+          .map((date) => DateTime.parse(date.trim()))
+          .toList();
+    } catch (e) {}
+    return null;
   }
 
   Map<String, dynamic> toMap() {
@@ -182,7 +175,7 @@ class Product {
     this._prices = prices2List(map['prices']);
     this._dates = dates2List(map['dates']);
     this.targetPrice =
-        double.parse(map['targetPrice'] != "null" ? map['targetPrice'] : "0");
+        double.parse(map['targetPrice'] != "null" || map['targetPrice'] != null ? map['targetPrice'] : "-1");
     this.imageUrl = map['imageUrl'];
   }
 }

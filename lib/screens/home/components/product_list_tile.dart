@@ -70,7 +70,9 @@ class ProductListTile extends StatelessWidget {
     Widget _buildLeadingImage() {
       return Container(
         //Image Placeholder
+        color: Colors.white,
         width: 80,
+        height: 60,
         child: _getLeadingImage(),
       );
     }
@@ -80,6 +82,7 @@ class ProductListTile extends StatelessWidget {
           //Change Placeholder?
           color: _chosenColor,
           width: 100,
+          height: 60,
           child: Center(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

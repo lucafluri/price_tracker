@@ -125,7 +125,7 @@ class HomeScreenController extends State<HomeScreen> {
       setState(() {});
       // Toast.show("Product details are being parsed", context,
       //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-      Product p = Product(productUrl: input);
+      Product p = Product(input);
       if (await p.init()) {
         final _db = await DatabaseService.getInstance();
         int newId = await _db.insert(p);
