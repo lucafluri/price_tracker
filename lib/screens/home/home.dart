@@ -111,7 +111,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                   Center(
                       child: Text("You don't have any tracked products yet.")),
                 ListView.separated(
-                  physics: BouncingScrollPhysics(),
+                  physics: ClampingScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: state.products.length,
                   separatorBuilder: (BuildContext context, int index) =>

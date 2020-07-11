@@ -125,6 +125,12 @@ class Product {
     return ScraperService.getDomain(productUrl);
   }
 
+  String getShortName({numChars: 60}){
+    return this.name.length >= numChars
+              ? this.name.substring(0, numChars) + "..."
+              : this.name;
+  }
+
   double roundToPlace(double d, int places) {
     double mod = pow(10.0, places);
     return ((d * mod).round().toDouble() / mod);

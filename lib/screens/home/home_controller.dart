@@ -51,10 +51,12 @@ class HomeScreenController extends State<HomeScreen> {
 
   Future<bool> checkInternet() async {
     try {
-      final result = await InternetAddress.lookup('google.com').timeout(Duration(seconds: 5), onTimeout: () {
+      final result = await InternetAddress.lookup('google.com')
+          .timeout(Duration(seconds: 5), onTimeout: () {
         debugPrint("HTTP GET Timout!");
         iConnectivity = false;
-      });;
+      });
+      ;
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         // print('connected to internet');
         setState(() {
@@ -88,7 +90,7 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   void addProductDialogue() async {
-    if(!await checkInternet()) return;
+    if (!await checkInternet()) return;
     String input = await FlutterClipboardManager.copyFromClipBoard();
     bool validURL = ScraperService.validUrl(input);
 
@@ -140,13 +142,27 @@ class HomeScreenController extends State<HomeScreen> {
     }
   }
 
+  Future<bool> deleteDialogue(Product product) async {
+    OkCancelResult result = await showOkCancelAlertDialog(
+      context: context,
+      title: "Do you really want to delete the following product?",
+      message: product.getShortName(),
+      okLabel: "Delete",
+      barrierDismissible: false,
+      isDestructiveAction: true,
+    );
+    return result == OkCancelResult.ok;
+  }
+
   void deleteProduct(Product product) async {
-    final _db = await DatabaseService.getInstance();
+    if (await deleteDialogue(product)) {
+      final _db = await DatabaseService.getInstance();
 
-    await _db.delete(product.id);
-    debugPrint('Deleted Product ${product.name}');
+      await _db.delete(product.id);
+      debugPrint('Deleted Product ${product.name}');
 
-    _loadProducts();
+      _loadProducts();
+    }
   }
 
   void onRefresh() async {
