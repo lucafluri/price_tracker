@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:price_tracker/services/background_worker.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:price_tracker/services/notifications.dart';
@@ -7,6 +8,9 @@ import 'package:price_tracker/services/scraper.dart';
 import 'package:price_tracker/services/share_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
+
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
 
 Future<void> initApp() async {
   await ScraperService.init();

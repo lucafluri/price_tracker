@@ -1,6 +1,7 @@
 import 'dart:async';
 
 
+import 'package:price_tracker/services/init.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 
@@ -22,6 +23,8 @@ class ShareIntentService {
     _intentDataStreamSubscription =
         ReceiveSharingIntent.getTextStream().listen((String value) {
       sharedText = value;
+      // Navigate to Home Screen so that _checkForSharedText gets called
+      navigatorKey.currentState.pushNamedAndRemoveUntil("/", (route) => false);
       print("Shared: $sharedText");
     }, onError: (err) {
       print("getLinkStream error: $err");
@@ -30,6 +33,7 @@ class ShareIntentService {
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then((String value) {
       sharedText = value;
+      // CheckSharedText in HomeController gets called and executed since app started
       print("Shared: $sharedText");
     });
   }

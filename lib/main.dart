@@ -10,7 +10,9 @@ void main() async {
 
   bool firstLaunch = await checkFirstLaunch();
 
-  runApp(PriceTrackerApp(firstLaunch: firstLaunch,));
+  runApp(PriceTrackerApp(
+    firstLaunch: firstLaunch,
+  ));
 }
 
 class PriceTrackerApp extends StatelessWidget {
@@ -24,6 +26,7 @@ class PriceTrackerApp extends StatelessWidget {
       title: 'Price Tracker BETA',
       debugShowCheckedModeBanner: false,
       theme: appTheme(),
+      navigatorKey: navigatorKey,
       initialRoute: firstLaunch ? '/intro' : '/',
       routes: routes,
     );
