@@ -35,10 +35,18 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                 0, "test", "test body"),
             color: Colors.redAccent,
           ),
-        IconButton(
-          icon: Icon(Icons.refresh),
-          onPressed: () => state.onRefresh(),
-        ),
+        // Show Reload Button if internet connection avialable or internet error icon if not
+        state.iConnectivity
+            ? IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () => state.onRefresh(),
+              )
+            : IconButton(
+                icon: Icon(
+                  Icons.signal_wifi_off,
+                  color: Colors.red,
+                ), onPressed: () {},
+              ),
         IconButton(
           icon: Icon(Icons.help_outline),
           onPressed: () => Navigator.of(context).pushNamed("/intro"),
@@ -65,8 +73,6 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +93,9 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                       Container(
                         width: 20,
                       ),
-                      CircularProgressIndicator(value: progress,),
+                      CircularProgressIndicator(
+                        value: progress,
+                      ),
                     ],
                   )),
                 ),
