@@ -133,8 +133,11 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                 ),
                 Container(
                   height: 70,
-                  child: Center(
-                    child: Text("${state.productCount} tracked products"),
+                  child: Visibility(
+                    visible: state.productCount != null,
+                    child: Center(
+                      child: Text("${state.productCount} tracked products"),
+                    ),
                   ),
                 )
               ],
