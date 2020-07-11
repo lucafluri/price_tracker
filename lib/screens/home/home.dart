@@ -45,7 +45,8 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                 icon: Icon(
                   Icons.signal_wifi_off,
                   color: Colors.red,
-                ), onPressed: () => state.checkInternet(),
+                ),
+                onPressed: () => state.checkInternet(),
               ),
         IconButton(
           icon: Icon(Icons.help_outline),
@@ -78,49 +79,54 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Container(
-        child: SingleChildScrollView(
-          controller: state.listviewController,
-          child: Column(
-            children: <Widget>[
-              if (state.refreshing)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Center(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(state.refreshingText),
-                      Container(
-                        width: 20,
-                      ),
-                      CircularProgressIndicator(
-                        value: progress,
-                      ),
-                    ],
-                  )),
+        child: ScrollConfiguration(
+          behavior: EmptyScrollBehavior(),
+          child: SingleChildScrollView(
+            controller: state.listviewController,
+            child: Column(
+              children: <Widget>[
+                if (state.refreshing)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(state.refreshingText),
+                        Container(
+                          width: 20,
+                        ),
+                        CircularProgressIndicator(
+                          value: progress,
+                        ),
+                      ],
+                    )),
+                  ),
+                if (state.loading)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                if (!state.loading && state.products.length == 0)
+                  Center(
+                      child: Text("You don't have any tracked products yet.")),
+                ListView.separated(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: state.products.length,
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(height: 1.0),
+                  itemBuilder: (BuildContext context, int index) {
+                    return ProductListTile(
+                      product: state.products[index],
+                      onDelete: () =>
+                          state.deleteProduct(state.products[index]),
+                    );
+                  },
                 ),
-              if (state.loading)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-              if (!state.loading && state.products.length == 0)
-                Center(child: Text("You don't have any tracked products yet.")),
-              ListView.separated(
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: state.products.length,
-                separatorBuilder: (BuildContext context, int index) =>
-                    Divider(height: 1.0),
-                itemBuilder: (BuildContext context, int index) {
-                  return ProductListTile(
-                    product: state.products[index],
-                    onDelete: () => state.deleteProduct(state.products[index]),
-                  );
-                },
-              ),
-              Container(height: 70)
-            ],
+                Container(height: 70)
+              ],
+            ),
           ),
         ),
       ),
