@@ -42,48 +42,60 @@ class ParserSD extends Parser {
 
   @override
   String getImage() {
-    var images = structData["image"];
-    String image = images is List ? images[0] : images;
-    //Fix missing protocol (brack.ch for instance...)
-    if (image.substring(0, 2) == "//") image = "https:" + image;
-    return image;
+    try {
+      var images = structData["image"];
+      String image = images is List ? images[0] : images;
+      //Fix missing protocol (brack.ch for instance...)
+      if (image.substring(0, 2) == "//") image = "https:" + image;
+      return image;
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   String getName() {
-    String name = structData["name"] ?? "";
-    String brand = "";
+    try {
+      String name = structData["name"] ?? "";
+      String brand = "";
 
-    if (structData["brand"] != null) {
-      if (structData["brand"] is String)
-        brand = structData["brand"];
+      if (structData["brand"] != null) {
+        if (structData["brand"] is String)
+          brand = structData["brand"];
+        else
+          brand = structData["brand"]["name"] ?? "";
+        return '$brand $name';
+      } else if (name != "" && brand == "")
+        return name;
       else
-        brand = structData["brand"]["name"] ?? "";
-      return '$brand $name';
-    } else if (name != "" && brand == "")
-      return name;
-    else
+        return null;
+    } catch (e) {
       return null;
+    }
   }
 
   @override
   double getPrice() {
-    if (structData["offers"] != null) {
-      var offers = structData["offers"];
-      var offer = offers;
-      if(offers["@type"] == "AggregateOffer") offers = offers["offers"];
-      //Find first non empty entry in list (Playzone.ch...)
-      if (offers is List) {
-        for (var o in offers) {
-          if (o.isNotEmpty) {
-            offer = o;
-            break;
+    try {
+      if (structData["offers"] != null) {
+        var offers = structData["offers"];
+        var offer = offers;
+        if (offers["@type"] == "AggregateOffer") offers = offers["offers"];
+        //Find first non empty entry in list (Playzone.ch...)
+        if (offers is List) {
+          for (var o in offers) {
+            if (o.isNotEmpty) {
+              offer = o;
+              break;
+            }
           }
         }
-      }
 
-      return double.parse(offer["price"].toString());
-    } else
+        return double.parse(offer["price"].toString());
+      } else
+        return -1;
+    } catch (e) {
       return -1;
+    }
   }
 }
