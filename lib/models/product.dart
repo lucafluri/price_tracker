@@ -37,6 +37,11 @@ class Product {
   List<double> get prices => _prices;
   List<DateTime> get dates => _dates;
 
+  @override
+  bool operator ==(o) => o is Product && o.productUrl == productUrl && o.name == name;
+  @override
+  int get hashCode => name.hashCode^productUrl.hashCode;
+
   // Parses all information from the web
   Future<bool> init() async {
     // final dbHelper = DatabaseHelper.instance;

@@ -128,7 +128,10 @@ class HomeScreenController extends State<HomeScreen> {
       Product p = Product(productUrl: input);
       if (await p.init()) {
         final _db = await DatabaseService.getInstance();
-        await _db.insert(p);
+        int newId = await _db.insert(p);
+        //Check for insert error
+        if(newId == -1) Toast.show("Product already exists!", context,
+            duration: 4, gravity: Toast.BOTTOM);
       } else {
         Toast.show("Invalid URL or unsupported store", context,
             duration: 4, gravity: Toast.BOTTOM);

@@ -79,7 +79,8 @@ class DatabaseService {
   Future<int> insert(Product product) async {
     // First check, whether the movie already exists:
     final Product exists = await getProduct(product.id);
-    if (exists != null) {
+    final bool duplicate = await contains(product);
+    if (exists != null || duplicate) {
       print('Product ${product.id} already exists in db');
       return -1;
     } else {
@@ -109,6 +110,15 @@ class DatabaseService {
     List<Map<String, dynamic>> list = await _database.query(table);
     List<Product> products = list.map((el) => Product.fromMap(el)).toList();
     return products;
+  }
+
+  Future<bool> contains(Product product) async{
+    return (await getAllProducts()).contains(product);
+  }
+
+   Future<bool> containsWithSameURL(Product product) async{
+     //contains uses the overriden == and hashCode function of Product
+    return (await getAllProducts()).contains(product);
   }
 
   // All of the rows are returned as a list of maps, where each map is
