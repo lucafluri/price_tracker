@@ -120,7 +120,7 @@ class ScraperService {
   Future<Response> getResponse(String url) async {
     try {
       Response r =
-          await _client.get(url).timeout(Duration(seconds: 30), onTimeout: () {
+          await _client.get(url).timeout(Duration(seconds: 10), onTimeout: () {
         debugPrint("HTTP GET Timout!");
         return null;
       });
