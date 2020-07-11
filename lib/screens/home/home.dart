@@ -45,7 +45,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                 icon: Icon(
                   Icons.signal_wifi_off,
                   color: Colors.red,
-                ), onPressed: () {},
+                ), onPressed: () => state.checkInternet(),
               ),
         IconButton(
           icon: Icon(Icons.help_outline),

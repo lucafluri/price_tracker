@@ -30,7 +30,7 @@ class HomeScreenController extends State<HomeScreen> {
 
   void init() async {
     await _loadProducts();
-    await _checkInternet();
+    await checkInternet();
     if (iConnectivity) await _checkForSharedText();
   }
 
@@ -49,19 +49,27 @@ class HomeScreenController extends State<HomeScreen> {
     }
   }
 
-  _checkInternet() async {
+  Future<bool> checkInternet() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup('google.com').timeout(Duration(seconds: 5), onTimeout: () {
+        debugPrint("HTTP GET Timout!");
+        iConnectivity = false;
+      });;
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('connected to internet');
-        iConnectivity = true;
+        // print('connected to internet');
+        setState(() {
+          iConnectivity = true;
+        });
       }
     } on SocketException catch (_) {
       print('NOT connected to internet');
-      iConnectivity = false;
+      setState(() {
+        iConnectivity = false;
+      });
       Toast.show('Please ensure an internet connection', context,
           duration: 3, gravity: Toast.BOTTOM);
     }
+    return iConnectivity;
   }
 
   Future<void> _loadProducts() async {
@@ -80,6 +88,7 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   void addProductDialogue() async {
+    if(!await checkInternet()) return;
     String input = await FlutterClipboardManager.copyFromClipBoard();
     bool validURL = ScraperService.validUrl(input);
 
@@ -141,11 +150,13 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   void onRefresh() async {
-    refreshing = true;
-    await scrollToTop();
-    setState(() {});
-    await updatePrices(() => setState(() {}));
-    await _loadProducts();
+    if (await checkInternet() && !refreshing) {
+      refreshing = true;
+      await scrollToTop();
+      setState(() {});
+      await updatePrices(() => setState(() {}));
+      await _loadProducts();
+    }
   }
 
   Future<void> scrollToTop() async {
