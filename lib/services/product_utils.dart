@@ -59,7 +59,6 @@ Future<void> updatePrices(Function perUpdate, {test: false} ) async {
     await products[i].update(test: test);
     await _db.update(products[i]);
     progress = i / products.length;
-    if(progress == 0.0) progress = null;
     perUpdate();
   }
 

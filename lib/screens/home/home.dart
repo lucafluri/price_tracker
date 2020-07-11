@@ -105,6 +105,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                           width: 20,
                         ),
                         CircularProgressIndicator(
+                          backgroundColor: Colors.grey[800],
                           value: progress,
                         ),
                       ],
