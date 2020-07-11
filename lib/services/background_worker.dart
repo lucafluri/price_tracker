@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'init.dart';
+
 class BackgroundWorkerService {
   BackgroundWorkerService._privateConstructor();
   static final BackgroundWorkerService _instance = BackgroundWorkerService._privateConstructor();
@@ -15,6 +17,8 @@ class BackgroundWorkerService {
 
 void _dispatchCallbacks() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initAppBackground();
+
 
   Workmanager.executeTask((taskName, inputData) async {
     switch (taskName) {

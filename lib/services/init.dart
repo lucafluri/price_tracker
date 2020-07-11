@@ -28,8 +28,14 @@ Future<void> initApp() async {
           hours: 12,
         ));
   }
+}
 
-
+Future<void> initAppBackground() async {
+  await ScraperService.init();
+  await DatabaseService.init();
+  // await BackgroundWorkerService.init();
+  await NotificationService.init();
+  // await ShareIntentService.init();
 }
 
 Future<bool> checkFirstLaunch() async {
