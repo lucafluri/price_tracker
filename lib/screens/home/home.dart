@@ -40,7 +40,8 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
         if (BACKGROUND_TEST_BUTTON)
           IconButton(
             icon: Icon(Icons.cloud_download),
-            onPressed: () => Workmanager.registerOneOffTask("manualPriceScraping", "Manual Price Tracker Scraper"),
+            onPressed: () => Workmanager.registerOneOffTask(
+                "manualPriceScraping", "Manual Price Tracker Scraper"),
             color: Colors.redAccent,
           ),
         // Show Reload Button if internet connection avialable or internet error icon if not
@@ -116,9 +117,6 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: Center(child: CircularProgressIndicator()),
                   ),
-                if (!state.loading && state.products.length == 0)
-                  Center(
-                      child: Text("You don't have any tracked products yet.")),
                 ListView.separated(
                   physics: ClampingScrollPhysics(),
                   shrinkWrap: true,
@@ -133,7 +131,12 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                     );
                   },
                 ),
-                Container(height: 70)
+                Container(
+                  height: 70,
+                  child: Center(
+                    child: Text("${state.productCount} tracked products"),
+                  ),
+                )
               ],
             ),
           ),

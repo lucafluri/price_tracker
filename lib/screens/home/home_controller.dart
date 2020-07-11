@@ -20,6 +20,7 @@ class HomeScreenController extends State<HomeScreen> {
   String refreshingText = "Refreshing Prices";
   List<Product> products = <Product>[];
   bool iConnectivity = true;
+  int productCount;
 
   @override
   void initState() {
@@ -86,6 +87,7 @@ class HomeScreenController extends State<HomeScreen> {
       products = products.reversed.toList();
       loading = false;
       refreshing = false;
+      productCount = products.length;
     });
     setState(() {});
   }
