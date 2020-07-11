@@ -58,7 +58,7 @@ class ProductListTile extends StatelessWidget {
           image = CachedNetworkImage(
               imageUrl: product.imageUrl,
               placeholder: (context, url) =>
-                  Center(child: CircularProgressIndicator()),
+                  Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),)),
               errorWidget: (context, url, error) => Icon(Icons.error));
         } catch (e) {
           image = Icon(Icons.error);
