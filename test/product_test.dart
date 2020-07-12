@@ -15,7 +15,8 @@ void main() {
     "prices": "[]",
     "dates": "[]",
     "targetPrice": "-1.0",
-    "imageUrl": ""
+    "imageUrl": "",
+    "parseSuccess": "true",
   };
 
   setUpAll(() {
@@ -166,6 +167,5 @@ void main() {
         expect(p.getDomain(), "digitec.ch");
       });
     });
-
   });
 }

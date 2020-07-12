@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
 import 'package:price_tracker/services/scraper.dart';
+import 'package:string_validator/string_validator.dart';
 
 class Product {
   int _id;
@@ -13,6 +14,7 @@ class Product {
   List<DateTime> _dates = [];
   double targetPrice = -1;
   String imageUrl;
+  bool _parseSuccess = true;
 
   Product(String productUrl) {
     this.productUrl = productUrl;
@@ -23,6 +25,8 @@ class Product {
   String get description => productUrl;
   List<double> get prices => _prices;
   List<DateTime> get dates => _dates;
+  bool get parseSuccess => _parseSuccess;
+  set parseSuccess(bool newVal) => this._parseSuccess = newVal;
 
   @override
   bool operator ==(o) =>
@@ -75,13 +79,17 @@ class Product {
   // Only Parses the price
   Future<bool> update({bool test = false}) async {
     Parser parser = await ScraperService.instance.getParser(this.productUrl);
-    if (parser == null) return false;
+    if (parser == null) {
+      parseSuccess = false;
+      return false;
+    }
 
     double parsedPrice = parser.getPrice();
 
     //Check if parsing successful, else return false
     if (parsedPrice == null) {
       debugPrint("Failed Parsing");
+      parseSuccess = false;
       return false;
     } else {
       var formatter = new DateFormat('yyyy-MM-dd');
@@ -110,6 +118,7 @@ class Product {
       }
 
       debugPrint(this._id.toString() + " " + this._prices.toString());
+      parseSuccess = true;
       return true;
     }
   }
@@ -164,6 +173,7 @@ class Product {
     map['dates'] = _dates.toString();
     map['targetPrice'] = targetPrice.toString();
     map['imageUrl'] = imageUrl;
+    map['parseSuccess'] = parseSuccess.toString();
 
     return map;
   }
@@ -174,8 +184,11 @@ class Product {
     this.productUrl = map['productUrl'];
     this._prices = prices2List(map['prices']);
     this._dates = dates2List(map['dates']);
-    this.targetPrice =
-        double.parse(map['targetPrice'] != "null" || map['targetPrice'] != null ? map['targetPrice'] : "-1");
+    this.targetPrice = double.parse(
+        map['targetPrice'] != "null" || map['targetPrice'] != null
+            ? map['targetPrice']
+            : "-1");
     this.imageUrl = map['imageUrl'];
+    this.parseSuccess = toBoolean(map['parseSuccess']);
   }
 }

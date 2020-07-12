@@ -54,12 +54,14 @@ class HomeScreenController extends State<HomeScreen> {
     try {
       final result = await InternetAddress.lookup('google.com')
           .timeout(Duration(seconds: 5), onTimeout: () {
-        debugPrint("HTTP GET Timout!");
+        debugPrint("Internet Timout!");
         iConnectivity = false;
         return null;
       });
-      
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+
+      if (result != null &&
+          result.isNotEmpty &&
+          result[0].rawAddress.isNotEmpty) {
         // print('connected to internet');
         setState(() {
           iConnectivity = true;
@@ -132,8 +134,9 @@ class HomeScreenController extends State<HomeScreen> {
         final _db = await DatabaseService.getInstance();
         int newId = await _db.insert(p);
         //Check for insert error
-        if(newId == -1) Toast.show("Product already exists!", context,
-            duration: 4, gravity: Toast.BOTTOM);
+        if (newId == -1)
+          Toast.show("Product already exists!", context,
+              duration: 4, gravity: Toast.BOTTOM);
       } else {
         Toast.show("Invalid URL or unsupported store", context,
             duration: 4, gravity: Toast.BOTTOM);
@@ -178,6 +181,11 @@ class HomeScreenController extends State<HomeScreen> {
       setState(() {});
       await updatePrices(() => setState(() {}));
       await _loadProducts();
+      int failedCount = await countFailedParsing();
+      if (failedCount > 0)
+        Toast.show(
+            "$failedCount Products failed to parse, please try again", context,
+            duration: 10, gravity: Toast.BOTTOM);
     }
   }
 

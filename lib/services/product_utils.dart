@@ -46,10 +46,22 @@ Future<int> countPriceUnderTarget() async {
   return count;
 }
 
-Future<void> updatePrices(Function perUpdate, {test: false} ) async {
+//Returns number of products that fell under the set target
+Future<int> countFailedParsing() async {
+  final _db = await DatabaseService.getInstance();
+
+  List<Product> products = await _db.getAllProducts();
+
+  int count = 0;
+
+  for (int i = 0; i < products.length; i++) {
+    if (!products[i].parseSuccess) count++;
+  }
+  return count;
+}
+
+Future<void> updatePrices(Function perUpdate, {test: false}) async {
   WidgetsFlutterBinding.ensureInitialized();
-
-
 
   final _db = await DatabaseService.getInstance();
 

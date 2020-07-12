@@ -13,6 +13,9 @@ import 'package:price_tracker/services/parsers/struct_data_parser.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
 
 class ScraperService {
+  // HTTP GET Response Timout in seconds
+  static const RESPONSE_TIMOUT = 15;
+
   static final parseInfoURL =
       "https://raw.githubusercontent.com/lucafluri/price_tracker/dev/lib/configuration/parser_configuration.json";
 
@@ -121,8 +124,9 @@ class ScraperService {
   // !! Has to be called via instance so that _client initialization is ensured
   Future<Response> getResponse(String url) async {
     try {
-      Response r =
-          await _client.get(url).timeout(Duration(seconds: 10), onTimeout: () {
+      Response r = await _client
+          .get(url)
+          .timeout(Duration(seconds: RESPONSE_TIMOUT), onTimeout: () {
         debugPrint("HTTP GET Timout!");
         return null;
       });
@@ -144,7 +148,7 @@ class ScraperService {
 
   // Returns a Parser Instance
   Future<Parser> getParser(String url) async {
-    if(!_initDone) await init();
+    if (!_initDone) await init();
     Response r = await getResponse(url);
     if (r == null) return null;
 

@@ -5,6 +5,7 @@ import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/product_detail/product_detail.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ProductListTile extends StatelessWidget {
   final Product product;
@@ -32,6 +33,8 @@ class ProductListTile extends StatelessWidget {
         ? Colors.black87
         : Colors.grey;
 
+    Color _titleColor = product.parseSuccess ? Colors.white : Colors.red;
+
     Color _storeColor = _underTarget ? Colors.black54 : Colors.grey;
 
     bool _showTargetPrice = product.targetPrice > 0;
@@ -57,8 +60,11 @@ class ProductListTile extends StatelessWidget {
         try {
           image = CachedNetworkImage(
               imageUrl: product.imageUrl,
-              placeholder: (context, url) =>
-                  Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),)),
+              placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Colors.black87),
+                  )),
               errorWidget: (context, url, error) => Icon(Icons.error));
         } catch (e) {
           image = Icon(Icons.error);
@@ -78,28 +84,47 @@ class ProductListTile extends StatelessWidget {
     }
 
     Widget _buildTrailing() {
-      return Container(
-          //Change Placeholder?
-          color: _chosenColor,
-          width: 100,
-          height: 60,
-          child: Center(
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+              //Change Placeholder?
+              color: _chosenColor,
+              width: 100,
+              height: 40,
               child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                  product.prices[product.prices.length - 1] >= 0
-                      ? product.prices[product.prices.length - 1].toString()
-                      : "--",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Colors.white)),
-              if (_showTargetPrice)
-                Text(product.targetPrice.toString(),
-                    style: TextStyle(color: _targetColor, fontSize: 12, fontWeight: FontWeight.w600))
-            ],
-          )));
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                      product.prices[product.prices.length - 1] >= 0
+                          ? product.prices[product.prices.length - 1].toString()
+                          : "--",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.white)),
+                  if (_showTargetPrice)
+                    Text(product.targetPrice.toString(),
+                        style: TextStyle(
+                            color: _targetColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600)),
+                ],
+              )),
+          Visibility(visible: !product.parseSuccess, child: Spacer()),
+          Visibility(
+            visible: !product.parseSuccess,
+            child: Container(
+              child: Text(
+                "Last Sync: ${timeago.format(product.dates[product.dates.length - 1], locale: 'en_short')}",
+                style: TextStyle(fontSize: 10),
+                maxLines: 2,
+              ),
+            ),
+          )
+        ],
+      );
     }
 
     return Slidable(
@@ -108,11 +133,20 @@ class ProductListTile extends StatelessWidget {
       child: Container(
         color: _underTarget ? Colors.green[800] : Colors.transparent,
         child: ListTile(
-          title: Text(product.getShortName()),
-          subtitle: Text(product.getDomain(), overflow: TextOverflow.ellipsis, style: TextStyle(color: _storeColor),),
+          title: Text(
+            product.getShortName(),
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: _titleColor),
+            maxLines: 2,
+          ),
+          subtitle: Text(
+            product.getDomain(),
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: _storeColor),
+          ),
           leading: _buildLeadingImage(),
           trailing: _buildTrailing(),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           onTap: _onTap,
           onLongPress: _onLongPress,
         ),

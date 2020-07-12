@@ -7,7 +7,9 @@ import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
   static final _databaseName = "price_tracker.db";
-  static final _databaseVersion = 1;
+
+  // v2 added parseSuccess column
+  static final _databaseVersion = 2;
 
   static final table = 'products';
 
@@ -18,16 +20,18 @@ class DatabaseService {
   static final columnDates = 'dates';
   static final columnTargetPrice = 'targetPrice';
   static final columnImageUrl = 'imageUrl';
+  static final columnParseSuccess = 'parseSuccess';
 
   // make this a singleton class
   DatabaseService._privateConstructor();
-  static final DatabaseService _instance = DatabaseService._privateConstructor();
+  static final DatabaseService _instance =
+      DatabaseService._privateConstructor();
 
   static Future<DatabaseService> getInstance() async {
     if (_database == null) await init();
-    
+
     return _instance;
-  } 
+  }
 
   // only have a single app-wide reference to the database
   static Database _database;
@@ -37,18 +41,16 @@ class DatabaseService {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     _database = await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate,
-        onUpgrade: _onUpgrade
-    );
+        version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
-  static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // if (oldVersion == 1) {
-    //   await db.execute('ALTER TABLE $table ADD $columnRatings TEXT');
-    //   print("Database upgraded from version 1 to version 2, added column "
-    //       "'$columnRatings'");
-    // }
+  static Future<void> _onUpgrade(
+      Database db, int oldVersion, int newVersion) async {
+    if (oldVersion == 1) {
+      await db.execute('ALTER TABLE $table ADD $columnParseSuccess TEXT');
+      print("Database upgraded from version 1 to version 2, added column "
+          "'$columnParseSuccess'");
+    }
     // if (oldVersion == 1 || oldVersion == 2) {
     //   await db.execute('ALTER TABLE $table ADD $columnFavorite INTEGER');
     //   print("Database upgraded from version 2 to version 3, added column "
@@ -67,6 +69,7 @@ class DatabaseService {
             $columnDates TEXT,
             $columnTargetPrice TEXT,
             $columnImageUrl TEXT
+            $columnParseSuccess TEXT
           )
           ''');
   }
@@ -96,7 +99,8 @@ class DatabaseService {
   /// Gets a specific product from the database.
   /// Returns product, or 'null' if not found.
   Future<Product> getProduct(int id) async {
-    var result = await _database.rawQuery('SELECT * FROM $table WHERE $columnId = $id');
+    var result =
+        await _database.rawQuery('SELECT * FROM $table WHERE $columnId = $id');
 
     if (result.length > 0) {
       return new Product.fromMap(result.first);
@@ -112,12 +116,12 @@ class DatabaseService {
     return products;
   }
 
-  Future<bool> contains(Product product) async{
+  Future<bool> contains(Product product) async {
     return (await getAllProducts()).contains(product);
   }
 
-   Future<bool> containsWithSameURL(Product product) async{
-     //contains uses the overriden == and hashCode function of Product
+  Future<bool> containsWithSameURL(Product product) async {
+    //contains uses the overriden == and hashCode function of Product
     return (await getAllProducts()).contains(product);
   }
 
@@ -130,7 +134,8 @@ class DatabaseService {
   // All of the methods (insert, query, update, delete) can also be done using
   // raw SQL commands. This method uses a raw query to give the row count.
   Future<int> queryCount() async {
-    return Sqflite.firstIntValue(await _database.rawQuery('SELECT COUNT(*) FROM $table'));
+    return Sqflite.firstIntValue(
+        await _database.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
   // We are assuming here that the id column in the map is set. The other
@@ -143,13 +148,15 @@ class DatabaseService {
   // We are assuming here that the id column in the map is set. The other
   // column values will be used to update the row.
   Future<void> updateId(int id) async {
-    await _database.rawQuery('UPDATE $table SET $columnId = $id WHERE $columnId = $id');
+    await _database
+        .rawQuery('UPDATE $table SET $columnId = $id WHERE $columnId = $id');
   }
 
   // Deletes the row specified by the id. The number of affected rows is
   // returned. This should be 1 as long as the row exists.
   Future<int> delete(int id) async {
-    return await _database.delete(table, where: '$columnId = ?', whereArgs: [id]);
+    return await _database
+        .delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
   // Clears db
