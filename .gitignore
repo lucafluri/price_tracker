@@ -46,4 +46,3 @@ app.*.map.json
 #Keystore Android
 key.jks
 key.properties
-CHANGELOG.md
