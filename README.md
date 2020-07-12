@@ -15,7 +15,7 @@ Price Tracker App built with Flutter.
 
 **This is a Work in Progress**
 
-With this application one can track the prices of several stores including digitec.ch and galaxus.ch ([Known Supported Stores](#known-supported-online-stores)).
+With this application one can track the prices of several stores including digitec.ch and galaxus.ch ([Known Supported Stores](#known-supported-online-stores)).  
 The app runs a background service and updates prices once per day. Users will then be notified if prices dropped.
 
 

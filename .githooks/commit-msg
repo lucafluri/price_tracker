@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+"""
+Git commit hook:
+    .git/hooks/commit-msg
+    Check commit message according to guidelines
+"""
+
+import sys
+import re
+
+REGEX = '^(feat|fix|docs|style|refactor|test|build|ci|perf)(\(.+\))?\:\s(.{3,})' 
+
+GUIDELINE_LINK = 'https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit' 
+
+with open(sys.argv[1]) as commit:
+    lines = commit.readlines()
+    if len(lines) == 0:
+        sys.stderr.write("\nEmpty commit message\n")
+        sys.exit(1)
+
+    match_regex = re.match('({})'.format(REGEX), lines[0])
+
+    if match_regex is None:
+        sys.stderr.write("\nYour commit message subject line does not follow the guideline\n")
+        sys.stderr.write("\n - Refer commit guideline: {}\n\n".format(GUIDELINE_LINK))
+        sys.exit(1)
+
+    sys.stderr.write("\nYour commit message looks good! \n\n")
+sys.exit(0)
