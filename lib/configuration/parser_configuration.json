@@ -115,7 +115,7 @@
             "name": [{
                 "path": "//*[@id='pageHeader']/div[1]/div/div[2]/div[1]/h1",
                 "regex": {
-                    "pattern": ">(.*)<",
+                    "pattern": ">\\s*(.*)\\s*<",
                     "remove": "",
                     "group": 1
                 }
@@ -131,6 +131,44 @@
             ],
             "image": [{
                     "path": "//*[@id='currentPicture']",
+                    "regex": {
+                        "attribute": "src",
+                        "pattern": "src=\"(\\S*)\"",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ]
+        },
+        "exlibris.ch": {
+            "xpath": "true",
+            "name": [{
+                "path": "//*[@id='nameStructural']",
+                "regex": {
+                    "pattern": ">\\s*(.*)\\s*<",
+                    "remove": "",
+                    "group": 1
+                }
+            }],
+            "price": [{
+                    "path": "//*[@id='offersStructural']/div/span[2]/span[2]",
+                    "regex": {
+                        "pattern": ">\\s*(\\d+[,.]?[\\d]*)\\s*<",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "//*[@id='offersStructural']/div/span/span[2]",
+                    "regex": {
+                        "pattern": ">\\s*(\\d+[,.]?[\\d]*)\\s*<",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ],
+            "image": [{
+                    "path": "//*[@id='coverUrlStructural']",
                     "regex": {
                         "attribute": "src",
                         "pattern": "src=\"(\\S*)\"",

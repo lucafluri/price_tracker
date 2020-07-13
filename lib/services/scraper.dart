@@ -15,6 +15,7 @@ import 'package:price_tracker/services/parsers/abstract_parser.dart';
 class ScraperService {
   // HTTP GET Response Timout in seconds
   static const RESPONSE_TIMOUT = 15;
+  static const USE_LOCAL_CONF_FILE = false;
 
   static final parseInfoURL =
       "https://raw.githubusercontent.com/lucafluri/price_tracker/dev/lib/configuration/parser_configuration.json";
@@ -45,17 +46,20 @@ class ScraperService {
 
   static Future<void> getParserInfo() async {
     // Load PARSE_INFO from Github or local fallback copy if something fails
-    try {
-      Response response =
-          await ScraperService.instance.getResponse(parseInfoURL);
-      if (response == null) throw Exception();
-      parserConf = jsonDecode(response.body);
-      print("Loaded newest parser_configuration from Github");
-    } catch (e) {
-      print("PARSER_CONFIGURATION GET ERROR --- LOADING LOCAL FILE");
-      parserConf = jsonDecode(await loadFallbackParseInfo());
-    }
-    // parserConf = jsonDecode(await loadFallbackParseInfo());
+    if (!USE_LOCAL_CONF_FILE) {
+      try {
+        Response response =
+            await ScraperService.instance.getResponse(parseInfoURL);
+        if (response == null) throw Exception();
+        parserConf = jsonDecode(response.body);
+        print("Loaded newest parser_configuration from Github");
+      } catch (e) {
+        print("PARSER_CONFIGURATION GET ERROR --- LOADING LOCAL FILE");
+        parserConf = jsonDecode(await loadFallbackParseInfo());
+      }
+    } else
+      print("Loaded local parser_configuration");
+    parserConf = jsonDecode(await loadFallbackParseInfo());
 
     //Set possible domains var
     parseableDomains = parserConf["domains"].keys.toList();
@@ -104,18 +108,25 @@ class ScraperService {
   // Null if no JSON-LD Structured Data is available
   static dynamic getStructuredDataJSON(Response r) {
     Document doc = ScraperService.getDOM(r);
+    try {
+      // Find Product JSON-LD
+      var jsonElements =
+          doc.querySelectorAll('script[type="application/ld+json"]');
+      if (jsonElements.isNotEmpty) {
+        for (var el in jsonElements) {
+          if (el.innerHtml.isEmpty) continue;
 
-    // Find Product JSON-LD
-    var jsonElements =
-        doc.querySelectorAll('script[type="application/ld+json"]');
-    if (jsonElements.isNotEmpty) {
-      for (var el in jsonElements) {
-        dynamic json = jsonDecode(el.innerHtml);
-        if (json["@type"] != null && json["@type"] == "Product") {
-          return json;
+          dynamic json = jsonDecode(el.innerHtml);
+          if (json["@type"] != null && json["@type"] == "Product") {
+            return json;
+          }
         }
       }
+    } catch (e) {
+      print(e.toString());
+      return null;
     }
+
     return null;
   }
 
@@ -167,6 +178,11 @@ class ScraperService {
 
   static void test(String url) async {
     Parser parser = await ScraperService.instance.getParser(url);
+    if (parser == null) {
+      debugPrint("Parser get Failed!");
+      return;
+    }
+
     debugPrint(parser.getName().toString());
     debugPrint(parser.getPrice().toString());
     debugPrint(parser.getImage().toString());
