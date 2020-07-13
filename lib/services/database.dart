@@ -68,7 +68,7 @@ class DatabaseService {
             $columnPrices TEXT,
             $columnDates TEXT,
             $columnTargetPrice TEXT,
-            $columnImageUrl TEXT
+            $columnImageUrl TEXT,
             $columnParseSuccess TEXT
           )
           ''');
