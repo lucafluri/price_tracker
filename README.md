@@ -30,6 +30,7 @@ The app runs a background service and updates prices once per day. Users will th
 ## Known Supported Online Stores
 - digitec.ch, galaxus.ch
 - brack.ch
+- exlibris.ch
 - melectronics.ch
 - ikea.com
 - distrelec.ch (and derivatives)
