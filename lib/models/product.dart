@@ -28,6 +28,8 @@ class Product {
   bool get parseSuccess => _parseSuccess;
   set parseSuccess(bool newVal) => this._parseSuccess = newVal;
 
+  var formatter = new DateFormat('yyyy-MM-dd');
+
   @override
   bool operator ==(o) =>
       o is Product && o.productUrl == productUrl && o.name == name;
@@ -51,7 +53,6 @@ class Product {
       return false;
     } else {
       this.name = parsedName;
-      var formatter = new DateFormat('yyyy-MM-dd');
 
       // Save only 1 Entry per day
       if (this._dates.length > 0) {
