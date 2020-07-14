@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.3"
-  after_layout:
-    dependency: "direct main"
-    description:
-      name: after_layout
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.7+2"
   animations:
     dependency: transitive
     description:
@@ -127,6 +120,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.3"
+  double_back_to_close_app:
+    dependency: "direct main"
+    description:
+      name: double_back_to_close_app
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   file:
     dependency: transitive
     description:
@@ -191,13 +191,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  frefresh:
-    dependency: "direct main"
-    description:
-      name: frefresh
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   html:
     dependency: "direct main"
     description:

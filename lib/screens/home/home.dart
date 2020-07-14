@@ -1,3 +1,4 @@
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
@@ -85,60 +86,67 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Container(
-        child: ScrollConfiguration(
-          behavior: EmptyScrollBehavior(),
-          child: SingleChildScrollView(
-            controller: state.listviewController,
-            child: Column(
-              children: <Widget>[
-                if (state.refreshing)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Center(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(state.refreshingText),
-                        Container(
-                          width: 20,
-                        ),
-                        CircularProgressIndicator(
-                          backgroundColor: Colors.grey[800],
-                          value: reloadProgress,
-                        ),
-                      ],
-                    )),
-                  ),
-                if (state.loading)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                ListView.separated(
-                  physics: ClampingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: state.products.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      Divider(height: 1.0),
-                  itemBuilder: (BuildContext context, int index) {
-                    return ProductListTile(
-                      product: state.products[index],
-                      onDelete: () =>
-                          state.deleteProduct(state.products[index]),
-                    );
-                  },
-                ),
-                Container(
-                  height: 70,
-                  child: Visibility(
-                    visible: state.productCount != null,
-                    child: Center(
-                      child: Text("${state.productCount} tracked products"),
+      body: DoubleBackToCloseApp(
+        snackBar: const SnackBar(
+          content: Text('Tap back again to leave',
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.black87,
+        ),
+        child: Container(
+          child: ScrollConfiguration(
+            behavior: EmptyScrollBehavior(),
+            child: SingleChildScrollView(
+              controller: state.listviewController,
+              child: Column(
+                children: <Widget>[
+                  if (state.refreshing)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Center(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(state.refreshingText),
+                          Container(
+                            width: 20,
+                          ),
+                          CircularProgressIndicator(
+                            backgroundColor: Colors.grey[800],
+                            value: reloadProgress,
+                          ),
+                        ],
+                      )),
                     ),
+                  if (state.loading)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  ListView.separated(
+                    physics: ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: state.products.length,
+                    separatorBuilder: (BuildContext context, int index) =>
+                        Divider(height: 1.0),
+                    itemBuilder: (BuildContext context, int index) {
+                      return ProductListTile(
+                        product: state.products[index],
+                        onDelete: () =>
+                            state.deleteProduct(state.products[index]),
+                      );
+                    },
                   ),
-                )
-              ],
+                  Container(
+                    height: 70,
+                    child: Visibility(
+                      visible: state.productCount != null,
+                      child: Center(
+                        child: Text("${state.productCount} tracked products"),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
