@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:price_tracker/models/product.dart';
+import 'package:price_tracker/services/product_utils.dart';
 
 // Product Class Unit Tests
 void main() {
@@ -150,16 +151,16 @@ void main() {
 
     group('roundToPlace', () {
       test('round int', () {
-        expect(p.roundToPlace(1, 2), 1);
+        expect(roundToPlace(1, 2), 1);
       });
       test('round double down', () {
-        expect(p.roundToPlace(1.1234, 2), 1.12);
+        expect(roundToPlace(1.1234, 2), 1.12);
       });
       test('round double ', () {
-        expect(p.roundToPlace(1.255, 2), 1.25);
+        expect(roundToPlace(1.255, 2), 1.25);
       });
       test('round double up', () {
-        expect(p.roundToPlace(1.256, 2), 1.26);
+        expect(roundToPlace(1.256, 2), 1.26);
       });
     });
 

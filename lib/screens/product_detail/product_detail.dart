@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
+import 'package:price_tracker/services/product_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -32,7 +33,7 @@ class _ProductDetailState extends State<ProductDetail> {
 
     Product p = await _db.getProduct(widget.product.id);
     setTarget = p.targetPrice >= 0;
-    canSetTarget = p.prices[p.prices.length - 1] > 0;
+    canSetTarget = p.latestPrice > 0;
     if (setTarget) {
       _targetInputController.text = p.targetPrice.toString();
       validTarget = true;
@@ -212,8 +213,10 @@ class _ProductDetailState extends State<ProductDetail> {
                                       await DatabaseService.getInstance();
 
                                   if (validTarget) {
-                                    product.targetPrice =
-                                        double.parse(value).abs();
+                                    product.targetPrice = roundToPlace(
+                                        double.parse(value).abs(), 2);
+                                    _targetInputController.text =
+                                        product.targetPrice.toString();
                                     await _db.update(product);
                                   } else {
                                     _targetInputController.text =

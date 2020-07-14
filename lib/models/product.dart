@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
+import 'package:price_tracker/services/product_utils.dart';
 import 'package:price_tracker/services/scraper.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -134,11 +133,6 @@ class Product {
     return this.name.length > numChars
         ? this.name.substring(0, numChars) + "..."
         : this.name;
-  }
-
-  double roundToPlace(double d, int places) {
-    double mod = pow(10.0, places);
-    return ((d * mod).round().toDouble() / mod);
   }
 
   bool priceFall() {

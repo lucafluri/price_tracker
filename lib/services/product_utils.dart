@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/product_detail/product_detail.dart';
 import 'package:price_tracker/services/database.dart';
@@ -6,6 +8,11 @@ import 'package:price_tracker/services/init.dart';
 import 'package:price_tracker/services/notifications.dart';
 
 double reloadProgress;
+
+double roundToPlace(double d, int places) {
+  double mod = pow(10.0, places);
+  return ((d * mod).round().toDouble() / mod);
+}
 
 //Returns number of products that fell under the set target
 Future<int> countFailedParsing() async {
