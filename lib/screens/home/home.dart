@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
+import 'package:price_tracker/services/backup.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
@@ -99,6 +100,35 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
               controller: state.listviewController,
               child: Column(
                 children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      MaterialButton(
+                          color: Colors.green,
+                          child: Text("Backup"),
+                          onPressed: () async {
+                            BackupService.instance.backup();
+                          }),
+                      Container(
+                        width: 20,
+                      ),
+                      MaterialButton(
+                          color: Colors.blue,
+                          child: Text("Restore"),
+                          onPressed: () async {
+                            BackupService.instance.restore();
+                          }),
+                      Container(
+                        width: 20,
+                      ),
+                      MaterialButton(
+                          color: Colors.redAccent,
+                          child: Text("DELETE DB"),
+                          onPressed: () async {
+                            BackupService.instance.clearDB();
+                          }),
+                    ],
+                  ),
                   if (state.refreshing)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),

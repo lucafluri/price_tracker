@@ -81,9 +81,8 @@ class DatabaseService {
   /// returns id of the inserted product or -1 if already present
   Future<int> insert(Product product) async {
     // First check, whether the movie already exists:
-    final Product exists = await getProduct(product.id);
     final bool duplicate = await contains(product);
-    if (exists != null || duplicate) {
+    if (duplicate) {
       print('Product ${product.id} already exists in db');
       return -1;
     } else {
