@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
-import 'package:price_tracker/services/notifications.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
@@ -33,8 +32,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
         if (NOTIFICATION_TEST_BUTTON)
           IconButton(
             icon: Icon(Icons.speaker_notes),
-            onPressed: () => NotificationService.sendPushNotification(
-                0, "test", "test body"),
+            onPressed: () => state.testNotification(),
             color: Colors.redAccent,
           ),
         if (BACKGROUND_TEST_BUTTON)
