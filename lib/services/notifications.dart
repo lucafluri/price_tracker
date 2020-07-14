@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:price_tracker/services/init.dart';
+import 'package:price_tracker/services/product_utils.dart';
+
 import 'package:rxdart/subjects.dart';
 
 class NotificationService {
   static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
-
+  static String currentPayload;
   NotificationService._privateConstructor();
 
   static final NotificationService _instance =
@@ -35,22 +38,47 @@ class NotificationService {
         onSelectNotification: (String payload) async {
       if (payload != null) {
         debugPrint('notification payload: ' + payload);
+        currentPayload = payload;
+
+        // If state is mounted, the app is in memory,
+        // else the app starts and the callback gets triggered in the home view
+        if (navigatorKey.currentState.mounted) notificationTapCallback(payload);
       }
       selectNotificationSubject.add(payload);
     });
   }
 
-  static Future<void> sendPushNotification(
-      int id, String title, String body) async {
+  static Future<void> sendAlertPushNotificationSmall(
+      int id, String title, String body,
+      {String payload = ""}) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
+        '0', 'Price Alerts', 'Price change alerts for tracked products',
         importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await _flutterLocalNotificationsPlugin
-        .show(id, title, body, platformChannelSpecifics, payload: 'item x');
+        .show(id, title, body, platformChannelSpecifics, payload: payload);
+
+    print("Push notifications was sent!");
+  }
+
+  static Future<void> sendAlertPushNotificationBig(
+      int id, String title, String body,
+      {String payload = ""}) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        '0', 'Price Alerts', 'Price change alerts for tracked products',
+        importance: Importance.Max,
+        priority: Priority.High,
+        ticker: 'ticker',
+        styleInformation: BigTextStyleInformation(body));
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    await _flutterLocalNotificationsPlugin
+        .show(id, title, body, platformChannelSpecifics, payload: payload);
 
     print("Push notifications was sent!");
   }

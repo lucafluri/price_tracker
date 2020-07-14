@@ -403,7 +403,7 @@ void main() {
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
-        expect(p.percentageToYesterday(), -50.0);
+        expect(p.percentageToYesterday(), 50.0);
       });
 
       test('100 -> 200 -> 100', () {
@@ -411,7 +411,7 @@ void main() {
         productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
-        expect(p.percentageToYesterday(), -50.0);
+        expect(p.percentageToYesterday(), 50.0);
       });
 
       test('100 -> 200 -> 220', () {
@@ -427,7 +427,7 @@ void main() {
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
-        expect(p.percentageToYesterday(), -21.45);
+        expect(p.percentageToYesterday(), 21.45);
       });
     });
   });

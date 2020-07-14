@@ -28,6 +28,8 @@ class Product {
   bool get parseSuccess => _parseSuccess;
   set parseSuccess(bool newVal) => this._parseSuccess = newVal;
 
+  double get latestPrice => _prices[_prices.length - 1];
+
   var formatter = new DateFormat('yyyy-MM-dd');
 
   @override
@@ -185,6 +187,8 @@ class Product {
     return roundToPlace(last - secondLast, 2);
   }
 
+  // Returns the saved price percentage
+  // e.g. 200 -> 100 = 50.0
   double percentageToYesterday() {
     int length = prices.length;
 
@@ -193,7 +197,7 @@ class Product {
     double last = prices[length - 1];
     double secondLast = prices[length - 2];
 
-    return roundToPlace((1 - (last / secondLast)) * -100, 2);
+    return (roundToPlace((1 - (last / secondLast)).abs() * 100, 2));
   }
 
   List<double> prices2List(String prices) {
