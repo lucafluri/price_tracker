@@ -3,7 +3,7 @@ import 'package:price_tracker/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:price_tracker/services/notifications.dart';
 
-double progress;
+double reloadProgress;
 
 Future<int> countPriceFall() async {
   final _db = await DatabaseService.getInstance();
@@ -13,15 +13,15 @@ Future<int> countPriceFall() async {
   int count = 0;
 
   for (int i = 0; i < products.length; i++) {
-    //Check difference to yesterday
-    if (products[i].prices.length > 1) {
-      if (products[i].prices[products[i].prices.length - 1] <
-          products[i].prices[products[i].prices.length - 2]) {
-        if (products[i].prices[products[i].prices.length - 1] != -1) count++;
-      }
-      // Has a price > 0. => count as cheaper since it is has price again
-      else if (products[i].prices[products[i].prices.length - 2] == -1 &&
-          products[i].prices[products[i].prices.length - 1] > 0) count++;
+    if (products[i].priceFall()) {
+      count++;
+
+      debugPrint(products[i].name);
+      debugPrint(
+          "Price diff: " + products[i].priceDifferenceToYesterday().toString());
+      debugPrint(
+          "Percentage: " + products[i].percentageToYesterday().toString());
+      debugPrint("Available again: " + products[i].availableAgain().toString());
     }
   }
   return count;
@@ -36,12 +36,7 @@ Future<int> countPriceUnderTarget() async {
   int count = 0;
 
   for (int i = 0; i < products.length; i++) {
-    //Target Price
-    if (products[i].prices[products[i].prices.length - 1] <=
-        products[i].targetPrice) {
-      // debugPrint(products[i].name.substring(0, 20) + " is under Target of ${products[i].targetPrice}");
-      if (products[i].prices[products[i].prices.length - 1] != -1) count++;
-    }
+    if (products[i].underTarget()) count++;
   }
   return count;
 }
@@ -70,7 +65,7 @@ Future<void> updatePrices(Function perUpdate, {test: false}) async {
   for (int i = 0; i < products.length; i++) {
     await products[i].update(test: test);
     await _db.update(products[i]);
-    progress = i / products.length;
+    reloadProgress = i / products.length;
     perUpdate();
   }
 
@@ -105,5 +100,5 @@ Future<void> updatePrices(Function perUpdate, {test: false}) async {
     }
   }
 
-  progress = null;
+  reloadProgress = null;
 }

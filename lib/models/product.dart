@@ -138,6 +138,63 @@ class Product {
     return ((d * mod).round().toDouble() / mod);
   }
 
+  bool priceFall() {
+    int length = prices.length;
+
+    if (length <= 1) return false;
+
+    double last = prices[length - 1];
+    double secondLast = prices[length - 2];
+
+    if (last < secondLast && last != -1) return true;
+    return false;
+  }
+
+  bool availableAgain() {
+    int length = prices.length;
+
+    if (length <= 1) return false;
+
+    double last = prices[length - 1];
+    double secondLast = prices[length - 2];
+
+    if (secondLast == -1 && last != -1) return true;
+    return false;
+  }
+
+  bool underTarget() {
+    int length = prices.length;
+
+    if (length == 0) return false;
+
+    double last = prices[length - 1];
+
+    if (last < targetPrice && last != -1) return true;
+    return false;
+  }
+
+  double priceDifferenceToYesterday() {
+    int length = prices.length;
+
+    if (length <= 1) return 0;
+
+    double last = prices[length - 1];
+    double secondLast = prices[length - 2];
+
+    return roundToPlace(last - secondLast, 2);
+  }
+
+  double percentageToYesterday() {
+    int length = prices.length;
+
+    if (length <= 1) return 0;
+
+    double last = prices[length - 1];
+    double secondLast = prices[length - 2];
+
+    return roundToPlace((1 - (last / secondLast)) * -100, 2);
+  }
+
   List<double> prices2List(String prices) {
     if (prices == "null" || prices == "[]" || prices == null) return [];
     try {

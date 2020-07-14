@@ -1,9 +1,7 @@
 import 'dart:async';
 
-
 import 'package:price_tracker/services/init.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-
 
 class ShareIntentService {
   // ignore: cancel_subscriptions
@@ -37,6 +35,4 @@ class ShareIntentService {
       print("Shared: $sharedText");
     });
   }
-
-
 }
