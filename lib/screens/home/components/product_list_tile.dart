@@ -30,13 +30,14 @@ class ProductListTile extends StatelessWidget {
         ? Colors.transparent
         : _priceDifference < 0 ? Colors.green[800] : Colors.red[900];
 
-    Color _targetColor = _priceDifference < 0 || _priceDifference > 0
-        ? Colors.black87
-        : Colors.grey;
+    Color _targetColor =
+        _priceDifference < 0 || _priceDifference > 0 || _underTarget
+            ? Colors.black87
+            : Colors.grey;
 
     Color _titleColor = product.parseSuccess ? Colors.white : Colors.red;
 
-    Color _storeColor = _underTarget ? Colors.black54 : Colors.grey;
+    Color _storeColor = _underTarget ? Colors.black87 : Colors.grey;
 
     bool _showTargetPrice = product.targetPrice > 0;
 
