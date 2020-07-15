@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
@@ -106,9 +108,11 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                     onTap: () => state.testAvailableAgainNotification(),
                   ),
                   SettingsTile(
-                    title: 'Test Background Service',
+                    title: 'Test Background Service (Android Only)',
                     leading: Icon(Icons.warning),
-                    onTap: () => state.testBackgroundService(),
+                    onTap: () {
+                      if (Platform.isAndroid) state.testBackgroundService();
+                    },
                   ),
                 ],
               ),
