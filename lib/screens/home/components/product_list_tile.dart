@@ -35,7 +35,9 @@ class ProductListTile extends StatelessWidget {
             ? Colors.black87
             : Colors.grey;
 
-    Color _titleColor = product.parseSuccess ? Colors.white : Colors.red;
+    Color _titleColor = refreshing
+        ? Colors.grey
+        : product.parseSuccess ? Colors.white : Colors.red;
 
     Color _storeColor = _underTarget ? Colors.black87 : Colors.grey;
 
