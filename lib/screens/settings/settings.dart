@@ -54,15 +54,14 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                     title: 'Backup',
                     subtitle: 'Save Backup File',
                     leading: Icon(Icons.backup),
-                    onTap: () async {
-                      await BackupService.instance.backup();
+                    onTap: () {
+                      BackupService.instance.backup();
                       state.showToast("Backup file saved");
                     },
                   ),
                   SettingsTile(
                     title: 'Restore',
-                    subtitle:
-                        'Restore from Backup File - loads all products into database',
+                    subtitle: 'Restore from Backup File',
                     leading: Icon(Icons.cloud_download),
                     onTap: () async {
                       await BackupService.instance.restore();
@@ -90,29 +89,38 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                   SettingsTile(
                     title: 'Clear DB',
                     leading: Icon(Icons.warning),
-                    onTap: () => state.clearDB(),
+                    onTap: () {
+                      state.clearDB();
+                    },
                   ),
                   SettingsTile(
                     title: 'Test Notification (Price Fall)',
                     leading: Icon(Icons.warning),
-                    onTap: () => state.testPriceFallNotification(),
+                    onTap: () {
+                      state.testPriceFallNotification();
+                    },
                   ),
                   SettingsTile(
                     title: 'Test Notification (Under Target)',
                     leading: Icon(Icons.warning),
-                    onTap: () => state.testUnderTargetNotification(),
+                    onTap: () {
+                      state.testUnderTargetNotification();
+                    },
                   ),
                   SettingsTile(
                     title: 'Test Notification (Available Again)',
                     leading: Icon(Icons.warning),
-                    onTap: () => state.testAvailableAgainNotification(),
+                    onTap: () {
+                      state.testAvailableAgainNotification();
+                    },
                   ),
                   SettingsTile(
                     title: 'Test Background Service (Android Only)',
                     leading: Icon(Icons.warning),
                     onTap: () {
-                      if (Platform.isAndroid) state.testBackgroundService();
+                      state.testBackgroundService();
                     },
+                    enabled: Platform.isAndroid,
                   ),
                 ],
               ),
@@ -121,27 +129,35 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                 tiles: [
                   SettingsTile(
                     title: 'Luca Fluri',
-                    subtitle: '@lucafluri, lucafluri.ch',
+                    subtitle: '@lucafluri',
                     leading: Icon(Icons.person),
-                    onTap: () => launchUrl("https://www.lucafluri.ch"),
+                    onTap: () {
+                      launchUrl("https://www.lucafluri.ch");
+                    },
                   ),
                   SettingsTile(
                     title: 'Andreas Ambühl',
-                    subtitle: '@AndiSwiss, andiswiss.ch',
+                    subtitle: '@AndiSwiss',
                     leading: Icon(Icons.person_outline),
-                    onTap: () => launchUrl("https://andiswiss.ch/"),
+                    onTap: () {
+                      launchUrl("https://andiswiss.ch/");
+                    },
                   ),
                   SettingsTile(
                     title: 'Dario Breitenstein',
-                    subtitle: '@chdabre, imakethings.ch',
+                    subtitle: '@chdabre',
                     leading: Icon(Icons.person_outline),
-                    onTap: () => launchUrl("https://www.imakethings.ch/"),
+                    onTap: () {
+                      launchUrl("https://www.imakethings.ch/");
+                    },
                   ),
                   SettingsTile(
                     title: 'Marc Schnydrig',
                     subtitle: '@marcschny',
                     leading: Icon(Icons.person_outline),
-                    onTap: () => launchUrl("https://github.com/marcschny"),
+                    onTap: () {
+                      launchUrl("https://github.com/marcschny");
+                    },
                   ),
                 ],
               ),

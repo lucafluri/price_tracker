@@ -32,19 +32,19 @@ class Settings extends State<SettingsScreen> {
     showToast("Database cleared!");
   }
 
-  testPriceFallNotification() {
+  void testPriceFallNotification() {
     sendPriceFallNotification(testProduct);
   }
 
-  testUnderTargetNotification() {
+  void testUnderTargetNotification() {
     sendUnderTargetNotification(testProduct);
   }
 
-  testAvailableAgainNotification() {
+  void testAvailableAgainNotification() {
     sendAvailableAgainNotification(testProduct);
   }
 
-  testBackgroundService() {
+  void testBackgroundService() {
     Workmanager.registerOneOffTask(
         "manualPriceScraping", "Manual Price Tracker Scraper");
   }
