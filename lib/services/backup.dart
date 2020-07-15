@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/services/database.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:price_tracker/services/init.dart';
 
 class BackupService {
   BackupService._privateConstructor();
@@ -66,11 +65,6 @@ class BackupService {
   restore() async {
     DatabaseService _db = await DatabaseService.getInstance();
 
-    // File file = await FilePicker.getFile(
-    //   type: FileType.custom,
-    //   allowedExtensions: [".pt"],
-    // );
-
     final params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
       sourceType: SourceType.photoLibrary,
@@ -86,28 +80,25 @@ class BackupService {
       debugPrint("ERROR Getting File");
       return;
     }
+
     String string;
+
     try {
       string = await file.readAsString();
     } catch (e) {
       debugPrint("Can't read file as string!");
       return;
     }
+
     List<Product> products = _buildProducts(string);
+
     if (products == null) {
       debugPrint("Error building Products");
       return;
     }
+
     for (Product p in products) {
       await _db.insert(p);
     }
-
-    navigatorKey.currentState.pushNamedAndRemoveUntil("/", (route) => false);
-  }
-
-  clearDB() async {
-    DatabaseService _db = await DatabaseService.getInstance();
-    await _db.deleteAll();
-    navigatorKey.currentState.pushNamedAndRemoveUntil("/", (route) => false);
   }
 }

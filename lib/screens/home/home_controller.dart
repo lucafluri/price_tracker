@@ -17,7 +17,6 @@ class HomeScreenController extends State<HomeScreen> {
   ScrollController listviewController;
 
   bool loading = false;
-  bool refreshing = false;
   String refreshingText = "Refreshing Prices";
   List<Product> products = <Product>[];
   bool iConnectivity = true;
@@ -201,24 +200,6 @@ class HomeScreenController extends State<HomeScreen> {
   Future<void> scrollToTop() async {
     listviewController.animateTo(listviewController.position.minScrollExtent,
         curve: Curves.easeInOut, duration: Duration(milliseconds: 1000));
-  }
-
-  testNotification() {
-    Product p = Product.fromMap({
-      "_id": 5,
-      "name": "Apple iPad (10.2-inch, WiFi, 32GB) - Gold (latest model)",
-      "productUrl": "testUrl.com",
-      "prices": "[-1.0, 269.0, 260.0]",
-      "dates":
-          "[2020-07-02 00:00:00.000, 2020-07-03 15:43:12.345, 2020-07-04 04:00:45.000]",
-      "targetPrice": "261.0",
-      "imageUrl": "",
-      "parseSuccess": "true",
-    });
-    // Only one can be send at a time (same id)
-    sendPriceFallNotification(p);
-    // sendUnderTargetNotification(p);
-    // sendAvailableAgainNotification(p);
   }
 
   @override

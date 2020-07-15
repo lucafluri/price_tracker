@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
-import 'package:price_tracker/services/backup.dart';
+import 'package:price_tracker/screens/settings/settings_controller.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:toast/toast.dart';
-import 'package:workmanager/workmanager.dart';
-
-/// Set this to 'true' if you want to have a red button to create a test-notification:
-const NOTIFICATION_TEST_BUTTON = false;
-const BACKGROUND_TEST_BUTTON = false;
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -28,27 +23,14 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
       brightness: Brightness.dark,
       backgroundColor: Colors.transparent,
       iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-      title: Text('Price Tracker BETA',
+      title: Text(Settings.APP_NAME,
           style: TextStyle(color: Theme.of(context).primaryColor)),
       actions: <Widget>[
-        if (NOTIFICATION_TEST_BUTTON)
-          IconButton(
-            icon: Icon(Icons.speaker_notes),
-            onPressed: () => state.testNotification(),
-            color: Colors.redAccent,
-          ),
-        if (BACKGROUND_TEST_BUTTON)
-          IconButton(
-            icon: Icon(Icons.cloud_download),
-            onPressed: () => Workmanager.registerOneOffTask(
-                "manualPriceScraping", "Manual Price Tracker Scraper"),
-            color: Colors.redAccent,
-          ),
         // Show Reload Button if internet connection avialable or internet error icon if not
         state.iConnectivity
             ? IconButton(
                 icon: Icon(Icons.refresh),
-                onPressed: () => state.onRefresh(),
+                onPressed: refreshing ? null : () => state.onRefresh(),
               )
             : IconButton(
                 icon: Icon(
@@ -57,13 +39,12 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                 ),
                 onPressed: () => state.checkInternet(),
               ),
+
         IconButton(
-          icon: Icon(Icons.help_outline),
-          onPressed: () => Navigator.of(context).pushNamed("/intro"),
-        ),
-        IconButton(
-          icon: Icon(Icons.description),
-          onPressed: () => Navigator.of(context).pushNamed("/credits"),
+          icon: Icon(Icons.settings),
+          onPressed: refreshing
+              ? null
+              : () => Navigator.of(context).pushNamed("/settings"),
         ),
       ],
     );
@@ -78,7 +59,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                   duration: 3, gravity: Toast.BOTTOM);
             },
       tooltip: state.iConnectivity ? 'Add Product' : 'No Internet',
-      backgroundColor: state.iConnectivity ? null : Colors.grey,
+      backgroundColor: state.iConnectivity && !refreshing ? null : Colors.grey,
       child: Icon(Icons.add),
     );
   }
@@ -100,36 +81,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
               controller: state.listviewController,
               child: Column(
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      MaterialButton(
-                          color: Colors.green,
-                          child: Text("Backup"),
-                          onPressed: () async {
-                            BackupService.instance.backup();
-                          }),
-                      Container(
-                        width: 20,
-                      ),
-                      MaterialButton(
-                          color: Colors.blue,
-                          child: Text("Restore"),
-                          onPressed: () async {
-                            BackupService.instance.restore();
-                          }),
-                      Container(
-                        width: 20,
-                      ),
-                      MaterialButton(
-                          color: Colors.redAccent,
-                          child: Text("DELETE DB"),
-                          onPressed: () async {
-                            BackupService.instance.clearDB();
-                          }),
-                    ],
-                  ),
-                  if (state.refreshing)
+                  if (refreshing)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
                       child: Center(
@@ -144,6 +96,9 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                             backgroundColor: Colors.grey[800],
                             value: reloadProgress,
                           ),
+                          MaterialButton(
+                              child: Text("Cancel"),
+                              onPressed: () => cancelReload = true)
                         ],
                       )),
                     ),

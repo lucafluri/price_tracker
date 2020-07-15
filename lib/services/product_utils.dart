@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:price_tracker/services/init.dart';
 import 'package:price_tracker/services/notifications.dart';
 
+bool refreshing = false;
+
 double reloadProgress;
+bool cancelReload = false;
 
 double roundToPlace(double d, int places) {
   double mod = pow(10.0, places);
@@ -36,6 +39,11 @@ Future<void> updatePrices(Function perUpdate, {test: false}) async {
   List<Product> products = await _db.getAllProducts();
 
   for (int i = 0; i < products.length; i++) {
+    if (cancelReload) {
+      cancelReload = false;
+      break;
+    }
+
     double lastPrice = products[i].latestPrice;
     await products[i].update(test: test);
     await _db.update(products[i]);
