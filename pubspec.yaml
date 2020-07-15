@@ -48,6 +48,9 @@ dependencies:
   double_back_to_close_app: ^1.2.0
   flutter_file_dialog: ^0.0.5
   settings_ui: ^0.3.0
+  simple_search_bar: ^0.1.7
+
+
 
 
 

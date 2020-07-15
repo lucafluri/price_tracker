@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/home/components/product_list_tile.dart';
 import 'package:price_tracker/screens/home/home_controller.dart';
+import 'package:simple_search_bar/simple_search_bar.dart';
 import 'package:price_tracker/screens/settings/settings_controller.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:toast/toast.dart';
@@ -18,51 +19,70 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
   HomeScreenView(HomeScreenController state) : super(state);
 
   Widget _buildAppBar(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      brightness: Brightness.dark,
-      backgroundColor: Colors.transparent,
-      iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-      title: Text(Settings.APP_NAME,
-          style: TextStyle(color: Theme.of(context).primaryColor)),
-      actions: <Widget>[
-        // Show Reload Button if internet connection avialable or internet error icon if not
-        state.iConnectivity
-            ? IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: refreshing ? null : () => state.onRefresh(),
-              )
-            : IconButton(
-                icon: Icon(
-                  Icons.signal_wifi_off,
-                  color: Colors.red,
+    return SearchAppBar(
+      primary: Theme.of(context).primaryColor,
+      mainTextColor: Colors.black,
+      appBarController: state.appBarController,
+      searchHint: "Search Product...",
+      onChange: (String value) {
+        // state.searching = true;
+        state.search(value);
+      },
+      mainAppBar: AppBar(
+        elevation: 0,
+        brightness: Brightness.dark,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        title: Text(Settings.APP_NAME,
+            style: TextStyle(color: Theme.of(context).primaryColor)),
+        actions: <Widget>[
+          // Show Reload Button if internet connection avialable or internet error icon if not
+          state.iConnectivity
+              ? IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: refreshing ? null : () => state.onRefresh(),
+                )
+              : IconButton(
+                  icon: Icon(
+                    Icons.signal_wifi_off,
+                    color: Colors.red,
+                  ),
+                  onPressed: () => state.checkInternet(),
                 ),
-                onPressed: () => state.checkInternet(),
-              ),
-
-        IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: refreshing
-              ? null
-              : () => Navigator.of(context).pushNamed("/settings"),
-        ),
-      ],
+          IconButton(
+            icon: Icon(
+              Icons.search,
+            ),
+            onPressed: refreshing ? null : state.onSearch,
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: refreshing
+                ? null
+                : () => Navigator.of(context).pushNamed("/settings"),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildFAB(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: refreshing
-          ? null
-          : state.iConnectivity
-              ? state.addProductDialogue
-              : () {
-                  Toast.show('Please ensure an internet connection', context,
-                      duration: 3, gravity: Toast.BOTTOM);
-                },
-      tooltip: state.iConnectivity ? 'Add Product' : 'No Internet',
-      backgroundColor: state.iConnectivity && !refreshing ? null : Colors.grey,
-      child: Icon(Icons.add),
+    return Visibility(
+      visible: !state.searching,
+      child: FloatingActionButton(
+        onPressed: refreshing
+            ? null
+            : state.iConnectivity
+                ? state.addProductDialogue
+                : () {
+                    Toast.show('Please ensure an internet connection', context,
+                        duration: 3, gravity: Toast.BOTTOM);
+                  },
+        tooltip: state.iConnectivity ? 'Add Product' : 'No Internet',
+        backgroundColor:
+            state.iConnectivity && !refreshing ? null : Colors.grey,
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -128,7 +148,7 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
                     child: Visibility(
                       visible: state.productCount != null,
                       child: Center(
-                        child: Text("${state.productCount} tracked products"),
+                        child: Text(state.productsCountString),
                       ),
                     ),
                   )

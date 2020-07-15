@@ -11,16 +11,27 @@ import 'package:price_tracker/services/notifications.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:price_tracker/services/scraper.dart';
 import 'package:price_tracker/services/share_intent.dart';
+import 'package:simple_search_bar/simple_search_bar.dart';
 import 'package:toast/toast.dart';
 
 class HomeScreenController extends State<HomeScreen> {
   ScrollController listviewController;
+  final AppBarController appBarController = AppBarController();
 
   bool loading = false;
+  bool searching = false;
+
   String refreshingText = "Refreshing Prices";
-  List<Product> products = <Product>[];
+  List<Product> _products = <Product>[];
+  List<Product> _filteredProducts = <Product>[];
   bool iConnectivity = true;
   int productCount;
+
+  List<Product> get products => searching ? _filteredProducts : _products;
+
+  String get productsCountString => products.length > 1 || products.length == 0
+      ? productCount.toString() + " products"
+      : "1 product";
 
   @override
   void initState() {
@@ -35,6 +46,10 @@ class HomeScreenController extends State<HomeScreen> {
     await _checkForNotificationTap();
 
     if (iConnectivity) await _checkForSharedText();
+
+    appBarController.stream.stream.listen((searching) {
+      this.searching = searching;
+    });
   }
 
   @override
@@ -88,16 +103,15 @@ class HomeScreenController extends State<HomeScreen> {
 
   Future<void> _loadProducts() async {
     loading = true;
-    // setState(() {});
 
     final _db = await DatabaseService.getInstance();
 
     await _db.getAllProducts().then((value) {
-      products = value;
-      products = products.reversed.toList();
+      _products = value.reversed.toList();
+      _filteredProducts = _products;
       loading = false;
       refreshing = false;
-      productCount = products.length;
+      productCount = _filteredProducts.length;
     });
     setState(() {});
   }
@@ -119,11 +133,6 @@ class HomeScreenController extends State<HomeScreen> {
           (!validURL
               ? "No valid Product Link or unsupported Store Link found in the Clipboard!"
               : "Valid Link pasted from the Clipboard!"),
-      // message: "Paste Link to Product. \n\nSupported Stores:\n" +
-      //     ScraperService.parseableDomains
-      //         .toString()
-      //         .replaceAll("[", "")
-      //         .replaceAll("]", ""),
     ));
     input = inputs != null ? inputs[0] : inputs;
 
@@ -200,6 +209,22 @@ class HomeScreenController extends State<HomeScreen> {
   Future<void> scrollToTop() async {
     listviewController.animateTo(listviewController.position.minScrollExtent,
         curve: Curves.easeInOut, duration: Duration(milliseconds: 1000));
+  }
+
+  onSearch() {
+    //This is where You change to SEARCH MODE. To hide, just
+    //add FALSE as value on the stream
+    setState(() {
+      appBarController.state = true;
+    });
+    appBarController.stream.add(true);
+  }
+
+  search(String s) {
+    _filteredProducts = filterProducts(_products, s).toList();
+    setState(() {
+      productCount = _filteredProducts.length;
+    });
   }
 
   @override

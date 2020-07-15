@@ -113,3 +113,12 @@ checkAndSendNotifications(Product p) {
       sendPriceFallNotification(p);
   } else if (p.availableAgain()) sendAvailableAgainNotification(p);
 }
+
+List<Product> filterProducts(List<Product> products, String searchTerm) {
+  List<Product> res = List.from(products);
+  if (searchTerm == "") return products;
+
+  res.retainWhere(
+      (prod) => prod.name.toLowerCase().contains(searchTerm.toLowerCase()));
+  return res;
+}
