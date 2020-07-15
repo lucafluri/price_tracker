@@ -54,8 +54,8 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                     title: 'Backup',
                     subtitle: 'Save Backup File',
                     leading: Icon(Icons.backup),
-                    onTap: () {
-                      BackupService.instance.backup();
+                    onTap: () async {
+                      await BackupService.instance.backup();
                       state.showToast("Backup file saved");
                     },
                   ),
