@@ -52,12 +52,14 @@ class HomeScreenView extends WidgetView<HomeScreen, HomeScreenController> {
 
   Widget _buildFAB(BuildContext context) {
     return FloatingActionButton(
-      onPressed: state.iConnectivity
-          ? state.addProductDialogue
-          : () {
-              Toast.show('Please ensure an internet connection', context,
-                  duration: 3, gravity: Toast.BOTTOM);
-            },
+      onPressed: refreshing
+          ? null
+          : state.iConnectivity
+              ? state.addProductDialogue
+              : () {
+                  Toast.show('Please ensure an internet connection', context,
+                      duration: 3, gravity: Toast.BOTTOM);
+                },
       tooltip: state.iConnectivity ? 'Add Product' : 'No Internet',
       backgroundColor: state.iConnectivity && !refreshing ? null : Colors.grey,
       child: Icon(Icons.add),

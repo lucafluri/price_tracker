@@ -134,7 +134,6 @@ class ProductListTile extends StatelessWidget {
       child: Container(
         color: _underTarget ? Colors.green[800] : Colors.transparent,
         child: ListTile(
-          enabled: refreshing,
           title: Text(
             product.getShortName(),
             overflow: TextOverflow.ellipsis,
@@ -149,8 +148,8 @@ class ProductListTile extends StatelessWidget {
           leading: _buildLeadingImage(),
           trailing: _buildTrailing(),
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          onTap: _onTap,
-          onLongPress: _onLongPress,
+          onTap: refreshing ? null : _onTap,
+          onLongPress: refreshing ? null : _onLongPress,
         ),
       ),
       actions: <Widget>[
