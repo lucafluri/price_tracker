@@ -11,7 +11,7 @@ class Settings extends State<SettingsScreen> {
   static const String APP_NAME = "Price Tracker BETA";
 
   Product testProduct = Product.fromMap({
-    "_id": 1,
+    "_id": 0,
     "name":
         "Apple iPad (10.2-inch, WiFi, 32GB) - Gold (latest model) - with extra dolphins",
     "productUrl": "testUrl.com",

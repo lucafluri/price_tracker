@@ -61,9 +61,13 @@ Future<void> updatePrices(Function perUpdate, {test: false}) async {
 
 // Opens the corresponding details view of the product by product id in payload
 Future<void> notificationTapCallback(String payload) async {
-  // get Product by id
-  Product product = await (await DatabaseService.getInstance())
-      .getProduct(payload != "" ? int.parse(payload) : null);
+  DatabaseService _db = await DatabaseService.getInstance();
+  Product product;
+  // get Product by id, if id = 0 => return first (id 0 doesn't exist)
+  if (payload != "0") {
+    product = await _db.getProduct(payload != "" ? int.parse(payload) : null);
+  } else
+    product = await _db.getFirstProduct();
 
   // Clear payload variable
   NotificationService.currentPayload = null;
