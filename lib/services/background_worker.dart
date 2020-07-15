@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:price_tracker/services/notifications.dart';
+//import 'package:price_tracker/services/notifications.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -30,10 +30,10 @@ void _dispatchCallbacks() async {
         try {
           await updatePrices(() {});
           // For testing purpose:
-          NotificationService.sendAlertPushNotificationSmall(
-              3,
-              "Prices have been updated",
-              "We've updated the prices for you in the background");
+//          NotificationService.sendAlertPushNotificationSmall(
+//              3,
+//              "Prices have been updated",
+//              "We've updated the prices for you in the background");
           print("Executed Task");
         } catch (e) {
           debugPrint(e.toString());
