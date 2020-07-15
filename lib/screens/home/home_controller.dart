@@ -7,6 +7,7 @@ import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/home/home.dart';
 import 'package:price_tracker/services/database.dart';
+import 'package:price_tracker/services/notifications.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:price_tracker/services/scraper.dart';
 import 'package:price_tracker/services/share_intent.dart';
@@ -16,7 +17,6 @@ class HomeScreenController extends State<HomeScreen> {
   ScrollController listviewController;
 
   bool loading = false;
-  bool refreshing = false;
   String refreshingText = "Refreshing Prices";
   List<Product> products = <Product>[];
   bool iConnectivity = true;
@@ -32,6 +32,8 @@ class HomeScreenController extends State<HomeScreen> {
   void init() async {
     await _loadProducts();
     await checkInternet();
+    await _checkForNotificationTap();
+
     if (iConnectivity) await _checkForSharedText();
   }
 
@@ -42,11 +44,17 @@ class HomeScreenController extends State<HomeScreen> {
   }
 
   _checkForSharedText() async {
-    if (ShareIntentService.sharedText != null) {
-      String input = ShareIntentService.sharedText;
+    String input = ShareIntentService.sharedText;
+    if (input != null) {
       ShareIntentService.sharedText = null;
-
       await addProduct(input);
+    }
+  }
+
+  _checkForNotificationTap() async {
+    String payload = NotificationService.currentPayload;
+    if (payload != null) {
+      notificationTapCallback(payload);
     }
   }
 

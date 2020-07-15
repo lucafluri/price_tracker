@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:price_tracker/models/product.dart';
+import 'package:price_tracker/services/product_utils.dart';
 
 // Product Class Unit Tests
 void main() {
@@ -12,9 +13,10 @@ void main() {
     "_id": 1,
     "name": "Test Product",
     "productUrl": productUrl,
-    "prices": "[]",
-    "dates": "[]",
-    "targetPrice": "-1.0",
+    "prices": "[-1.0, 269.0, 260.0]",
+    "dates":
+        "[2020-07-02 00:00:00.000, 2020-07-03 15:43:12.345, 2020-07-04 04:00:45.000]",
+    "targetPrice": "261.0",
     "imageUrl": "",
     "parseSuccess": "true",
   };
@@ -62,7 +64,7 @@ void main() {
       DateTime date2 = DateTime.parse("2020-07-04");
       DateTime date3 = DateTime.parse("2019-12-24");
 
-      setUpAll(() {
+      setUp(() {
         p = Product(productUrl);
       });
 
@@ -149,22 +151,284 @@ void main() {
 
     group('roundToPlace', () {
       test('round int', () {
-        expect(p.roundToPlace(1, 2), 1);
+        expect(roundToPlace(1, 2), 1);
       });
       test('round double down', () {
-        expect(p.roundToPlace(1.1234, 2), 1.12);
+        expect(roundToPlace(1.1234, 2), 1.12);
       });
       test('round double ', () {
-        expect(p.roundToPlace(1.255, 2), 1.25);
+        expect(roundToPlace(1.255, 2), 1.25);
       });
       test('round double up', () {
-        expect(p.roundToPlace(1.256, 2), 1.26);
+        expect(roundToPlace(1.256, 2), 1.26);
       });
     });
 
     group('getDomain', () {
       test('getter', () {
         expect(p.getDomain(), "digitec.ch");
+      });
+    });
+
+    group('priceFall', () {
+      Map<String, dynamic> productMap2 = new Map.from(productMap);
+
+      test('fall', () {
+        expect(p.priceFall(), true);
+      });
+
+      test('no price fall, just available again', () {
+        productMap2["prices"] = "[-1, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceFall(), false);
+      });
+
+      test('no price fall, same price', () {
+        productMap2["prices"] = "[200, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceFall(), false);
+      });
+
+      test('no data captured', () {
+        productMap2["prices"] = "[]";
+        productMap2["dates"] = "[]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceFall(), false);
+      });
+
+      test('just one datapoint', () {
+        productMap2["prices"] = "[200]";
+        productMap2["dates"] = "[2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceFall(), false);
+      });
+    });
+
+    group('available again', () {
+      Map<String, dynamic> productMap2 = new Map.from(productMap);
+
+      test('not available again', () {
+        expect(p.availableAgain(), false);
+      });
+
+      test('available again', () {
+        productMap2["prices"] = "[-1, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.availableAgain(), true);
+      });
+
+      test('not available again, same price', () {
+        productMap2["prices"] = "[200, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.availableAgain(), false);
+      });
+
+      test('no data captured', () {
+        productMap2["prices"] = "[]";
+        productMap2["dates"] = "[]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.availableAgain(), false);
+      });
+
+      test('just one datapoint', () {
+        productMap2["prices"] = "[200]";
+        productMap2["dates"] = "[2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.availableAgain(), false);
+      });
+    });
+
+    group('under target', () {
+      Map<String, dynamic> productMap2 = new Map.from(productMap);
+
+      test('is under target', () {
+        expect(p.underTarget(), true);
+      });
+
+      test('available again and under target', () {
+        productMap2["prices"] = "[-1, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        productMap2["targetPrice"] = "210.0";
+        p = Product.fromMap(productMap2);
+
+        expect(p.underTarget(), true);
+      });
+
+      test('not under target', () {
+        productMap2["prices"] = "[-1, 220]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        productMap2["targetPrice"] = "210.0";
+        p = Product.fromMap(productMap2);
+
+        expect(p.underTarget(), false);
+      });
+
+      test('same as target', () {
+        productMap2["prices"] = "[-1, 210]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        productMap2["targetPrice"] = "210.0";
+        p = Product.fromMap(productMap2);
+
+        expect(p.underTarget(), false);
+      });
+
+      test('under target, same price', () {
+        productMap2["prices"] = "[200, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        productMap2["targetPrice"] = "210.0";
+        p = Product.fromMap(productMap2);
+
+        expect(p.underTarget(), true);
+      });
+
+      test('no data captured', () {
+        productMap2["prices"] = "[]";
+        productMap2["dates"] = "[]";
+        productMap2["targetPrice"] = "210.0";
+        p = Product.fromMap(productMap2);
+
+        expect(p.underTarget(), false);
+      });
+
+      test('just one datapoint, under target', () {
+        productMap2["prices"] = "[200]";
+        productMap2["dates"] = "[2020-07-03]";
+        productMap2["targetPrice"] = "210.0";
+        p = Product.fromMap(productMap2);
+
+        expect(p.underTarget(), true);
+      });
+    });
+
+    group('priceDiffToYesterday', () {
+      Map<String, dynamic> productMap2 = new Map.from(productMap);
+
+      test('same price', () {
+        productMap2["prices"] = "[200, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), 0.0);
+      });
+
+      test('not enough data', () {
+        productMap2["prices"] = "[200]";
+        productMap2["dates"] = "[2020-07-02]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), 0.0);
+      });
+
+      test('empty data', () {
+        productMap2["prices"] = "[]";
+        productMap2["dates"] = "[]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), 0.0);
+      });
+
+      test('200 -> 100', () {
+        productMap2["prices"] = "[200, 100]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), -100.0);
+      });
+
+      test('100 -> 200 -> 100', () {
+        productMap2["prices"] = "[100, 200, 100]";
+        productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), -100.0);
+      });
+
+      test('round 200.34 -> 200.12', () {
+        productMap2["prices"] = "[200.34, 200.12]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), -0.22);
+      });
+
+      test('round 200.344356 -> 200.122345', () {
+        productMap2["prices"] = "[200.34, 200.12]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceDifferenceToYesterday(), -0.22);
+      });
+    });
+
+    group('percentageToYesterday', () {
+      Map<String, dynamic> productMap2 = new Map.from(productMap);
+
+      test('same price', () {
+        productMap2["prices"] = "[200, 200]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 0.0);
+      });
+
+      test('not enough data', () {
+        productMap2["prices"] = "[200]";
+        productMap2["dates"] = "[2020-07-02]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 0.0);
+      });
+
+      test('empty data', () {
+        productMap2["prices"] = "[]";
+        productMap2["dates"] = "[]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 0.0);
+      });
+
+      test('200 -> 100', () {
+        productMap2["prices"] = "[200, 100]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 50.0);
+      });
+
+      test('100 -> 200 -> 100', () {
+        productMap2["prices"] = "[100, 200, 100]";
+        productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 50.0);
+      });
+
+      test('100 -> 200 -> 220', () {
+        productMap2["prices"] = "[100, 200, 220]";
+        productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 10.0);
+      });
+
+      test('round 100 -> 78.548', () {
+        productMap2["prices"] = "[100, 78.548]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.percentageToYesterday(), 21.45);
       });
     });
   });

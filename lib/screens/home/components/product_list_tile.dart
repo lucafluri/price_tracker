@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:price_tracker/models/product.dart';
+import 'package:price_tracker/services/product_utils.dart';
 import 'package:price_tracker/screens/product_detail/product_detail.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,13 +30,14 @@ class ProductListTile extends StatelessWidget {
         ? Colors.transparent
         : _priceDifference < 0 ? Colors.green[800] : Colors.red[900];
 
-    Color _targetColor = _priceDifference < 0 || _priceDifference > 0
-        ? Colors.black87
-        : Colors.grey;
+    Color _targetColor =
+        _priceDifference < 0 || _priceDifference > 0 || _underTarget
+            ? Colors.black87
+            : Colors.grey;
 
     Color _titleColor = product.parseSuccess ? Colors.white : Colors.red;
 
-    Color _storeColor = _underTarget ? Colors.black54 : Colors.grey;
+    Color _storeColor = _underTarget ? Colors.black87 : Colors.grey;
 
     bool _showTargetPrice = product.targetPrice > 0;
 
@@ -147,8 +149,8 @@ class ProductListTile extends StatelessWidget {
           leading: _buildLeadingImage(),
           trailing: _buildTrailing(),
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          onTap: _onTap,
-          onLongPress: _onLongPress,
+          onTap: refreshing ? null : _onTap,
+          onLongPress: refreshing ? null : _onLongPress,
         ),
       ),
       actions: <Widget>[

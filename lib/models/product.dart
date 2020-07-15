@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:price_tracker/services/parsers/abstract_parser.dart';
+import 'package:price_tracker/services/product_utils.dart';
 import 'package:price_tracker/services/scraper.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -28,6 +27,10 @@ class Product {
   bool get parseSuccess => _parseSuccess;
   set parseSuccess(bool newVal) => this._parseSuccess = newVal;
 
+  double get latestPrice => _prices[_prices.length - 1];
+
+  var formatter = new DateFormat('yyyy-MM-dd');
+
   @override
   bool operator ==(o) =>
       o is Product && o.productUrl == productUrl && o.name == name;
@@ -51,7 +54,6 @@ class Product {
       return false;
     } else {
       this.name = parsedName;
-      var formatter = new DateFormat('yyyy-MM-dd');
 
       // Save only 1 Entry per day
       if (this._dates.length > 0) {
@@ -133,11 +135,6 @@ class Product {
         : this.name;
   }
 
-  double roundToPlace(double d, int places) {
-    double mod = pow(10.0, places);
-    return ((d * mod).round().toDouble() / mod);
-  }
-
   bool priceFall() {
     int length = prices.length;
 
@@ -184,6 +181,8 @@ class Product {
     return roundToPlace(last - secondLast, 2);
   }
 
+  // Returns the saved price percentage
+  // e.g. 200 -> 100 = 50.0
   double percentageToYesterday() {
     int length = prices.length;
 
@@ -192,7 +191,7 @@ class Product {
     double last = prices[length - 1];
     double secondLast = prices[length - 2];
 
-    return roundToPlace((1 - (last / secondLast)) * -100, 2);
+    return (roundToPlace((1 - (last / secondLast)).abs() * 100, 2));
   }
 
   List<double> prices2List(String prices) {

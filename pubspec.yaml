@@ -35,7 +35,6 @@ dependencies:
   html: ^0.14.0+3
   http: ^0.12.1
   xpath_parse: ^1.0.2
-  frefresh: ^1.1.0
   adaptive_dialog: ^0.7.3
   string_validator: ^0.1.4
   toast: ^0.1.5
@@ -43,10 +42,16 @@ dependencies:
   bezier_chart: ^1.0.17+1
   intro_slider: ^2.3.1
   shared_preferences: ^0.5.7+3
-  after_layout: ^1.0.7+2
   share: ^0.6.4+3
   timeago: ^2.0.26
   receive_sharing_intent: ^1.4.0+2
+  double_back_to_close_app: ^1.2.0
+  flutter_file_dialog: ^0.0.5
+  settings_ui: ^0.3.0
+
+
+
+
 
 
 

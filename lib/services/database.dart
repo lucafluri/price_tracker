@@ -81,12 +81,12 @@ class DatabaseService {
   /// returns id of the inserted product or -1 if already present
   Future<int> insert(Product product) async {
     // First check, whether the movie already exists:
-    final Product exists = await getProduct(product.id);
     final bool duplicate = await contains(product);
-    if (exists != null || duplicate) {
+    if (duplicate) {
       print('Product ${product.id} already exists in db');
       return -1;
     } else {
+      product.id = null;
       int answer = await _database.insert(table, product.toMap());
       product.id = answer;
 
@@ -101,6 +101,18 @@ class DatabaseService {
   Future<Product> getProduct(int id) async {
     var result =
         await _database.rawQuery('SELECT * FROM $table WHERE $columnId = $id');
+
+    if (result.length > 0) {
+      return new Product.fromMap(result.first);
+    }
+
+    return null;
+  }
+
+  /// Gets a specific product from the database.
+  /// Returns product, or 'null' if not found.
+  Future<Product> getFirstProduct() async {
+    var result = await _database.rawQuery('SELECT * FROM $table');
 
     if (result.length > 0) {
       return new Product.fromMap(result.first);

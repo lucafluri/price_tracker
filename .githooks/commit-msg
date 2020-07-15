@@ -7,11 +7,23 @@ Git commit hook:
 
 import sys
 import re
+import os
+from subprocess import call
 
 REGEX = '^(feat|fix|docs|style|refactor|test|build|ci|perf)(\(.+\))?\:\s(.{3,})' 
 
 GUIDELINE_LINK = 'https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit' 
 
+
+# run flutter test
+with open(os.devnull, 'wb') as devnull:
+    if(call(["flutter", "test"], stdout=devnull, shell=True) != 0):
+        sys.stderr.write("\nFlutter tests failed\n")
+        sys.exit(1)
+
+
+
+# Check commit message style
 with open(sys.argv[1]) as commit:
     lines = commit.readlines()
     if len(lines) == 0:
@@ -22,7 +34,7 @@ with open(sys.argv[1]) as commit:
 
     if match_regex is None:
         sys.stderr.write("\nYour commit message subject line does not follow the guideline\n")
-        sys.stderr.write("\n - Refer commit guideline: {}\n\n".format(GUIDELINE_LINK))
+        sys.stderr.write("\n-> Refer commit guideline: {}\n\n".format(GUIDELINE_LINK) + "\n\n")
         sys.exit(1)
 
     sys.stderr.write("\nYour commit message looks good! \n\n")
