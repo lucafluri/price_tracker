@@ -9,7 +9,9 @@ import 'package:workmanager/workmanager.dart';
 
 /// Set this to 'true' if you want to have a red button to create a test-notification:
 const NOTIFICATION_TEST_BUTTON = false;
-const BACKGROUND_TEST_BUTTON = false;
+const BACKGROUND_TEST_BUTTON = false; // Android only!
+// - For iOS, you can only test background notifications in XCode
+// -> Menu "Debug" -> "Simulate Background fetch"
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
