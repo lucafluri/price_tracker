@@ -30,7 +30,7 @@ void _dispatchCallbacks() async {
         try {
           await updatePrices(() {});
           // For testing purpose:
-          NotificationService.sendPushNotification(
+          NotificationService.sendAlertPushNotificationSmall(
               3,
               "Prices have been updated",
               "We've updated the prices for you in the background");
