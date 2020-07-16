@@ -10,7 +10,7 @@ import re
 import os
 from subprocess import call
 
-REGEX = '^(feat|fix|docs|style|refactor|test|build|ci|perf)(\(.+\))?\:\s(.{3,})' 
+REGEX = '^(feat|fix|docs|style|refactor|test|build|ci|perf|chore|revert)(\(.+\))?\:\s(.{3,})' 
 
 GUIDELINE_LINK = 'https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit' 
 
