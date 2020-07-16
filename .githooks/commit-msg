@@ -21,6 +21,12 @@ with open(os.devnull, 'wb') as devnull:
         sys.stderr.write("\nFlutter tests failed\n")
         sys.exit(1)
 
+# run flutter analyze
+with open(os.devnull, 'wb') as devnull:
+    if(call(["flutter", "analyze"], stdout=devnull, shell=True) != 0):
+        sys.stderr.write("\nFlutter analyze failed\n")
+        sys.exit(1)
+
 
 
 # Check commit message style
