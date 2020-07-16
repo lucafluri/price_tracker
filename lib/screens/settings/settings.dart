@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:price_tracker/components/widget_view/widget_view.dart';
 import 'package:price_tracker/screens/settings/settings_controller.dart';
-import 'package:price_tracker/services/backup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:settings_ui/settings_ui.dart';
 

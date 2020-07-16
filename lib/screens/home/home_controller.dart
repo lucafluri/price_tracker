@@ -174,7 +174,7 @@ class HomeScreenController extends State<HomeScreen> {
       title: "Do you really want to delete the following product?",
       message: product.getShortName(),
       okLabel: "Delete",
-      barrierDismissible: false,
+      barrierDismissible: true,
       isDestructiveAction: true,
     );
     return result == OkCancelResult.ok;

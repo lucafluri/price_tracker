@@ -35,7 +35,7 @@ class Settings extends State<SettingsScreen> {
       title: "Do you really want to empty the database?",
       message: "All tracked products will be lost without a backup",
       okLabel: "Clear DB",
-      barrierDismissible: false,
+      barrierDismissible: true,
       isDestructiveAction: true,
     );
     if (result == OkCancelResult.ok) {
