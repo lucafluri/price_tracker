@@ -1,7 +1,10 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/widgets.dart';
 import 'package:price_tracker/models/product.dart';
 import 'package:price_tracker/screens/settings/settings.dart';
+import 'package:price_tracker/services/backup.dart';
 import 'package:price_tracker/services/database.dart';
+import 'package:price_tracker/services/init.dart';
 import 'package:price_tracker/services/product_utils.dart';
 import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
@@ -27,9 +30,38 @@ class Settings extends State<SettingsScreen> {
       Toast.show(text, context, duration: sec);
 
   clearDB() async {
-    DatabaseService _db = await DatabaseService.getInstance();
-    await _db.deleteAll();
-    showToast("Database cleared!");
+    OkCancelResult result = await showOkCancelAlertDialog(
+      context: context,
+      title: "Do you really want to empty the database?",
+      message: "All tracked products will be lost without a backup",
+      okLabel: "Clear DB",
+      barrierDismissible: false,
+      isDestructiveAction: true,
+    );
+    if (result == OkCancelResult.ok) {
+      DatabaseService _db = await DatabaseService.getInstance();
+      if (await _db.deleteAll() > 0) {
+        showToast("Database cleared!");
+        navigatorKey.currentState
+            .pushNamedAndRemoveUntil("/", (route) => false);
+      } else
+        showToast("Database already empty");
+    }
+  }
+
+  backup() async {
+    if (await BackupService.instance.backup())
+      showToast("Backup file saved");
+    else
+      showToast("Error saving backup file");
+  }
+
+  restore() async {
+    if (await BackupService.instance.restore()) {
+      showToast("Products loaded from backup");
+      navigatorKey.currentState.pushNamedAndRemoveUntil("/", (route) => false);
+    } else
+      showToast("Error reading backup file");
   }
 
   void testPriceFallNotification() {

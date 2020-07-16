@@ -54,18 +54,16 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                     title: 'Backup',
                     subtitle: 'Save Backup File',
                     leading: Icon(Icons.backup),
-                    onTap: () async {
-                      await BackupService.instance.backup();
-                      state.showToast("Backup file saved");
+                    onTap: () {
+                      state.backup();
                     },
                   ),
                   SettingsTile(
                     title: 'Restore',
                     subtitle: 'Restore from Backup File',
                     leading: Icon(Icons.cloud_download),
-                    onTap: () async {
-                      await BackupService.instance.restore();
-                      state.showToast("Products added to database");
+                    onTap: () {
+                      state.restore();
                     },
                   ),
                 ],

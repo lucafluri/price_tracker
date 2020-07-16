@@ -51,18 +51,18 @@ class BackupService {
     }
   }
 
-  backup() async {
+  Future<bool> backup() async {
     String json = await _buildJSON();
     final file = await _localFile;
-    if (json == null) return;
+    if (json == null || file == null) return false;
     file.writeAsString(json);
 
     final params = SaveFileDialogParams(sourceFilePath: file.path);
     final filePath = await FlutterFileDialog.saveFile(params: params);
-    print(filePath);
+    return filePath != null;
   }
 
-  restore() async {
+  Future<bool> restore() async {
     DatabaseService _db = await DatabaseService.getInstance();
 
     final params = OpenFileDialogParams(
@@ -72,13 +72,13 @@ class BackupService {
     final filePath = await FlutterFileDialog.pickFile(params: params);
     if (filePath == null) {
       debugPrint("Filepath Error");
-      return;
+      return false;
     }
     File file = File(filePath);
 
     if (file == null) {
       debugPrint("ERROR Getting File");
-      return;
+      return false;
     }
 
     String string;
@@ -87,18 +87,19 @@ class BackupService {
       string = await file.readAsString();
     } catch (e) {
       debugPrint("Can't read file as string!");
-      return;
+      return false;
     }
 
     List<Product> products = _buildProducts(string);
 
     if (products == null) {
       debugPrint("Error building Products");
-      return;
+      return false;
     }
 
     for (Product p in products) {
       await _db.insert(p);
     }
+    return true;
   }
 }

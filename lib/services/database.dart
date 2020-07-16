@@ -173,6 +173,6 @@ class DatabaseService {
 
   // Clears db
   Future<int> deleteAll() async {
-    return await _database.delete(table);
+    return await _database.delete(table, where: '1');
   }
 }

@@ -72,7 +72,7 @@ Future<void> notificationTapCallback(String payload) async {
   // Clear payload variable
   NotificationService.currentPayload = null;
 
-  if (product != null)
+  if (!refreshing && product != null)
     navigatorKey.currentState.push(MaterialPageRoute(
         builder: (context) => ProductDetail(
               product: product,
