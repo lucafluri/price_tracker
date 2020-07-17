@@ -1,6 +1,6 @@
 <img src="assets/github_banner.png" alt="screenshot" />  
 
-[![Codemagic build status](https://api.codemagic.io/apps/5f0ef3507b5d8811e2fa1d9f/5f0ef3507b5d8811e2fa1d9e/status_badge.svg)](https://codemagic.io/apps/5f0ef3507b5d8811e2fa1d9f/5f0ef3507b5d8811e2fa1d9e/latest_build)
+[![Codemagic build status](https://api.codemagic.io/apps/5f0ef3507b5d8811e2fa1d9f/5f0efe75c52b8c1db589b292/status_badge.svg)](https://codemagic.io/apps/5f0ef3507b5d8811e2fa1d9f/5f0efe75c52b8c1db589b292/latest_build)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/lucafluri/price_tracker/CI?style=flat-square)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/lucafluri/price_tracker?color=yellow&style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/lucafluri/price_tracker?style=flat-square)
