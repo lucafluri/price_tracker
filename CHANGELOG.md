@@ -1,4 +1,13 @@
-# [](https://github.com/lucafluri/price_tracker/compare/v0.1.4...v) (2020-07-16)
+# [](https://github.com/lucafluri/price_tracker/compare/v0.1.5...v) (2020-07-17)
+
+
+
+## [0.1.5](https://github.com/lucafluri/price_tracker/compare/v0.1.4...v0.1.5) (2020-07-17)
+
+
+### Bug Fixes
+
+* notification tap handling during refresh ([a7b4f79](https://github.com/lucafluri/price_tracker/commit/a7b4f79a80c53f99d7b7b097a37c264ceddb5d7c))
 
 
 
