@@ -1,8 +1,8 @@
 import re
 import subprocess
 
-VERSION = '0.1.4'
-FLUTTER_VERSION_CODE = '8'
+VERSION = '0.1.5'
+FLUTTER_VERSION_CODE = '9'
 
 PROJECT_ROOT = "../"
 
