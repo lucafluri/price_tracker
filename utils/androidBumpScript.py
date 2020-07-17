@@ -24,8 +24,8 @@ modFile("lib/screens/settings/settings_controller.dart", 'VERSION\s[=]\s".*";', 
 modFile("pubspec.yaml", 'version:\s.*\s', 'version: {}\n'.format(VERSION))
 
 
-# git tag 
-if subprocess.call(["git", "tag", "v{}".format(VERSION)]) == 0:
-    print("Tag v{} created".format(VERSION))
+# # git tag 
+# if subprocess.call(["git", "tag", "v{}".format(VERSION)]) == 0:
+#     print("Tag v{} created".format(VERSION))
     
-print("Please update CHANGELOG.md and push tag")
+# print("Please update CHANGELOG.md and push tag")
