@@ -133,6 +133,7 @@ class HomeScreenController extends State<HomeScreen> {
           (!validURL
               ? "No valid Product Link or unsupported Store Link found in the Clipboard!"
               : "Valid Link pasted from the Clipboard!"),
+      style: AdaptiveStyle.material,
     ));
     input = inputs != null ? inputs[0] : inputs;
 
