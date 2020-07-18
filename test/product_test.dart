@@ -178,7 +178,15 @@ void main() {
       });
 
       test('no price fall, just available again', () {
-        productMap2["prices"] = "[-1, 200]";
+        productMap2["prices"] = "[-1.0, 200.0]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.priceFall(), false);
+      });
+
+      test('no price fall, unavailable', () {
+        productMap2["prices"] = "[200.0, -1.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -186,7 +194,7 @@ void main() {
       });
 
       test('no price fall, same price', () {
-        productMap2["prices"] = "[200, 200]";
+        productMap2["prices"] = "[200.0, 200.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -202,7 +210,7 @@ void main() {
       });
 
       test('just one datapoint', () {
-        productMap2["prices"] = "[200]";
+        productMap2["prices"] = "[200.0]";
         productMap2["dates"] = "[2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -218,7 +226,7 @@ void main() {
       });
 
       test('available again', () {
-        productMap2["prices"] = "[-1, 200]";
+        productMap2["prices"] = "[-1.0, 200.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -226,7 +234,15 @@ void main() {
       });
 
       test('not available again, same price', () {
-        productMap2["prices"] = "[200, 200]";
+        productMap2["prices"] = "[200.0, 200.0]";
+        productMap2["dates"] = "[2020-07-02, 2020-07-03]";
+        p = Product.fromMap(productMap2);
+
+        expect(p.availableAgain(), false);
+      });
+
+      test('unavailable now', () {
+        productMap2["prices"] = "[200.0, -1.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -242,7 +258,7 @@ void main() {
       });
 
       test('just one datapoint', () {
-        productMap2["prices"] = "[200]";
+        productMap2["prices"] = "[200.0]";
         productMap2["dates"] = "[2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -258,7 +274,7 @@ void main() {
       });
 
       test('available again and under target', () {
-        productMap2["prices"] = "[-1, 200]";
+        productMap2["prices"] = "[-1.0, 200.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         productMap2["targetPrice"] = "210.0";
         p = Product.fromMap(productMap2);
@@ -267,7 +283,7 @@ void main() {
       });
 
       test('not under target', () {
-        productMap2["prices"] = "[-1, 220]";
+        productMap2["prices"] = "[-1.0, 220.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         productMap2["targetPrice"] = "210.0";
         p = Product.fromMap(productMap2);
@@ -276,7 +292,7 @@ void main() {
       });
 
       test('same as target', () {
-        productMap2["prices"] = "[-1, 210]";
+        productMap2["prices"] = "[-1.0, 210.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         productMap2["targetPrice"] = "210.0";
         p = Product.fromMap(productMap2);
@@ -285,7 +301,7 @@ void main() {
       });
 
       test('under target, same price', () {
-        productMap2["prices"] = "[200, 200]";
+        productMap2["prices"] = "[200.0, 200.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         productMap2["targetPrice"] = "210.0";
         p = Product.fromMap(productMap2);
@@ -303,7 +319,7 @@ void main() {
       });
 
       test('just one datapoint, under target', () {
-        productMap2["prices"] = "[200]";
+        productMap2["prices"] = "[200.0]";
         productMap2["dates"] = "[2020-07-03]";
         productMap2["targetPrice"] = "210.0";
         p = Product.fromMap(productMap2);
@@ -316,7 +332,7 @@ void main() {
       Map<String, dynamic> productMap2 = new Map.from(productMap);
 
       test('same price', () {
-        productMap2["prices"] = "[200, 200]";
+        productMap2["prices"] = "[200.0, 200.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -324,7 +340,7 @@ void main() {
       });
 
       test('not enough data', () {
-        productMap2["prices"] = "[200]";
+        productMap2["prices"] = "[200.0]";
         productMap2["dates"] = "[2020-07-02]";
         p = Product.fromMap(productMap2);
 
@@ -340,7 +356,7 @@ void main() {
       });
 
       test('200 -> 100', () {
-        productMap2["prices"] = "[200, 100]";
+        productMap2["prices"] = "[200.0, 100.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -348,7 +364,7 @@ void main() {
       });
 
       test('100 -> 200 -> 100', () {
-        productMap2["prices"] = "[100, 200, 100]";
+        productMap2["prices"] = "[100.0, 200.0, 100.0]";
         productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -376,7 +392,7 @@ void main() {
       Map<String, dynamic> productMap2 = new Map.from(productMap);
 
       test('same price', () {
-        productMap2["prices"] = "[200, 200]";
+        productMap2["prices"] = "[200.0, 200.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -384,7 +400,7 @@ void main() {
       });
 
       test('not enough data', () {
-        productMap2["prices"] = "[200]";
+        productMap2["prices"] = "[200.0]";
         productMap2["dates"] = "[2020-07-02]";
         p = Product.fromMap(productMap2);
 
@@ -400,7 +416,7 @@ void main() {
       });
 
       test('200 -> 100', () {
-        productMap2["prices"] = "[200, 100]";
+        productMap2["prices"] = "[200.0, 100.0]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -408,7 +424,7 @@ void main() {
       });
 
       test('100 -> 200 -> 100', () {
-        productMap2["prices"] = "[100, 200, 100]";
+        productMap2["prices"] = "[100.0, 200.0, 100.0]";
         productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -416,7 +432,7 @@ void main() {
       });
 
       test('100 -> 200 -> 220', () {
-        productMap2["prices"] = "[100, 200, 220]";
+        productMap2["prices"] = "[100.0, 200.0, 220.0]";
         productMap2["dates"] = "[2020-07-01, 2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 
@@ -424,7 +440,7 @@ void main() {
       });
 
       test('round 100 -> 78.548', () {
-        productMap2["prices"] = "[100, 78.548]";
+        productMap2["prices"] = "[100.0, 78.548]";
         productMap2["dates"] = "[2020-07-02, 2020-07-03]";
         p = Product.fromMap(productMap2);
 

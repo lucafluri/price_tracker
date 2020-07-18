@@ -16,16 +16,17 @@ class ProductListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //Price Difference since last day => used for coloring
-    double _priceDifference = product.priceDifferenceToYesterday();
     bool _underTarget = product.underTarget();
+    bool _availableAgain = product.availableAgain();
+    bool _priceFall = product.priceFall();
+    bool _priceIncrease = product.priceIncrease();
 
-    Color _chosenColor = _priceDifference == 0 || product.availableAgain()
-        ? Colors.transparent
-        : _priceDifference < 0 ? Colors.green[800] : Colors.red[900];
+    Color _chosenColor = _priceFall || _availableAgain
+        ? Colors.green[800]
+        : _priceIncrease ? Colors.red[900] : Colors.transparent;
 
     Color _targetColor =
-        _priceDifference < 0 || _priceDifference > 0 || _underTarget
+        _priceFall || _priceIncrease || _underTarget || _availableAgain
             ? Colors.black87
             : Colors.grey;
 

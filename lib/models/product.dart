@@ -140,10 +140,20 @@ class Product {
 
     if (length <= 1) return false;
 
-    double last = prices[length - 1];
     double secondLast = prices[length - 2];
 
-    if (last < secondLast && last != -1) return true;
+    if (latestPrice < secondLast && latestPrice != -1.0) return true;
+    return false;
+  }
+
+  bool priceIncrease() {
+    int length = prices.length;
+
+    if (length <= 1) return false;
+
+    double secondLast = prices[length - 2];
+
+    if (latestPrice > secondLast && latestPrice != -1.0) return true;
     return false;
   }
 
@@ -155,7 +165,7 @@ class Product {
     double last = prices[length - 1];
     double secondLast = prices[length - 2];
 
-    if (secondLast == -1 && last != -1) return true;
+    if (secondLast == -1.0 && last != -1.0) return true;
     return false;
   }
 
@@ -166,7 +176,7 @@ class Product {
 
     double last = prices[length - 1];
 
-    if (last < targetPrice && last != -1) return true;
+    if (last < targetPrice && last != -1.0) return true;
     return false;
   }
 
