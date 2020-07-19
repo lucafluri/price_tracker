@@ -1,10 +1,10 @@
 import re
 import subprocess
 
-VERSION = '0.1.5'
-FLUTTER_VERSION_CODE = '9'
+VERSION = '0.1.6'
+FLUTTER_VERSION_CODE = '10'
 
-PROJECT_ROOT = "../"
+PROJECT_ROOT = "./"
 
 def modFile(path, regex, replace):
     file = open(PROJECT_ROOT + path, "r+")

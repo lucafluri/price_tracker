@@ -10,7 +10,7 @@ import 'package:toast/toast.dart';
 import 'package:workmanager/workmanager.dart';
 
 class Settings extends State<SettingsScreen> {
-  static const String VERSION = "0.1.5";
+  static const String VERSION = "0.1.6";
   static const String APP_NAME = "Price Tracker BETA";
 
   Product testProduct = Product.fromMap({
