@@ -1,4 +1,14 @@
-# [](https://github.com/lucafluri/price_tracker/compare/v0.1.5...v) (2020-07-17)
+# [](https://github.com/lucafluri/price_tracker/compare/v0.1.6...v) (2020-07-19)
+
+
+
+## [0.1.6](https://github.com/lucafluri/price_tracker/compare/v0.1.5...v0.1.6) (2020-07-19)
+
+
+### Bug Fixes
+
+* change style for displaying text in adaptive dialog ([8e49c90](https://github.com/lucafluri/price_tracker/commit/8e49c904502fd6c892b2b87e21ac43073602cabf))
+* incorrect coloring when product unavailable ([fb7af37](https://github.com/lucafluri/price_tracker/commit/fb7af378ce5f162aed0e63b8d4ed21b63985ea18))
 
 
 
