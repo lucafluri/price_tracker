@@ -18,7 +18,7 @@ import workmanager
     // Setting the interval of the background task, in seconds.
     //   12h   =  12*60*60
     //   15min =  15*60
-    UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(12*60*60))
+    UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(3*60*60))
     
     if #available(iOS 10.0, *) {
         UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
