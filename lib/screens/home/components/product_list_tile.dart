@@ -17,6 +17,16 @@ class ProductListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool _underTarget = product.underTarget();
+    bool _availableAgain = product.availableAgain();
+    bool _priceFall = product.priceFall();
+    bool _priceIncrease = product.priceIncrease();
+    bool _showTargetPrice = product.targetPrice > 0;
+    double _priceDiffPercentage = product.percentageToYesterday();
+    bool _priceChanged = _priceFall || _priceIncrease;
+
+    Color _chosenColor = _priceFall || _availableAgain
+        ? Colors.green[800]
+        : _priceIncrease ? Colors.red[900] : Colors.transparent;
 
     Color _titleColor = refreshing
         ? Colors.grey
@@ -69,14 +79,6 @@ class ProductListTile extends StatelessWidget {
       );
     }
 
-    //calculate price difference in percent compared to the second last price
-    double _calcPriceDiff(){
-      double value = product.prices.length >= 2 ?
-        ((product.prices[product.prices.length -1] / product.prices[product.prices.length -2]) -1) * 100
-        : 0.0;
-      return double.parse((value).toStringAsFixed(2));
-    }
-
 
     Widget _buildTrailing() {
       return Column(
@@ -93,9 +95,13 @@ class ProductListTile extends StatelessWidget {
                   RichText(
                     text: TextSpan(
                       children: <TextSpan>[
+                        //if prices changed add new line to show price difference %
+                        //otherwise only show current price
                         TextSpan(
-                            text: product.prices[product.prices.length - 1] >= 0
+                            text: product.prices[product.prices.length - 1] >= 0 && _priceChanged
                                 ? product.prices[product.prices.length - 1].toString()+"\n"
+                                : product.prices[product.prices.length - 1] >= 0
+                                ? product.prices[product.prices.length - 1].toString()
                                 : "--\n",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -103,13 +109,11 @@ class ProductListTile extends StatelessWidget {
                                 color: Colors.white)
                         ),
                         TextSpan(
-                          text: _calcPriceDiff() > 0 ?
-                          "+"+_calcPriceDiff().toString()+"%"
-                              : _calcPriceDiff().toString()+"%",
+                          text: _priceIncrease ?
+                          "+"+_priceDiffPercentage.toString()+"%"
+                              : _priceFall ? _priceDiffPercentage.toString()+"%" : "",
                           style: TextStyle(
-                            color: _calcPriceDiff() > 0 ?
-                              Colors.red[900]
-                              : _calcPriceDiff() < 0 ? Colors.green[800] : Colors.white.withOpacity(0.6),
+                            color: _chosenColor,
                             fontSize: 12.5,
                             fontWeight: FontWeight.w700,
                           ),
@@ -134,7 +138,6 @@ class ProductListTile extends StatelessWidget {
         ],
       );
     }
-
 
 
     return Slidable(
