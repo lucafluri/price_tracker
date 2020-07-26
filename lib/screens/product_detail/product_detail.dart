@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -189,7 +190,9 @@ class _ProductDetailState extends State<ProductDetail> {
                                     errorText: validTarget
                                         ? null
                                         : "Invalid Target Price"),
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid
+                                    ? TextInputType.number
+                                    : TextInputType.text,
                                 onChanged: (value) {
                                   // _targetInputController.text = value;
                                   try {
