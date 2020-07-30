@@ -19,8 +19,8 @@ class ProductListTile extends StatelessWidget {
     bool _underTarget = product.underTarget();
     bool _availableAgain = product.availableAgain();
     bool _priceFall = product.priceFall();
-    bool _priceIncrease = product.priceIncrease();
-    bool _showTargetPrice = product.targetPrice > 0;
+    bool _priceIncrease = product.priceIncrease() && !_availableAgain;
+    // bool _showTargetPrice = product.targetPrice > 0;
     double _priceDiffPercentage = product.percentageToYesterday();
     bool _priceChanged = _priceFall || _priceIncrease;
 
@@ -33,7 +33,6 @@ class ProductListTile extends StatelessWidget {
         : product.parseSuccess ? Colors.white : Colors.red;
 
     Color _storeColor = _underTarget ? Colors.black87 : Colors.grey;
-
 
     void _onTap() {
       Navigator.of(context).push(MaterialPageRoute(
@@ -75,17 +74,16 @@ class ProductListTile extends StatelessWidget {
         color: Colors.white,
         width: 80,
         height: 60,
-        child: _getLeadingImage(),
+        child: Hero(tag: product.imageUrl, child: _getLeadingImage()),
       );
     }
-
 
     Widget _buildTrailing() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            //Change Placeholder?
+              //Change Placeholder?
               width: 100,
               height: 40,
               child: Column(
@@ -98,20 +96,26 @@ class ProductListTile extends StatelessWidget {
                         //if prices changed add new line to show price difference %
                         //otherwise only show current price
                         TextSpan(
-                            text: product.prices[product.prices.length - 1] >= 0 && _priceChanged
-                                ? product.prices[product.prices.length - 1].toString()+"\n"
+                            text: product.prices[product.prices.length - 1] >=
+                                        0 &&
+                                    _priceChanged
+                                ? product.prices[product.prices.length - 1]
+                                        .toString() +
+                                    "\n"
                                 : product.prices[product.prices.length - 1] >= 0
-                                ? product.prices[product.prices.length - 1].toString()
-                                : "--\n",
+                                    ? product.prices[product.prices.length - 1]
+                                        .toString()
+                                    : "--\n",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                color: Colors.white)
-                        ),
+                                color: Colors.white)),
                         TextSpan(
-                          text: _priceIncrease ?
-                          "+"+_priceDiffPercentage.toString()+"%"
-                              : _priceFall ? _priceDiffPercentage.toString()+"%" : "",
+                          text: _priceIncrease
+                              ? "+" + _priceDiffPercentage.toString() + "%"
+                              : _priceFall
+                                  ? _priceDiffPercentage.toString() + "%"
+                                  : "",
                           style: TextStyle(
                             color: _chosenColor,
                             fontSize: 12.5,
@@ -138,7 +142,6 @@ class ProductListTile extends StatelessWidget {
         ],
       );
     }
-
 
     return Slidable(
       actionPane: SlidableDrawerActionPane(),

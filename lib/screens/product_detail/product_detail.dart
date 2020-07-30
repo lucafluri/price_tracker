@@ -111,12 +111,16 @@ class _ProductDetailState extends State<ProductDetail> {
                               child: Container(
                                 height: 250,
                                 child: product.imageUrl != null
-                                    ? CachedNetworkImage(
-                                        imageUrl: product.imageUrl,
-                                        placeholder: (context, url) => Center(
-                                            child: CircularProgressIndicator()),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
+                                    ? Hero(
+                                        tag: product.imageUrl,
+                                        child: CachedNetworkImage(
+                                          imageUrl: product.imageUrl,
+                                          placeholder: (context, url) => Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
                                       )
                                     : Container(),
                               ),
