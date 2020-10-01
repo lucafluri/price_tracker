@@ -176,7 +176,7 @@ class Product {
 
     double last = prices[length - 1];
 
-    if (last < targetPrice && last != -1.0) return true;
+    if (last <= targetPrice && last != -1.0) return true;
     return false;
   }
 
