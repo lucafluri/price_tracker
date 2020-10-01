@@ -297,7 +297,7 @@ void main() {
         productMap2["targetPrice"] = "210.0";
         p = Product.fromMap(productMap2);
 
-        expect(p.underTarget(), false);
+        expect(p.underTarget(), true);
       });
 
       test('under target, same price', () {
