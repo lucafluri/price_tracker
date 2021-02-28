@@ -165,7 +165,14 @@ class ScraperService {
 
     String d = ScraperService.getDomain(url);
     dynamic sdJSON = getStructuredDataJSON(r);
-    if (sdJSON != null)
+    if (parseableDomains.contains(d) &&
+        toBoolean(parserConf["domains"][d]["xpath"]) &&
+        toBoolean(parserConf["domains"][d]["favorXPath"]))
+      // Edge case for when a page's content includes JSON-LD (sdJSON) but the
+      // data (e.g. price, name) is outdated/wrong compared to what can be
+      // scraped with ParserXPath
+      return ParserXPath(url, r);
+    else if (sdJSON != null)
       return ParserSD(url, r, sdJSON);
     else if (parseableDomains.contains(d)) {
       if (toBoolean(parserConf["domains"][d]["xpath"]))

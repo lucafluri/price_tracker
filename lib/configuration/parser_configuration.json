@@ -2,6 +2,7 @@
     "domains": {
         "amazon.de": {
             "xpath": "false",
+            "favorXPath": "false",
             "name": [{
                 "path": "#productTitle",
                 "regex": {
@@ -57,6 +58,7 @@
         },
         "amazon.com": {
             "xpath": "false",
+            "favorXPath": "false",
             "name": [{
                 "path": "#productTitle",
                 "regex": {
@@ -112,6 +114,7 @@
         },
         "officeworld.ch": {
             "xpath": "true",
+            "favorXPath": "false",
             "name": [{
                 "path": "//*[@id='pageHeader']/div[1]/div/div[2]/div[1]/h1",
                 "regex": {
@@ -142,6 +145,7 @@
         },
         "exlibris.ch": {
             "xpath": "true",
+            "favorXPath": "false",
             "name": [{
                 "path": "//*[@id='nameStructural']",
                 "regex": {
@@ -172,6 +176,45 @@
                     "regex": {
                         "attribute": "src",
                         "pattern": "src=\"(\\S*)\"",
+                        "remove": "",
+                        "group": 1
+                    }
+                }
+            ]
+        },
+        "unrealengine.com": {
+            "xpath": "true",
+            "favorXPath": "true",
+            "name": [{
+                "path": "//*[@id='epic-marketplace']/div/div/div[1]/section[1]/div[2]/div[1]/div[1]/h1",
+                "regex": {
+                    "pattern": ">\\s*(.*)\\s*<",
+                    "remove": "",
+                    "group": 1
+                }
+            }],
+            "price": [{
+                    "path": "//*[@id='epic-marketplace']/div/div/div[1]/section[1]/div[2]/div[2]/div/div[1]/div/div/span",
+                    "regex": {
+                        "pattern": "(\\d+[,.]?[\\d]*)",
+                        "remove": "",
+                        "group": 1
+                    }
+                },
+                {
+                    "path": "//*[@id='epic-marketplace']/div/div/div[1]/section[1]/div[2]/div[2]/div/div[1]/div/div/div/span/span",
+                        "regex": {
+                            "pattern": "(\\d+[,.]?[\\d]*)",
+                            "remove": "",
+                            "group": 1
+                    }
+                }
+            ],
+            "image": [{
+                    "path": "//meta[@property='og:image']",
+                    "regex": {
+                        "attribute": "content",
+                        "pattern": "content=\"(\\S*)\"",
                         "remove": "",
                         "group": 1
                     }
