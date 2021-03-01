@@ -39,4 +39,5 @@ The app runs a background service and updates prices once per day. Users will th
 - play-zone.ch
 - officeworld.ch
 - amazon.com, amazon.de
+- Unreal Engine Marketplace
 
