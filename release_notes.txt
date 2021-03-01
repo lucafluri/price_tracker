@@ -1,0 +1,4 @@
+Bug fixes:
+- Fix under target calculations
+- Fix setting target price bug
+- Fix scraper selecting wrong price

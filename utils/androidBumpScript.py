@@ -1,8 +1,8 @@
 import re
 import subprocess
 
-VERSION = '0.1.6'
-FLUTTER_VERSION_CODE = '10'
+VERSION = '0.1.7'
+FLUTTER_VERSION_CODE = '11'
 
 PROJECT_ROOT = "./"
 
@@ -14,7 +14,7 @@ def modFile(path, regex, replace):
     file.truncate()
 
 # Modify build.gradle -> bump version code
-modFile("android/app/build.gradle", "flutterVersionCode\s[=]\s[']\d[']", "flutterVersionCode = '{}'".format(FLUTTER_VERSION_CODE))
+modFile("android/app/build.gradle", "flutterVersionCode\s[=]\s[']\d*[']", "flutterVersionCode = '{}'".format(FLUTTER_VERSION_CODE))
 
 
 # Modify settings_controller.dart -> bump version

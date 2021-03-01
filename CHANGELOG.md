@@ -1,4 +1,20 @@
-# [](https://github.com/lucafluri/price_tracker/compare/v0.1.6...v) (2020-07-19)
+# [](https://github.com/lucafluri/price_tracker/compare/v0.1.7...v) (2021-03-01)
+
+
+
+## [0.1.7](https://github.com/lucafluri/price_tracker/compare/v0.1.6...v0.1.7) (2021-03-01)
+
+
+### Bug Fixes
+
+* :bug: fix under target calculations bug ([921dba2](https://github.com/lucafluri/price_tracker/commit/921dba2aef47bb6150d9eae5c597f78db9caee3a))
+* new prop favorXPath in parser_configuration ([61a0728](https://github.com/lucafluri/price_tracker/commit/61a0728335ed4090b1ebe522adfd7209ce8e0262)), closes [#55](https://github.com/lucafluri/price_tracker/issues/55)
+* setting target price on iOS is possible again ([7ff82ff](https://github.com/lucafluri/price_tracker/commit/7ff82ffbc3407a6d31d607a057b8a2148fc47978))
+
+
+### Features
+
+* available on iOS Apple TestFlight testing program ([7871b97](https://github.com/lucafluri/price_tracker/commit/7871b9716802659387779bce879d69e85f0f0119))
 
 
 
