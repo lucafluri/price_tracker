@@ -127,8 +127,9 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: RaisedButton(
-                                color: Theme.of(context).primaryColor,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor),
                                 //Launch URL Button
                                 onPressed: () async {
                                   if (await canLaunch(product.productUrl))

@@ -29,7 +29,7 @@ class BackupService {
   Future<String> _buildJSON() async {
     DatabaseService _db = await DatabaseService.getInstance();
     List<Product> products = await _db.getAllProducts();
-    List<dynamic> json = List();
+    List<dynamic> json = [];
 
     products.forEach((element) {
       json.add(element.toMap());
@@ -41,7 +41,7 @@ class BackupService {
   List<Product> _buildProducts(String input) {
     try {
       List<dynamic> list = jsonDecode(input);
-      List<Product> products = List();
+      List<Product> products = [];
       for (Map e in list) {
         products.add(Product.fromMap(e));
       }
