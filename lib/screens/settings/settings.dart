@@ -125,36 +125,10 @@ class SettingsScreenView extends WidgetView<SettingsScreen, Settings> {
                 title: 'Credits',
                 tiles: [
                   SettingsTile(
-                    title: 'Luca Fluri',
-                    subtitle: '@lucafluri',
-                    leading: Icon(Icons.person),
-                    onTap: () {
-                      launchUrl("https://www.lucafluri.ch");
-                    },
-                  ),
-                  SettingsTile(
-                    title: 'Andreas Ambühl',
-                    subtitle: '@AndiSwiss',
-                    leading: Icon(Icons.person_outline),
-                    onTap: () {
-                      launchUrl("https://andiswiss.ch/");
-                    },
-                  ),
-                  SettingsTile(
-                    title: 'Dario Breitenstein',
-                    subtitle: '@chdabre',
-                    leading: Icon(Icons.person_outline),
-                    onTap: () {
-                      launchUrl("https://www.imakethings.ch/");
-                    },
-                  ),
-                  SettingsTile(
-                    title: 'Marc Schnydrig',
-                    subtitle: '@marcschny',
-                    leading: Icon(Icons.person_outline),
-                    onTap: () {
-                      launchUrl("https://github.com/marcschny");
-                    },
+                    title: 'Developers',
+                    leading: Icon(Icons.group),
+                    onTap: () =>
+                        Navigator.of(context).pushNamed("/settings/devs"),
                   ),
                 ],
               ),
